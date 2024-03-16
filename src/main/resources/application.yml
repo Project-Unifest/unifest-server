@@ -6,3 +6,5 @@ spring:
     username: ${DATASOURCE_USERNAME}
     password: ${DATASOURCE_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
+server:
+  port: 9090
