@@ -2,9 +2,17 @@ spring:
   application:
     name: UniFest
   datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
     url: ${DATASOURCE_URL}
     username: ${DATASOURCE_USERNAME}
     password: ${DATASOURCE_PASSWORD}
-    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+      format_sql: true
+      default_batch_fetch_size: 1000
 server:
   port: 8080
+
