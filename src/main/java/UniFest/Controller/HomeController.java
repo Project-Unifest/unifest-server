@@ -1,5 +1,6 @@
 package UniFest.Controller;
 
+import UniFest.dto.response.Response;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -7,7 +8,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class HomeController {
 
     @GetMapping("")
-    public String Hello() {
-        return "Hello";
+    public Response Hello() {
+        String s = "hello";
+        return Response.ofSuccess("OK", s);
     }
 }

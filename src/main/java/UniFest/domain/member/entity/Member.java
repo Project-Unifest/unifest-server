@@ -27,7 +27,11 @@ public class Member extends BaseEntity {
     //TODO 역할이 운영자와 부스등록자 2가지?
     private String role;
 
-    private boolean isChecked;
+    private String assign;
+
+    private String phoneNum;
+
+    private boolean isChecked = false;
 
 
 
