@@ -22,6 +22,10 @@ springdoc:
     display-request-duration: true
     operations-sorter: alpha
     tags-sorter: alpha
+jwt:
+  secret: j3904hDF3bni3nb390bj9380q5jaie2kjkdn29nqaewnma3ksdafn342166asfbneASGSASGHRDFWEWGDS
+  access-token-expiration-minutes: 300000
+  refresh-token-expiration-minutes: 10080
 server:
   port: 8080
 

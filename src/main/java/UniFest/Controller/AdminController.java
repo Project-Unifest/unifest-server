@@ -5,11 +5,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class HomeController {
+public class AdminController {
 
-    @GetMapping("/")
-    public Response Hello() {
-        String s = "hello";
+    @GetMapping("/admin")
+    public Response admin() {
+        String s = "admin";
         return Response.ofSuccess("OK", s);
     }
 }
