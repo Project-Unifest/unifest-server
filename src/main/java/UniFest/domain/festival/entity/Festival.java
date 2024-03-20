@@ -2,10 +2,13 @@ package UniFest.domain.festival.entity;
 
 import UniFest.domain.audit.BaseEntity;
 import UniFest.domain.school.entity.School;
+import UniFest.domain.star.entity.Enroll;
 import jakarta.persistence.*;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Entity
@@ -28,9 +31,18 @@ public class Festival extends BaseEntity {
     @JoinColumn(name = "school_id")
     private School school;
 
+    @OneToMany(mappedBy = "festival")
+    private List<Enroll> enrollList = new ArrayList<>();
+
     private LocalDateTime beginDate;
 
     private LocalDateTime endDate;
+
+    public void setSchool(School school){
+        this.school = school;
+        school.getFestivalList().add(this);
+    }
+
 
 
 }

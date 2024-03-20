@@ -2,6 +2,8 @@ package UniFest.domain.booth.entity;
 
 import UniFest.domain.audit.BaseEntity;
 import UniFest.domain.festival.entity.Festival;
+import UniFest.domain.likes.entity.Likes;
+import UniFest.domain.menu.entity.Menu;
 import jakarta.persistence.*;
 import lombok.Getter;
 
@@ -46,6 +48,12 @@ public class Booth extends BaseEntity {
     @Column(name = "img_list")
     @ElementCollection(fetch = FetchType.LAZY)
     private List<String> lmgList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "booth")
+    private List<Likes> likesList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "booth")
+    private List<Menu> menuList = new ArrayList<>();
 
     private float latitude;
 

@@ -1,8 +1,12 @@
 package UniFest.domain.school.entity;
 
 import UniFest.domain.audit.BaseEntity;
+import UniFest.domain.festival.entity.Festival;
 import jakarta.persistence.*;
 import lombok.Getter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Entity
@@ -24,5 +28,8 @@ public class School extends BaseEntity {
     private float latitude;
 
     private float longtitude;
+
+    @OneToMany(mappedBy = "school", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Festival> festivalList = new ArrayList<>();
 
 }
