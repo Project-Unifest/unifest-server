@@ -9,6 +9,7 @@ public class AdminController {
 
     @GetMapping("/admin")
     public Response admin() {
+
         String s = "admin";
         return Response.ofSuccess("OK", s);
     }
