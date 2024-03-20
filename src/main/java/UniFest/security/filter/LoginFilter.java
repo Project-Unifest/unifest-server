@@ -6,11 +6,13 @@ import UniFest.security.userdetails.MemberDetails;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -63,16 +65,29 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         GrantedAuthority auth = iterator.next();
         String role = auth.getAuthority();
         //여기서 role은 ROLE_XXXX 형태
-        String token = jwtTokenizer.createJwt(username,role);
+        String access = jwtTokenizer.createAccessToken(username,role);
+        String refresh = jwtTokenizer.createRefreshToken(username,role);
 
         //RFC 7235 방식
-        response.addHeader("Authorization", "Bearer " + token);
-
+        response.setHeader("Authorization", "Bearer " + access);
+        response.addCookie(createCookie("refresh", refresh));
+        response.setStatus(HttpStatus.OK.value());
     }
 
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
         //로그인 실패시 실행되는 함수
         response.setStatus(401);
+    }
+
+    private Cookie createCookie(String key, String value) {
+
+        Cookie cookie = new Cookie(key, value);
+        cookie.setMaxAge(24*60*60);
+        //cookie.setSecure(true); https 적용시 사용
+        //cookie.setPath("/");
+        cookie.setHttpOnly(true); //js로 접근못하게 설정
+
+        return cookie;
     }
 }

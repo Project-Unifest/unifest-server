@@ -4,9 +4,9 @@ import UniFest.exception.UnifestCustomException;
 import org.springframework.http.HttpStatus;
 
 public class TokenNotValidateException extends UnifestCustomException {
-    private static String message = "유효하지 않은 토큰입니다.";
-    public TokenNotValidateException(String text)
+
+    public TokenNotValidateException()
     {
-        super(HttpStatus.NOT_ACCEPTABLE, String.format("%s - 사유 : %s", message, text), 2000);
+        super(HttpStatus.NOT_ACCEPTABLE, "유효하지 않은 토큰입니다.", 2001);
     }
 }

@@ -1,6 +1,8 @@
 package UniFest.security.filter;
 
+import UniFest.exception.jwt.TokenExpiredException;
 import UniFest.exception.jwt.TokenNotValidateException;
+import UniFest.exception.jwt.TokenSignatureException;
 import UniFest.security.jwt.JwtTokenizer;
 import UniFest.security.userdetails.MemberDetails;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -31,17 +33,17 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
             setAuthToContextHolder(accessToken);
             filterChain.doFilter(request,response);
         } catch (SignatureException e) {
-            throw new TokenNotValidateException("JWT 시그니처 정보가 잘못되었습니다.");
+            throw new TokenSignatureException();
         } catch (ExpiredJwtException e) {
-            throw new TokenNotValidateException("JWT 유효기한이 만료되었습니다.");
+            throw new TokenExpiredException();
         } catch (Exception e) {
-            throw new TokenNotValidateException("JWT 토큰을 검증하는 데 실패하였습니다.");
+            throw new TokenNotValidateException();
         }
     }
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
         return headerNotValidate(request) || isLoginLogoutRequest(request) ||
-                isSignUpRequest(request);
+                isSignUpRequest(request) || isRefreshRequest(request);
     }
 
     private void setAuthToContextHolder(String accessToken) {
@@ -71,8 +73,9 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
                 request.getMethod().equalsIgnoreCase("POST");
     }
 
-//    private boolean isRefreshRequest(HttpServletRequest request) {
-//        return request.getRequestURI().contains("/auth/reissue");
-//    }
+    private boolean isRefreshRequest(HttpServletRequest request) {
+        //TODO 추후 리프레시를 이용한 액세스토큰 재발급 API
+        return request.getRequestURI().contains("/auth/reissue");
+    }
 
 }
