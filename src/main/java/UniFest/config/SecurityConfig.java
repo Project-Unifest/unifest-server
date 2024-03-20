@@ -1,9 +1,9 @@
 package UniFest.config;
 
-import UniFest.security.filter.JwtAuthenticationFilter;
+import UniFest.security.filter.LoginFilter;
 import UniFest.security.filter.JwtExceptionFilter;
 import UniFest.security.filter.JwtVerificationFilter;
-import UniFest.security.jwt.JWTUtil;
+import UniFest.security.jwt.JwtTokenizer;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -28,17 +28,10 @@ import java.util.Collections;
 public class SecurityConfig{
 
     private final AuthenticationConfiguration authenticationConfiguration;
-    private final JWTUtil jwtUtil;
+    private final JwtTokenizer jwtTokenizer;
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
-        /**
-         * cors 설정
-         * httpbasic 비활성화 -> jwt 사용
-         * csrf 비활성화 -> restApi 사용하기때문에 stateless
-         * authorizeHttpRequests -> 요청에 대해 authorize하는 것
-         * requestMatchers -> 어디로 들어오는 요청인지, 뒤에 어떻게 처리할것인지, permitAll 또는 anyRequest, authenticated
-         * sessionManagement() -> sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-         */
+        //cors 설정
         http
                 .cors((cors) -> cors.configurationSource(new CorsConfigurationSource() {
                     @Override
@@ -54,27 +47,29 @@ public class SecurityConfig{
                         return configuration;
                     }
                 }));
-
+        //csrf 비활성화
         http
                 .csrf((auth) -> auth.disable());
+        //폼로그인 비활성화
         http
                 .formLogin((auth) -> auth.disable());
+        //http basic 비활성화
         http
                 .httpBasic((auth -> auth.disable()));
+        //경로별 인가작업
         http
                 .authorizeHttpRequests((auth) -> auth
                         .requestMatchers("/admin").hasRole("ADMIN")
                         .anyRequest().permitAll());
 
-        http.addFilterBefore(new JwtExceptionFilter(), UsernamePasswordAuthenticationFilter.class);
-        http.addFilterBefore(new JwtVerificationFilter(jwtUtil), JwtAuthenticationFilter.class);
-        http.addFilterAt(new JwtAuthenticationFilter(authenticationManager(authenticationConfiguration),jwtUtil)
-                , UsernamePasswordAuthenticationFilter.class);
-
-
         //jwt에서 세션 stateless
         http
                 .sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+        //필터 설정
+        http.addFilterBefore(new JwtExceptionFilter(), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(new JwtVerificationFilter(jwtTokenizer), LoginFilter.class);
+        http.addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtTokenizer)
+                , UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

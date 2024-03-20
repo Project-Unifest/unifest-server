@@ -1,7 +1,7 @@
 package UniFest.security.filter;
 
 import UniFest.dto.request.auth.LoginRequest;
-import UniFest.security.jwt.JWTUtil;
+import UniFest.security.jwt.JwtTokenizer;
 import UniFest.security.userdetails.MemberDetails;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
@@ -24,16 +24,12 @@ import java.util.Iterator;
 
 @RequiredArgsConstructor
 @Slf4j
-public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
+public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     // 로그인 요청받는다
     // 폼로그인 비활성화 -> UsernamePasswordAuthenticationFilter 상속받은 필터 직접 작성
 
-
     private final AuthenticationManager authenticationManager;
-    private final JWTUtil jwtUtil;
-
-
-
+    private final JwtTokenizer jwtTokenizer;
 
     @SneakyThrows
     @Override
@@ -42,9 +38,11 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         ObjectMapper objectMapper = new ObjectMapper();
         LoginRequest loginRequest = objectMapper.readValue(request.getInputStream(), LoginRequest.class);
 
+        //요청에서 username, password 추출
         String username = loginRequest.getEmail();
         String password = loginRequest.getPassword();
-        log.info("username : {}", username);
+
+        //UsernamePasswordAuthenticationToken 생성
         UsernamePasswordAuthenticationToken authenticationToken
                 = new UsernamePasswordAuthenticationToken(username, password, null);
 
@@ -57,18 +55,15 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) throws IOException, ServletException {
         //로그인 성공시 실행되는 함수 -> jwt 발급
         MemberDetails memberDetails = (MemberDetails) authentication.getPrincipal();
-
-        String username = memberDetails.getUsername(); //email
+        //email 획득
+        String username = memberDetails.getUsername();
 
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
         GrantedAuthority auth = iterator.next();
-
         String role = auth.getAuthority();
-
-        String token = jwtUtil.createJwt(username,role);
-
-        // System.out.println(role +" " +  role.getClass());
+        //여기서 role은 ROLE_XXXX 형태
+        String token = jwtTokenizer.createJwt(username,role);
 
         //RFC 7235 방식
         response.addHeader("Authorization", "Bearer " + token);

@@ -18,7 +18,6 @@ public class MemberDetails implements UserDetails {
     private String role;
 
     public MemberDetails(String email, String password, String role){
-
         this.email = email;
         this.password = password;
         this.role = role;
@@ -33,8 +32,8 @@ public class MemberDetails implements UserDetails {
     }
 
     private Collection<? extends GrantedAuthority> createAuthorities(String role) {
-        if (role.equals("NORMAL") || role.equals("ROLE_NORMAL")) return NORMAL_ROLES;
-        else if (role.equals("ADMIN") || role.equals("ROLE_ADMIN")) return ADMIN_ROLES;
+        if (role.equals("NORMAL") ) return NORMAL_ROLES;
+        else if (role.equals("ADMIN")) return ADMIN_ROLES;
         else return VERIFIED_ROLES;
     }
 

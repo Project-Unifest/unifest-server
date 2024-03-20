@@ -1,8 +1,7 @@
 package UniFest.security.filter;
 
-import UniFest.domain.member.entity.Member;
 import UniFest.exception.jwt.TokenNotValidateException;
-import UniFest.security.jwt.JWTUtil;
+import UniFest.security.jwt.JwtTokenizer;
 import UniFest.security.userdetails.MemberDetails;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.security.SignatureException;
@@ -22,7 +21,7 @@ import java.io.IOException;
 public class JwtVerificationFilter extends OncePerRequestFilter {
     //jwt를 검증하는 필터
 
-    private final JWTUtil jwtUtil;
+    private final JwtTokenizer jwtTokenizer;
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
@@ -46,10 +45,12 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
     }
 
     private void setAuthToContextHolder(String accessToken) {
-        String username = jwtUtil.getUsername(accessToken);
-        String role = jwtUtil.getRole(accessToken);
-
-        MemberDetails memberDetails = new MemberDetails(username,"temppassword",role);
+        String username = jwtTokenizer.getUsername(accessToken);
+        String role = jwtTokenizer.getRole(accessToken);
+        //현재 role 은 ROLE_XXXX 형태
+        //포맷 바꿔서 저장
+        String roleValue = role.replace("ROLE_", "");
+        MemberDetails memberDetails = new MemberDetails(username,"temppassword",roleValue);
         Authentication authToken = new UsernamePasswordAuthenticationToken(memberDetails, null, memberDetails.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authToken);
     }

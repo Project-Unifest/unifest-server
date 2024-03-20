@@ -23,6 +23,10 @@ public class MemberService {
         verifyExistsEmail(request.getEmail());
         String encryptedPassword = bCryptPasswordEncoder.encode(request.getPassword());
 
+        //if(request.getEmail.equals("총학아이디"){
+        // TODO 권한 ADIMN 부여
+        // }
+
         Member member = Member.builder()
                 .email(request.getEmail())
                 .password(encryptedPassword)

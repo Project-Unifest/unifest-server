@@ -37,6 +37,7 @@ public class Member extends BaseEntity {
     @Enumerated(value = EnumType.STRING)
     @Column(name = "member_role",nullable = false)
     private MemberRole memberRole = MemberRole.NORMAL;
+
     @Builder
     public Member(String email, String password , String assign, String phoneNum, MemberRole memberRole){
         this.email = email;
