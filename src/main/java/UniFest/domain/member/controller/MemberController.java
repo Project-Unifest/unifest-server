@@ -4,6 +4,7 @@ import UniFest.domain.member.service.MemberService;
 import UniFest.dto.request.member.MemberSignUpRequest;
 import UniFest.dto.response.Response;
 import UniFest.security.userdetails.MemberDetails;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -23,7 +24,7 @@ public class MemberController {
         Long savedId = memberService.createMember(memberSignUpRequest);
         return Response.ofSuccess("OK",savedId);
     }
-
+    @SecurityRequirement(name = "JWT")
     @GetMapping("info")
     public String testMember(@AuthenticationPrincipal MemberDetails memberDetails){
         return memberDetails.getEmail() + "\n" + memberDetails.getRole() +
