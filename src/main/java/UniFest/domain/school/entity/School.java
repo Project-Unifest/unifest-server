@@ -32,5 +32,4 @@ public class School extends BaseEntity {
     @OneToMany(mappedBy = "school", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Festival> festivalList = new ArrayList<>();
 
-
 }

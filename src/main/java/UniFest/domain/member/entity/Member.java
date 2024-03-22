@@ -3,11 +3,15 @@ package UniFest.domain.member.entity;
 import UniFest.domain.audit.BaseEntity;
 import UniFest.domain.booth.entity.Booth;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
 @Table(name = "member")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,12 +28,29 @@ public class Member extends BaseEntity {
     @JoinColumn(name = "booth_id")
     private Booth booth;
 
-    //TODO 역할이 운영자와 부스등록자 2가지?
-    private String role;
+    private String club;
+
+    private String phoneNum;
 
     private boolean isChecked;
 
+    @Enumerated(value = EnumType.STRING)
+    @Column(name = "member_role",nullable = false)
+    private MemberRole memberRole = MemberRole.NORMAL;
 
+    @Builder
+    public Member(String email, String password , String club, String phoneNum, MemberRole memberRole){
+        this.email = email;
+        this.password = password;
+        this.club = club;
+        this.phoneNum = phoneNum;
+        this.memberRole = memberRole;
+
+    }
+
+    public void updateRole(MemberRole role){
+        this.memberRole = role;
+    }
 
 
 }

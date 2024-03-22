@@ -4,7 +4,6 @@ import UniFest.domain.audit.BaseEntity;
 import UniFest.domain.festival.entity.Festival;
 import UniFest.domain.likes.entity.Likes;
 import UniFest.domain.menu.entity.Menu;
-import UniFest.domain.waiting.entity.Waiting;
 import jakarta.persistence.*;
 import lombok.Getter;
 
@@ -55,9 +54,6 @@ public class Booth extends BaseEntity {
 
     @OneToMany(mappedBy = "booth")
     private List<Menu> menuList = new ArrayList<>();
-
-    @OneToMany(mappedBy = "booth")
-    private List<Waiting> waitingList = new ArrayList<>();
 
     private float latitude;
 

@@ -10,9 +10,24 @@ spring:
   jpa:
     show-sql: true
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
       format_sql: true
       default_batch_fetch_size: 1000
+
+springdoc:
+  default-consumes-media-type: application/json
+  default-produces-media-type: application/json
+  swagger-ui:
+    path: /swagger-ui.html
+    disable-swagger-default-url: true
+    display-request-duration: true
+    operations-sorter: alpha
+    tags-sorter: alpha
+jwt:
+  secret: ${JWT_SECRETKEY}
+  access-token-expiration-minutes: 300000
+  refresh-token-expiration-minutes: 10080
 server:
   port: 8080
+
 
