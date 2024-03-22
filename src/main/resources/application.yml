@@ -13,6 +13,7 @@ spring:
       ddl-auto: none
       format_sql: true
       default_batch_fetch_size: 1000
+
 springdoc:
   default-consumes-media-type: application/json
   default-produces-media-type: application/json

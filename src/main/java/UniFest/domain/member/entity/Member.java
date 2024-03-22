@@ -28,7 +28,7 @@ public class Member extends BaseEntity {
     @JoinColumn(name = "booth_id")
     private Booth booth;
 
-    private String assign;
+    private String club;
 
     private String phoneNum;
 
@@ -39,10 +39,10 @@ public class Member extends BaseEntity {
     private MemberRole memberRole = MemberRole.NORMAL;
 
     @Builder
-    public Member(String email, String password , String assign, String phoneNum, MemberRole memberRole){
+    public Member(String email, String password , String club, String phoneNum, MemberRole memberRole){
         this.email = email;
         this.password = password;
-        this.assign = assign;
+        this.club = club;
         this.phoneNum = phoneNum;
         this.memberRole = memberRole;
 

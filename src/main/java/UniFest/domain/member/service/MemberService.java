@@ -30,7 +30,7 @@ public class MemberService {
         Member member = Member.builder()
                 .email(request.getEmail())
                 .password(encryptedPassword)
-                .assign(request.getAssign())
+                .club(request.getClub())
                 .phoneNum(request.getPhoneNum())
                 .build();
 
