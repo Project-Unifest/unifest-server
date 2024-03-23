@@ -10,7 +10,7 @@ spring:
   jpa:
     show-sql: true
     hibernate:
-      ddl-auto: create
+      ddl-auto: none
       format_sql: true
       default_batch_fetch_size: 1000
 
@@ -29,5 +29,17 @@ jwt:
   refresh-token-expiration-minutes: 10080
 server:
   port: 8080
+# S3
+cloud:
+  aws:
+    credentials:
+      accessKey: ${S3_ACCESS}
+      secretKey: ${S3_SECRET}
+    s3:
+      bucket: ${UNIFEST_BUCKET}
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false
 
 
