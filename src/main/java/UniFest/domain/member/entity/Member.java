@@ -2,11 +2,15 @@ package UniFest.domain.member.entity;
 
 import UniFest.domain.audit.BaseEntity;
 import UniFest.domain.booth.entity.Booth;
+import UniFest.domain.waiting.entity.Waiting;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Entity
@@ -24,15 +28,12 @@ public class Member extends BaseEntity {
     @Column(name = "password", nullable = false, length = 400)
     private String password;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "booth_id")
-    private Booth booth;
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Booth> boothList = new ArrayList<>();
 
     private String club;
 
     private String phoneNum;
-
-    private boolean isChecked;
 
     @Enumerated(value = EnumType.STRING)
     @Column(name = "member_role",nullable = false)

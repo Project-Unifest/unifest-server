@@ -60,6 +60,7 @@ public class SecurityConfig{
         http
                 .authorizeHttpRequests((auth) -> auth
                         .requestMatchers("/admin").hasRole("ADMIN")
+                        .requestMatchers("/api/booths").hasAnyRole("ADMIN","VERIFIED")
                         .anyRequest().permitAll());
 
         //jwt에서 세션 stateless

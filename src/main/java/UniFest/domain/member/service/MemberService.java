@@ -1,6 +1,7 @@
 package UniFest.domain.member.service;
 
 import UniFest.domain.member.entity.Member;
+import UniFest.domain.member.entity.MemberRole;
 import UniFest.domain.member.repository.MemberRepository;
 import UniFest.dto.request.member.MemberSignUpRequest;
 import UniFest.exception.member.MemberEmailExistException;
@@ -32,6 +33,7 @@ public class MemberService {
                 .password(encryptedPassword)
                 .club(request.getClub())
                 .phoneNum(request.getPhoneNum())
+                .memberRole(MemberRole.NORMAL)
                 .build();
 
         return memberRepository.save(member).getId();
