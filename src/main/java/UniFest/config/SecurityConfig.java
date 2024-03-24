@@ -12,6 +12,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -47,6 +48,15 @@ public class SecurityConfig{
                         return configuration;
                     }
                 }));
+        // frameOption 비활성화 -> h2접속 설정
+        http
+                .headers(
+                        headersConfigurer ->
+                                headersConfigurer
+                                        .frameOptions(
+                                                HeadersConfigurer.FrameOptionsConfig::sameOrigin
+                                        )
+                );
         //csrf 비활성화
         http
                 .csrf((auth) -> auth.disable());
@@ -61,11 +71,14 @@ public class SecurityConfig{
                 .authorizeHttpRequests((auth) -> auth
                         .requestMatchers("/admin").hasRole("ADMIN")
                         .requestMatchers("/api/booths").hasAnyRole("ADMIN","VERIFIED")
+                        //h2접속 설정
+                        .requestMatchers("/h2-console/*", "/favicon.ico").permitAll()
                         .anyRequest().permitAll());
 
         //jwt에서 세션 stateless
         http
                 .sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+
         //필터 설정
         http.addFilterBefore(new JwtExceptionFilter(), UsernamePasswordAuthenticationFilter.class);
         http.addFilterBefore(new JwtVerificationFilter(jwtTokenizer), LoginFilter.class);
