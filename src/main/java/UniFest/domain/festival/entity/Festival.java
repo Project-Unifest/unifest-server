@@ -4,6 +4,7 @@ import UniFest.domain.audit.BaseEntity;
 import UniFest.domain.school.entity.School;
 import UniFest.domain.star.entity.Enroll;
 import jakarta.persistence.*;
+import java.time.LocalDate;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
@@ -34,9 +35,9 @@ public class Festival extends BaseEntity {
     @OneToMany(mappedBy = "festival")
     private List<Enroll> enrollList = new ArrayList<>();
 
-    private LocalDateTime beginDate;
+    private LocalDate beginDate;
 
-    private LocalDateTime endDate;
+    private LocalDate endDate;
 
     public void setSchool(School school){
         this.school = school;
