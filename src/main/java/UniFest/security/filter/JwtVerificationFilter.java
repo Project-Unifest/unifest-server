@@ -44,6 +44,7 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
         return headerNotValidate(request) || isLoginLogoutRequest(request) ||
                 isSignUpRequest(request) || isRefreshRequest(request);
+
     }
 
     private void setAuthToContextHolder(String accessToken) {
