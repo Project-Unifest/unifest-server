@@ -3,6 +3,7 @@ package UniFest.domain.booth.controller;
 import UniFest.domain.booth.service.BoothService;
 import UniFest.dto.request.booth.BoothCreateRequest;
 import UniFest.dto.response.Response;
+import UniFest.dto.response.booth.BoothResponse;
 import UniFest.security.userdetails.MemberDetails;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -18,7 +19,7 @@ public class BoothController {
 
     private final BoothService boothService;
     //부스 등록
-    @SecurityRequirement(name = "JWT")
+    //@SecurityRequirement(name = "JWT")
     @Operation(summary = "부스 생성")
     @PostMapping
     public Response postBooth(@Valid @RequestBody BoothCreateRequest boothCreateRequest,
@@ -26,12 +27,20 @@ public class BoothController {
         Long savedId = boothService.createBooth(boothCreateRequest, memberDetails);
         return Response.ofSuccess("OK",savedId);
     }
-    //부스 조회
-//    @Operation(summary = "부스 조회")
-//    @GetMapping("/{booth-id}")
-//    public Response getBooth(@PathVariable("course-id") Long boothId) {
-//        BoothResponse findBooth = boothService.getBooth(boothId);
-//        return Response.ofSuccess("OK", findBooth);
-//    }
+
+    @Operation(summary = "특정부스 조회")
+    @GetMapping("/{booth-id}")
+    public Response getBooth(@PathVariable("booth-id") Long boothId) {
+        BoothResponse findBooth = boothService.getBooth(boothId);
+        return Response.ofSuccess("OK", findBooth);
+    }
+
+
+    @Operation(summary = "전체부스 조회")
+    @GetMapping
+    public Response getBooths() {
+
+        return Response.ofSuccess("OK", null);
+    }
 
 }
