@@ -17,6 +17,8 @@ public class Menu {
 
     private int price;
 
+    private String imgUrl;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "booth_id")
     private Booth booth;
