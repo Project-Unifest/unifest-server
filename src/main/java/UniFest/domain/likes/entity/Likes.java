@@ -3,11 +3,15 @@ package UniFest.domain.likes.entity;
 import UniFest.domain.audit.BaseEntity;
 import UniFest.domain.booth.entity.Booth;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
 @Table(name = "likes")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Likes extends BaseEntity {
 
     @Id
@@ -21,7 +25,12 @@ public class Likes extends BaseEntity {
 
     private String token; //client구분 key
 
+    @Builder
+    public Likes(Booth booth, String token){
+        this.booth = booth;
+        this.token = token;
 
+    }
 
 
 }
