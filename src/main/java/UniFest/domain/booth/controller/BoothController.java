@@ -19,7 +19,7 @@ public class BoothController {
 
     private final BoothService boothService;
     //부스 등록
-    //@SecurityRequirement(name = "JWT")
+    @SecurityRequirement(name = "JWT")
     @Operation(summary = "부스 생성")
     @PostMapping
     public Response postBooth(@Valid @RequestBody BoothCreateRequest boothCreateRequest,
@@ -42,5 +42,4 @@ public class BoothController {
 
         return Response.ofSuccess("OK", null);
     }
-
 }

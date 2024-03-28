@@ -13,8 +13,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
-
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -25,7 +23,7 @@ public class BoothService {
 
     @Transactional
     public Long createBooth(BoothCreateRequest boothCreateRequest, MemberDetails memberDetails) {
-        //Member member = memberRepository.findByEmail(memberDetails.getEmail()).orElseThrow(MemberNotFoundException::new);
+        Member member = memberRepository.findByEmail(memberDetails.getEmail()).orElseThrow(MemberNotFoundException::new);
         Booth booth = Booth.builder()
                 .description(boothCreateRequest.getDescription())
                 .detail(boothCreateRequest.getDetail())
@@ -38,7 +36,7 @@ public class BoothService {
                 .name(boothCreateRequest.getName())
                 //TODO festival 추가
                 .build();
-        //booth.setMember(member);
+        booth.setMember(member);
         return boothRepository.save(booth).getId();
     }
 
