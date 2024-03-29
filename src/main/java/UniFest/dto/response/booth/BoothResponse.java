@@ -19,7 +19,7 @@ public class BoothResponse {
 
     private float latitude;
 
-    private float longtitude;
+    private float longitude;
 
     public BoothResponse(Booth booth){
         this.id = booth.getId();
@@ -29,7 +29,7 @@ public class BoothResponse {
         this.thumbnail = booth.getThumbnail();
         this.location = booth.getLocation();
         this.latitude = booth.getLatitude();
-        this.longtitude = booth.getLongtitude();
+        this.longitude = booth.getLongitude();
     }
 
 }

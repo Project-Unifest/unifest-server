@@ -38,7 +38,7 @@ public class BoothService {
                 .detail(boothCreateRequest.getDetail())
                 .enabled(true)
                 .latitude(boothCreateRequest.getLatitude())
-                .longtitude(boothCreateRequest.getLongtitude())
+                .longitude(boothCreateRequest.getLongitude())
                 .warning(boothCreateRequest.getWarning())
                 .category(boothCreateRequest.getCategory())
                 .thumbnail(boothCreateRequest.getThumbnail())

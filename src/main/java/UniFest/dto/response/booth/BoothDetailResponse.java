@@ -28,7 +28,7 @@ public class BoothDetailResponse {
 
     private float latitude;
 
-    private float longtitude;
+    private float longitude;
 
     private List<MenuResponse> menus;
 
@@ -42,7 +42,7 @@ public class BoothDetailResponse {
         //this.likes = booth.getLikesList().size();
         this.location = booth.getLocation();
         this.latitude = booth.getLatitude();
-        this.longtitude = booth.getLongtitude();
+        this.longitude = booth.getLongitude();
         this.menus = booth.getMenuList().stream().map(MenuResponse::new).collect(Collectors.toList());
     }
 

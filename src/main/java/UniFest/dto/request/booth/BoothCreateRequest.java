@@ -23,6 +23,6 @@ public class BoothCreateRequest {
     @NotNull(message = "공백일 수 없습니다.")
     private float latitude;
     @NotNull(message = "공백일 수 없습니다.")
-    private float longtitude;
+    private float longitude;
 
 }

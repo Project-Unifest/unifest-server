@@ -32,7 +32,7 @@ public class BoothServiceTest {
 //    @DisplayName("부스 생성")
 //    void createBooth() {
 //        BoothCreateRequest.builder().category("주점")
-//                .name("부부스").isEnabled(true).latitude(10.0f).longtitude(10.0f).festivalId(1L)
+//                .name("부부스").isEnabled(true).latitude(10.0f).longitude(10.0f).festivalId(1L)
 //                                                .
 //    }
 //    @Test

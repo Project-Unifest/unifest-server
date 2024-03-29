@@ -71,11 +71,11 @@ public class Booth extends BaseEntity {
 
     private float latitude;
 
-    private float longtitude;
+    private float longitude;
 
     @Builder
     public Booth(String name, String category, String description, String detail, String thumbnail,
-                 String warning, boolean enabled, String location, float latitude, float longtitude, Festival festival) {
+                 String warning, boolean enabled, String location, float latitude, float longitude, Festival festival) {
         this.name = name;
         this.category = category;
         this.description = description;
@@ -85,7 +85,7 @@ public class Booth extends BaseEntity {
         this.enabled = enabled;
         this.location = location;
         this.latitude = latitude;
-        this.longtitude = longtitude;
+        this.longitude = longitude;
         this.festival = festival;
     }
 
