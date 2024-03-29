@@ -29,6 +29,10 @@ public class JwtTokenizer {
         this.refreshTokenExpirationMinutes = refreshTokenExpirationMinutes;
     }
 
+    public Long getUserId(String token){
+        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("memberId", Long.class);
+    }
+
     public String getUsername(String token) {
 
         return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("username", String.class);
@@ -44,10 +48,11 @@ public class JwtTokenizer {
         return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("category", String.class);
     }
 
-    public String createAccessToken(String username, String role) {
+    public String createAccessToken(Long memberId,String username, String role) {
 
         return Jwts.builder()
                 .claim("category", "access")
+                .claim("memberId", memberId)
                 .claim("username", username)
                 .claim("role", role)
                 .issuedAt(new Date(System.currentTimeMillis()))

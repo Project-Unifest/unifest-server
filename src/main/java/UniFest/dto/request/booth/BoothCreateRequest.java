@@ -2,12 +2,12 @@ package UniFest.dto.request.booth;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.Builder;
 import lombok.Data;
 
 
 @Data
 public class BoothCreateRequest {
-
 
     @NotBlank(message = "공백일 수 없습니다.")
     private String name;
@@ -24,4 +24,5 @@ public class BoothCreateRequest {
     private float latitude;
     @NotNull(message = "공백일 수 없습니다.")
     private float longtitude;
+
 }

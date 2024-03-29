@@ -6,7 +6,7 @@ import UniFest.domain.festival.entity.Festival;
 import UniFest.domain.festival.repository.FestivalRepository;
 import UniFest.domain.likes.entity.Likes;
 import UniFest.domain.likes.repository.LikesRepository;
-import UniFest.dto.response.booth.BoothResponse;
+import UniFest.dto.response.booth.BoothDetailResponse;
 import UniFest.exception.booth.BoothNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -47,17 +47,6 @@ public class LikesService {
         }
          return retId;
     }
-    @Transactional
-    public List<BoothResponse> getTrendingBooths(Long festivalId){
-        Festival festival = festivalRepository.findById(festivalId).orElseThrow();
-        List<BoothResponse> boothResponseList = new ArrayList<>();
-        List<Booth> boothList = boothRepository.findTop5ByFestivalOrderByLikesListSizeDesc(festival);
 
-        for(Booth booth : boothList){
-            boothResponseList.add(new BoothResponse(booth));
-        }
-
-        return  boothResponseList;
-    }
 
 }

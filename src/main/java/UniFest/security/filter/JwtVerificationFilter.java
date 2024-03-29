@@ -48,12 +48,13 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
     }
 
     private void setAuthToContextHolder(String accessToken) {
+        Long memberId = jwtTokenizer.getUserId(accessToken);
         String username = jwtTokenizer.getUsername(accessToken);
         String role = jwtTokenizer.getRole(accessToken);
         //현재 role 은 ROLE_XXXX 형태
         //포맷 바꿔서 저장
         String roleValue = role.replace("ROLE_", "");
-        MemberDetails memberDetails = new MemberDetails(username,"temppassword",roleValue);
+        MemberDetails memberDetails = new MemberDetails(memberId,username,"temppassword",roleValue);
         Authentication authToken = new UsernamePasswordAuthenticationToken(memberDetails, null, memberDetails.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authToken);
     }

@@ -52,8 +52,8 @@ public class Booth extends BaseEntity {
     @Column(name = "warning", length = 100)
     private String warning;
 
-    @Column(name = "is_enabled")
-    private boolean isEnabled = true;
+    @Column(name = "enabled")
+    private boolean enabled = true;
 
     @OneToMany(mappedBy = "booth", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Image> lmgList = new ArrayList<>();
@@ -67,27 +67,30 @@ public class Booth extends BaseEntity {
     @OneToMany(mappedBy = "booth", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Waiting> waitingList = new ArrayList<>();
 
+    private String location;
+
     private float latitude;
 
     private float longtitude;
 
     @Builder
     public Booth(String name, String category, String description, String detail, String thumbnail,
-                 String warning, boolean isEnabled, float latitude, float longtitude, Festival festival) {
+                 String warning, boolean enabled, String location, float latitude, float longtitude, Festival festival) {
         this.name = name;
         this.category = category;
         this.description = description;
         this.detail = detail;
         this.thumbnail = thumbnail;
         this.warning = warning;
-        this.isEnabled = isEnabled;
+        this.enabled = enabled;
+        this.location = location;
         this.latitude = latitude;
         this.longtitude = longtitude;
         this.festival = festival;
     }
 
     public void setIsEnabled(boolean isEnabled){
-        this.isEnabled = isEnabled;
+        this.enabled = isEnabled;
     }
 
     public void setMember(Member member){
