@@ -14,4 +14,8 @@ public class Response<T> {
     public static <T> Response<T> ofSuccess(String message, T data) {
         return new Response<>("200", message, data);
     }
+
+    public static <T> Response<T> ofCreated(String message, T data) {
+        return new Response<>("201", message, data);
+    }
 }
