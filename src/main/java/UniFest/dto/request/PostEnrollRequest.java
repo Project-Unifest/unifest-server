@@ -1,7 +1,5 @@
 package UniFest.dto.request;
 
-import UniFest.domain.festival.entity.Festival;
-import UniFest.domain.star.entity.Star;
 import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

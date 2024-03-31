@@ -7,7 +7,6 @@ import java.time.LocalDate;
 import lombok.AccessLevel;
 import lombok.Getter;
 
-import java.time.LocalDateTime;
 import lombok.NoArgsConstructor;
 
 @Getter
