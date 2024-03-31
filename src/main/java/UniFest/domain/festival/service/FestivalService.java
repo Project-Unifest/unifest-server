@@ -81,6 +81,7 @@ public class FestivalService {
         return festivalInfo;
     }
 
+    @Transactional
     public Long createFestival(PostFestivalRequest request) {
         log.debug("[FestivalService.postFestival]");
 
