@@ -29,6 +29,16 @@ public class School extends BaseEntity {
 
     private float longitude;
 
+    public School(String name, String region, String address, String thumbnail, float latitude,
+            float longitude) {
+        this.name = name;
+        this.region = region;
+        this.address = address;
+        this.thumbnail = thumbnail;
+        this.latitude = latitude;
+        this.longitude = longitude;
+    }
+
     @OneToMany(mappedBy = "school", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Festival> festivalList = new ArrayList<>();
 
