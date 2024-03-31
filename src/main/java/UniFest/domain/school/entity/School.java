@@ -3,14 +3,17 @@ package UniFest.domain.school.entity;
 import UniFest.domain.audit.BaseEntity;
 import UniFest.domain.festival.entity.Festival;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
+import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
 @Table(name = "school")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class School extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
