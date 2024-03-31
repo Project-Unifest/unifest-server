@@ -59,13 +59,15 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         MemberDetails memberDetails = (MemberDetails) authentication.getPrincipal();
         //email 획득
         String username = memberDetails.getUsername();
+        //id 획득
+        Long memberId = memberDetails.getMemberId();
 
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
         GrantedAuthority auth = iterator.next();
         String role = auth.getAuthority();
         //여기서 role은 ROLE_XXXX 형태
-        String access = jwtTokenizer.createAccessToken(username,role);
+        String access = jwtTokenizer.createAccessToken(memberId,username,role);
         String refresh = jwtTokenizer.createRefreshToken(username,role);
 
         //RFC 7235 방식

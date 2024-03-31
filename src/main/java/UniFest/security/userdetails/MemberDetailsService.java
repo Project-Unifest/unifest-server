@@ -20,6 +20,6 @@ public class MemberDetailsService implements UserDetailsService {
         Member findMember = memberRepository.findByEmail(username)
                 .orElseThrow(() -> new MemberNotFoundException());
         //TODO 추후 최근접속일, 멤버 탈퇴 등 로직 고려해서 추가
-        return new MemberDetails(findMember.getEmail(), findMember.getPassword(),findMember.getMemberRole().getValue());
+        return new MemberDetails(findMember.getId(),findMember.getEmail(), findMember.getPassword(),findMember.getMemberRole().getValue());
     }
 }

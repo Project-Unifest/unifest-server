@@ -12,12 +12,13 @@ import java.util.List;
 
 @Getter
 public class MemberDetails implements UserDetails {
-
+    private Long memberId;
     private String email;
     private String password;
     private String role;
 
-    public MemberDetails(String email, String password, String role){
+    public MemberDetails(Long memberId,String email, String password, String role){
+        this.memberId = memberId;
         this.email = email;
         this.password = password;
         this.role = role;
