@@ -28,6 +28,6 @@ public class SchoolController {
                 request.getAddress(), request.getThumbnail(),
                 request.getLatitude(), request.getLongitude()
         );
-        return Response.ofSuccess("Created", schoolRepository.save(school).getId());
+        return Response.ofCreated("Created", schoolRepository.save(school).getId());
     }
 }

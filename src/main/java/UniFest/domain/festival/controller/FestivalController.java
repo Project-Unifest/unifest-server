@@ -68,6 +68,6 @@ public class FestivalController {
     public Response<Long> postFestival(@RequestBody PostFestivalRequest request) {
         log.debug("[FestivalController.postFestival]");
 
-        return Response.ofSuccess("Created", festivalService.createFestival(request));
+        return Response.ofCreated("Created", festivalService.createFestival(request));
     }
 }
