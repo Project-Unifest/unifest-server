@@ -54,4 +54,15 @@ public class FestivalService {
         return festivalRepository.findFestivalByDate(date);
     }
 
+    public Long createFestival(PostFestivalRequest request) {
+        log.debug("[FestivalService.postFestival]");
+
+        School school = schoolRepository.findById(request.getSchoolId())
+                .orElseThrow(SchoolNotFoundException::new);
+
+        Festival festival = new Festival(request.getName(), request.getDescription(),
+                request.getThumbnail(), school, request.getBeginDate(), request.getEndDate());
+
+        return festivalRepository.save(festival).getId();
+    }
 }

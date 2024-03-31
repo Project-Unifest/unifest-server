@@ -59,4 +59,11 @@ public class FestivalController {
 
         return Response.ofSuccess("OK", festivalService.getFestivalByDate(date));
     }
+
+    @PostMapping("")
+    public Response<Long> postFestival(@RequestBody PostFestivalRequest request) {
+        log.debug("[FestivalController.postFestival]");
+
+        return Response.ofSuccess("Created", festivalService.createFestival(request));
+    }
 }
