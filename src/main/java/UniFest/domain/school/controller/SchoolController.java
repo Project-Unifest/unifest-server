@@ -1,4 +1,4 @@
-package UniFest.domain.school.Controller;
+package UniFest.domain.school.controller;
 
 import UniFest.domain.school.entity.School;
 import UniFest.domain.school.repository.SchoolRepository;
