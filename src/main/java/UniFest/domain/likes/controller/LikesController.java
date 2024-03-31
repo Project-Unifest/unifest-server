@@ -3,7 +3,6 @@ package UniFest.domain.likes.controller;
 import UniFest.domain.likes.service.LikesService;
 import UniFest.dto.request.likes.PostLikesRequest;
 import UniFest.dto.response.Response;
-import UniFest.dto.response.booth.BoothDetailResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +15,6 @@ import java.util.List;
 @Slf4j
 @RequestMapping("/api/likes")
 public class LikesController {
-
 
     private final LikesService likesService;
     @Operation(summary = "좋아요 생성")
