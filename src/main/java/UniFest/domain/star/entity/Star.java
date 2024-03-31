@@ -16,4 +16,9 @@ public class Star extends BaseEntity {
     private String name;
 
     private String img;
+
+    public Star(String name, String img) {
+        this.name = name;
+        this.img = img;
+    }
 }
