@@ -3,11 +3,15 @@ package UniFest.domain.festival.controller;
 import UniFest.domain.festival.service.FestivalService;
 import UniFest.dto.response.Response;
 import UniFest.dto.response.festival.FestivalSearchResponse;
+import UniFest.dto.request.festival.PostFestivalRequest;
+import UniFest.dto.response.festival.TodayFestivalInfo;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,7 +29,7 @@ public class FestivalController {
     public Response<List<FestivalSearchResponse>> getFestivalByName(@RequestParam("name") String schoolName) {
         log.debug("[FestivalController.getFestivalByName]");
 
-        return Response.ofSuccess("OK",festivalService.getFestivalByName(schoolName));
+        return Response.ofSuccess("OK", festivalService.getFestivalByName(schoolName));
     }
 
     //전체 검색
@@ -54,7 +58,7 @@ public class FestivalController {
 
     //오늘의 축제일정
     @GetMapping("/today")
-    public Response<List<FestivalSearchResponse>> getFestivalByDate(@RequestParam("date") LocalDate date) {
+    public Response<List<TodayFestivalInfo>> getFestivalByDate(@RequestParam("date") LocalDate date) {
         log.debug("[FestivalController.getFestivalByDate]");
 
         return Response.ofSuccess("OK", festivalService.getFestivalByDate(date));

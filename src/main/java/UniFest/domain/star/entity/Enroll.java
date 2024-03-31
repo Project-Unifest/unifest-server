@@ -3,6 +3,7 @@ package UniFest.domain.star.entity;
 import UniFest.domain.audit.BaseEntity;
 import UniFest.domain.festival.entity.Festival;
 import jakarta.persistence.*;
+import java.time.LocalDate;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
@@ -25,7 +26,7 @@ public class Enroll extends BaseEntity {
     private Star star;
 
     @Column(name = "visit_date")
-    private LocalDateTime visitDate;
+    private LocalDate visitDate;
 
 
 

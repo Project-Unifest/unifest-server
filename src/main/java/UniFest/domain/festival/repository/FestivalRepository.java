@@ -2,6 +2,7 @@ package UniFest.domain.festival.repository;
 
 import UniFest.domain.festival.entity.Festival;
 import UniFest.dto.response.festival.FestivalSearchResponse;
+import UniFest.dto.response.festival.TodayFestivalInfo;
 import java.time.LocalDate;
 import java.util.List;
 import org.springframework.data.domain.Pageable;
@@ -40,9 +41,9 @@ public interface FestivalRepository extends JpaRepository<Festival, Long> {
 
 
     //오늘
-    @Query("select new UniFest.dto.response.festival.FestivalSearchResponse(s.thumbnail, s.name, f.name, f.beginDate, f.endDate, s.latitude, s.longitude)"
+    @Query("select new UniFest.dto.response.festival.TodayFestivalInfo(s.name, f.id, f.name, :date)"
             + " from School s join Festival f on f.school.id=s.id"
             + " where :date between f.beginDate and f.endDate "
             + " order by s.name")
-    List<FestivalSearchResponse> findFestivalByDate(@Param("date") LocalDate date);
+    List<TodayFestivalInfo> findFestivalByDate(@Param("date") LocalDate date);
 }

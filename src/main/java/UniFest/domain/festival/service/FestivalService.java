@@ -1,7 +1,16 @@
 package UniFest.domain.festival.service;
 
+import UniFest.domain.festival.entity.Festival;
 import UniFest.domain.festival.repository.FestivalRepository;
+import UniFest.domain.school.entity.School;
+import UniFest.domain.school.repository.SchoolRepository;
+import UniFest.domain.star.repository.EnrollRepository;
 import UniFest.dto.response.festival.FestivalSearchResponse;
+import UniFest.dto.request.festival.PostFestivalRequest;
+import UniFest.dto.response.festival.TodayFestivalInfo;
+import UniFest.dto.response.star.EnrollInfo;
+import UniFest.dto.response.star.StarInfo;
+import UniFest.exception.SchoolNotFoundException;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +26,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class FestivalService {
 
     private final FestivalRepository festivalRepository;
+    private final SchoolRepository schoolRepository;
+    private final EnrollRepository enrollRepository;
 
     //학교명 검색
     public List<FestivalSearchResponse> getFestivalByName(String schoolName) {
@@ -48,10 +59,26 @@ public class FestivalService {
     }
 
     //오늘의 축제일정
-    public List<FestivalSearchResponse> getFestivalByDate(LocalDate date) {
+    public List<TodayFestivalInfo> getFestivalByDate(LocalDate date) {
         log.debug("[FestivalService.getFestivalByDate]");
 
-        return festivalRepository.findFestivalByDate(date);
+        //축제명, 학교명, 축제id, 당일날짜
+        List<TodayFestivalInfo> festivalInfo = festivalRepository.findFestivalByDate(date);
+        //축제id, 연예인이름 사진
+        List<EnrollInfo> starList = enrollRepository.findByDate(date);
+
+        //TODO 성능개선
+        for(TodayFestivalInfo todayFestivalInfo : festivalInfo) {
+            Long festivalId = todayFestivalInfo.getFestivalId();
+            for (EnrollInfo enrollInfo : starList) {
+                if (enrollInfo.getFestivalId().equals(todayFestivalInfo.getFestivalId())) {
+                    todayFestivalInfo.getStarList().add(new StarInfo(enrollInfo.getStarName(),
+                            enrollInfo.getStarImg()));
+                }
+            }
+        }
+
+        return festivalInfo;
     }
 
     public Long createFestival(PostFestivalRequest request) {
