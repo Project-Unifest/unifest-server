@@ -5,11 +5,11 @@ import lombok.Getter;
 @Getter
 public class FileResponse {
 
-    private String imageUrl;
+    private String imgUrl;
     private String imageName;
 
-    public FileResponse(String imageUrl, String imageName) {
-        this.imageUrl = imageUrl;
+    public FileResponse(String imgUrl, String imageName) {
+        this.imgUrl = imgUrl;
         this.imageName = imageName;
     }
 
