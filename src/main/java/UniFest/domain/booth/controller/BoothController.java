@@ -31,7 +31,7 @@ public class BoothController {
     public Response postBooth(@Valid @RequestBody BoothCreateRequest boothCreateRequest,
                               @AuthenticationPrincipal MemberDetails memberDetails) {
         Long savedId = boothService.createBooth(boothCreateRequest, memberDetails);
-        return Response.ofSuccess("OK",savedId);
+        return Response.ofCreated("OK",savedId);
     }
 
 

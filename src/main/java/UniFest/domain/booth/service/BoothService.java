@@ -17,6 +17,7 @@ import UniFest.exception.member.MemberNotFoundException;
 import UniFest.security.userdetails.MemberDetails;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -57,7 +58,7 @@ public class BoothService {
     }
 
     //value::key의 형태로 redis key 생성
-    @Cacheable(key = "#boothId",value = "BoothInfo" ,cacheManager = "redisCacheManager")
+    @Cacheable(value = "BoothInfo", key = "#boothId",cacheManager = "redisCacheManager")
     public BoothDetailResponse getBooth(Long boothId) {
         log.info("[특정 부스 조회]");
         Booth findBooth = boothRepository.findByBoothId(boothId)
@@ -85,7 +86,10 @@ public class BoothService {
 
         return boothDetailResponseList;
     }
+
+
     @Transactional
+    @CacheEvict(value = "BoothInfo", key = "#boothId")
     public Long updateBooth(BoothPatchRequest boothPatchRequest, MemberDetails memberDetails, Long boothId) {
         Booth findBooth = verifyAuth(memberDetails.getMemberId(), boothId);
         Optional.ofNullable(boothPatchRequest.isEnabled())
@@ -111,6 +115,7 @@ public class BoothService {
         return findBooth.getId();
     }
     @Transactional
+    @CacheEvict(value = "BoothInfo", key = "#boothId")
     public void deleteBooth(MemberDetails memberDetails, Long boothId) {
         Booth findBooth = verifyAuth(memberDetails.getMemberId(), boothId);
         boothRepository.delete(findBooth);
