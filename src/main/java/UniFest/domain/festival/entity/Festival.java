@@ -5,15 +5,17 @@ import UniFest.domain.school.entity.School;
 import UniFest.domain.star.entity.Enroll;
 import jakarta.persistence.*;
 import java.time.LocalDate;
+import lombok.AccessLevel;
 import lombok.Getter;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
 @Table(name = "festival")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Festival extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -44,6 +46,13 @@ public class Festival extends BaseEntity {
         school.getFestivalList().add(this);
     }
 
-
-
+    public Festival(String name, String description, String thumbnail, School school,
+            LocalDate beginDate, LocalDate endDate) {
+        this.name = name;
+        this.description = description;
+        this.thumbnail = thumbnail;
+        this.school = school;
+        this.beginDate = beginDate;
+        this.endDate = endDate;
+    }
 }
