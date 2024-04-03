@@ -45,7 +45,14 @@ public class BoothController {
         return Response.ofSuccess("OK",updatedId);
     }
 
-
+    @SecurityRequirement(name = "JWT")
+    @Operation(summary = "부스 삭제")
+    @DeleteMapping("/{booth-id}")
+    public Response deleteBooth(@AuthenticationPrincipal MemberDetails memberDetails,
+                                @PathVariable("booth-id") Long boothId) {
+        boothService.deleteBooth(memberDetails, boothId);
+        return Response.ofSuccess("OK",null);
+    }
 
     @Operation(summary = "특정부스 조회")
     @GetMapping("/{booth-id}")

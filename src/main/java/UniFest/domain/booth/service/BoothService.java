@@ -87,11 +87,9 @@ public class BoothService {
     }
     @Transactional
     public Long updateBooth(BoothPatchRequest boothPatchRequest, MemberDetails memberDetails, Long boothId) {
-        Booth findBooth = boothRepository.findByBoothId(boothId)
-                .filter(b -> b.isEnabled())
-                .orElseThrow(BoothNotFoundException::new);
-        if(findBooth.getMember().getId() != memberDetails.getMemberId()) throw new NotAuthorizedException();
-
+        Booth findBooth = verifyAuth(memberDetails.getMemberId(), boothId);
+        Optional.ofNullable(boothPatchRequest.isEnabled())
+                .ifPresent(enabled -> findBooth.updateEnabled(enabled));
         Optional.ofNullable(boothPatchRequest.getName())
                 .ifPresent(name -> findBooth.updateName(name));
         Optional.ofNullable(boothPatchRequest.getCategory())
@@ -112,5 +110,16 @@ public class BoothService {
                 .ifPresent(lng -> findBooth.updateLongitude(lng));
         return findBooth.getId();
     }
+    @Transactional
+    public void deleteBooth(MemberDetails memberDetails, Long boothId) {
+        Booth findBooth = verifyAuth(memberDetails.getMemberId(), boothId);
+        boothRepository.delete(findBooth);
+    }
 
+    public Booth verifyAuth(Long memberId, Long boothId){
+        Booth findBooth = boothRepository.findByBoothId(boothId)
+                .orElseThrow(BoothNotFoundException::new);
+        if(findBooth.getMember().getId() != memberId) throw new NotAuthorizedException();
+        return findBooth;
+    }
 }
