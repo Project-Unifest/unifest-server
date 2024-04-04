@@ -55,8 +55,8 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
         //포맷 바꿔서 저장
         String roleValue = role.replace("ROLE_", "");
         MemberDetails memberDetails = new MemberDetails(memberId,username,"temppassword",roleValue);
-        Authentication authToken = new UsernamePasswordAuthenticationToken(memberDetails, null, memberDetails.getAuthorities());
-        SecurityContextHolder.getContext().setAuthentication(authToken);
+        Authentication authentication = new UsernamePasswordAuthenticationToken(memberDetails, null, memberDetails.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 
     private boolean headerNotValidate(HttpServletRequest request) {

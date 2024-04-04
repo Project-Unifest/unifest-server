@@ -61,10 +61,9 @@ public class JwtTokenizer {
                 .compact();
     }
 
-    public String createRefreshToken(String username, String role) {
-        //TODO 리프레시에 claim 담아야하나?
+    public String createRefreshToken() {
         return Jwts.builder()
-                .claim("category", "access")
+                .claim("category", "refresh")
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + refreshTokenExpirationMinutes))
                 .signWith(secretKey)

@@ -2,6 +2,7 @@ package UniFest.security.filter;
 
 import UniFest.dto.request.auth.LoginRequest;
 import UniFest.security.jwt.JwtTokenizer;
+import UniFest.security.redis.RedisRepository;
 import UniFest.security.userdetails.MemberDetails;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
@@ -32,6 +33,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
     private final AuthenticationManager authenticationManager;
     private final JwtTokenizer jwtTokenizer;
+    private final RedisRepository redisRepository;
 
     @SneakyThrows
     @Override
@@ -61,18 +63,22 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         String username = memberDetails.getUsername();
         //id 획득
         Long memberId = memberDetails.getMemberId();
-
+        //권한 획득
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
         GrantedAuthority auth = iterator.next();
         String role = auth.getAuthority();
         //여기서 role은 ROLE_XXXX 형태
+
         String access = jwtTokenizer.createAccessToken(memberId,username,role);
-        String refresh = jwtTokenizer.createRefreshToken(username,role);
+        String refresh = jwtTokenizer.createRefreshToken();
+
+        //redis에 refresh : email 형태로 저장
+        redisRepository.saveRefreshToken(refresh, username);
 
         //RFC 7235 방식
         response.setHeader("Authorization", "Bearer " + access);
-        response.addCookie(createCookie("refresh", refresh));
+        response.setHeader("RefreshToken", refresh);
         response.setStatus(HttpStatus.OK.value());
     }
 
@@ -82,14 +88,5 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         response.setStatus(401);
     }
 
-    private Cookie createCookie(String key, String value) {
 
-        Cookie cookie = new Cookie(key, value);
-        cookie.setMaxAge(24*60*60);
-        //cookie.setSecure(true); https 적용시 사용
-        //cookie.setPath("/");
-        cookie.setHttpOnly(true); //js로 접근못하게 설정
-
-        return cookie;
-    }
 }
