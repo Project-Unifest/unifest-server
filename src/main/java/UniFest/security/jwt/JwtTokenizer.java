@@ -1,6 +1,9 @@
 package UniFest.security.jwt;
 
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
@@ -43,9 +46,19 @@ public class JwtTokenizer {
         return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("role", String.class);
     }
 
-    public String getCategory(String token) {
+    public boolean isValidDateToken(String token) {
+        try {
+            Jws<Claims> claims = Jwts.parser()
+                    .verifyWith(secretKey)
+                    .build()
+                    .parseSignedClaims(token);
+            Date exp = claims.getBody().getExpiration();
+            //만료 날짜가 현재 시간 이후라면 true를 반환하고, 그렇지 않으면 false를 반환
+            return exp.after(new Date());
+        } catch (JwtException je) {
+            return false;
+        }
 
-        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("category", String.class);
     }
 
     public String createAccessToken(Long memberId,String username, String role) {

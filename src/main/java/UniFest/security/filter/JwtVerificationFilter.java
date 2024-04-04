@@ -1,6 +1,6 @@
 package UniFest.security.filter;
 
-import UniFest.exception.jwt.TokenExpiredException;
+import UniFest.exception.jwt.AccessTokenExpiredException;
 import UniFest.exception.jwt.TokenNotValidateException;
 import UniFest.exception.jwt.TokenSignatureException;
 import UniFest.security.jwt.JwtTokenizer;
@@ -35,7 +35,7 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
         } catch (SignatureException e) {
             throw new TokenSignatureException();
         } catch (ExpiredJwtException e) {
-            throw new TokenExpiredException();
+            throw new AccessTokenExpiredException();
         } catch (Exception e) {
             throw new TokenNotValidateException();
         }
@@ -76,7 +76,6 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
     }
 
     private boolean isRefreshRequest(HttpServletRequest request) {
-        //TODO 추후 리프레시를 이용한 액세스토큰 재발급 API
         return request.getRequestURI().contains("/auth/reissue");
     }
 

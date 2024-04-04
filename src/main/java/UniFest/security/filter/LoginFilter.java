@@ -67,8 +67,9 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
         GrantedAuthority auth = iterator.next();
-        String role = auth.getAuthority();
         //여기서 role은 ROLE_XXXX 형태
+        String role = auth.getAuthority();
+
 
         String access = jwtTokenizer.createAccessToken(memberId,username,role);
         String refresh = jwtTokenizer.createRefreshToken();
