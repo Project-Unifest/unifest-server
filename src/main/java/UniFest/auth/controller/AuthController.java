@@ -2,6 +2,7 @@ package UniFest.auth.controller;
 
 import UniFest.auth.service.AuthService;
 import UniFest.dto.response.Response;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -17,13 +18,15 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
     private final AuthService authService;
+
+    @Operation(summary = "사용자 로그아웃 로그인 : /login")
     @GetMapping("/logout")
     public Response logout(@RequestHeader(value = "RefreshToken") String refreshToken) {
         authService.logout(refreshToken);
         return Response.ofSuccess("OK",null);
     }
 
-    // AccessToken 재발급 - refresh 토큰 확인
+    @Operation(summary = "액세스토큰 재발급")
     @GetMapping("/reissue")
     public ResponseEntity<Void> reissue(@RequestHeader(value = "RefreshToken") String refreshToken) {
         return ResponseEntity.ok()
