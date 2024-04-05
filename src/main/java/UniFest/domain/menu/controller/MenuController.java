@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 public class MenuController {
 
     private final MenuService menuService;
-    //메뉴 등록
+
     @SecurityRequirement(name = "JWT")
     @Operation(summary = "메뉴 등록")
     @PostMapping("{booth-id}")
@@ -27,5 +27,15 @@ public class MenuController {
                               @AuthenticationPrincipal MemberDetails memberDetails) {
         Long savedId = menuService.postMenu(menuCreateRequest,boothId, memberDetails);
         return Response.ofSuccess("OK",savedId);
+    }
+
+
+    @SecurityRequirement(name = "JWT")
+    @Operation(summary = "메뉴 삭제")
+    @DeleteMapping("{menu-id}")
+    public Response postMenu(@PathVariable("menu-id") Long menuId,
+                             @AuthenticationPrincipal MemberDetails memberDetails) {
+        menuService.deleteMenu(menuId, memberDetails);
+        return Response.ofSuccess("OK",null);
     }
 }
