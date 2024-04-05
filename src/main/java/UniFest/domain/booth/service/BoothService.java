@@ -70,7 +70,9 @@ public class BoothService {
 
     public List<BoothResponse> getBooths(Long festivalId) {
         Festival festival = festivalRepository.findById(festivalId).orElseThrow(FestivalNotFoundException::new);
-        List<BoothResponse> responses = boothRepository.findAllByFestivalAndEnabled(festival,true).stream().map(BoothResponse::new).toList();
+        List<BoothResponse> responses = boothRepository.findAllByFestivalAndEnabled(festival,true)
+                .stream().filter(b -> b.isEnabled())
+                .map(BoothResponse::new).toList();
         return responses;
     }
 
