@@ -2,6 +2,7 @@ package UniFest.domain.booth.controller;
 
 import UniFest.domain.booth.service.BoothService;
 import UniFest.dto.request.booth.BoothCreateRequest;
+import UniFest.dto.request.booth.BoothPatchRequest;
 import UniFest.dto.response.Response;
 import UniFest.dto.response.booth.BoothDetailResponse;
 import UniFest.dto.response.booth.BoothResponse;
@@ -30,13 +31,32 @@ public class BoothController {
     public Response postBooth(@Valid @RequestBody BoothCreateRequest boothCreateRequest,
                               @AuthenticationPrincipal MemberDetails memberDetails) {
         Long savedId = boothService.createBooth(boothCreateRequest, memberDetails);
-        return Response.ofSuccess("OK",savedId);
+        return Response.ofCreated("OK",savedId);
+    }
+
+
+    @SecurityRequirement(name = "JWT")
+    @Operation(summary = "부스 정보 수정")
+    @PatchMapping("/{booth-id}")
+    public Response patchBooth(@RequestBody BoothPatchRequest boothPatchRequest,
+                               @AuthenticationPrincipal MemberDetails memberDetails,
+                               @PathVariable("booth-id") Long boothId) {
+        Long updatedId = boothService.updateBooth(boothPatchRequest, memberDetails, boothId);
+        return Response.ofSuccess("OK",updatedId);
+    }
+
+    @SecurityRequirement(name = "JWT")
+    @Operation(summary = "부스 삭제")
+    @DeleteMapping("/{booth-id}")
+    public Response deleteBooth(@AuthenticationPrincipal MemberDetails memberDetails,
+                                @PathVariable("booth-id") Long boothId) {
+        boothService.deleteBooth(memberDetails, boothId);
+        return Response.ofSuccess("OK",null);
     }
 
     @Operation(summary = "특정부스 조회")
     @GetMapping("/{booth-id}")
     public Response getBooth(@PathVariable("booth-id") Long boothId) {
-        log.info("[특정 부스 조회]");
         BoothDetailResponse findBooth = boothService.getBooth(boothId);
         return Response.ofSuccess("OK", findBooth);
     }

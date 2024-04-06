@@ -89,8 +89,44 @@ public class Booth extends BaseEntity {
         this.festival = festival;
     }
 
-    public void setIsEnabled(boolean isEnabled){
-        this.enabled = isEnabled;
+    public void updateEnabled(boolean enabled){
+        this.enabled = enabled;
+    }
+
+    public void updateName(String name) {
+        this.name = name;
+    }
+
+    public void updateCategory(String category) {
+        this.category = category;
+    }
+
+    public void updateDescription(String description) {
+        this.description = description;
+    }
+
+    public void updateDetail(String detail) {
+        this.detail = detail;
+    }
+
+    public void updateThumbnail(String thumbnail) {
+        this.thumbnail = thumbnail;
+    }
+
+    public void updateWarning(String warning) {
+        this.warning = warning;
+    }
+
+    public void updateLocation(String location) {
+        this.location = location;
+    }
+
+    public void updateLatitude(float latitude) {
+        this.latitude = latitude;
+    }
+
+    public void updateLongitude(float longitude) {
+        this.longitude = longitude;
     }
 
     public void setMember(Member member){

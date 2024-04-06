@@ -1,0 +1,65 @@
+spring:
+  application:
+    name: UniFest
+  h2:
+    console:
+      enabled: true  # H2 Console을 사용할지 여부 (H2 Console은 H2 Database를 UI로 제공해주는 기능)
+      path: /h2-console  # H2 Console의 Path
+  # Database Setting Info (Database를 H2로 사용하기 위해 H2연결 정보 입력)
+  datasource:
+    driver-class-name: org.h2.Driver # Database를 H2로 사용하겠다.
+    url: jdbc:h2:~/test2;MODE=MYSQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;
+    username: sa  # H2 접속 시 입력할 username 정보 (원하는 것으로 입력)
+    password:  # H2 접속 시 입력할 password 정보 (원하는 것으로 입력)
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+        default_batch_fetch_size: 1000
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      password: 1234
+logging:
+  level:
+    org:
+      hibernate:
+        type:
+          descriptor:
+            sql: trace
+
+
+springdoc:
+  default-consumes-media-type: application/json
+  default-produces-media-type: application/json
+  swagger-ui:
+    path: /swagger-ui.html
+    disable-swagger-default-url: true
+    display-request-duration: true
+    operations-sorter: alpha
+    tags-sorter: alpha
+jwt:
+  secret: testesjthsejtkhesjkthskthejthskjthsekjthskjtheskjthskj
+  access-token-expiration-minutes: 2100000000
+  refresh-token-expiration-minutes: 10080
+server:
+  port: 8080
+# S3
+cloud:
+  aws:
+    credentials:
+      accessKey: test
+      secretKey: test
+    s3:
+      bucket: test
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false
+
+

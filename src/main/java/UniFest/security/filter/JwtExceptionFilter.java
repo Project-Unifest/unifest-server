@@ -1,7 +1,7 @@
 package UniFest.security.filter;
 
 import UniFest.exception.UnifestCustomException;
-import UniFest.exception.jwt.TokenExpiredException;
+import UniFest.exception.jwt.AccessTokenExpiredException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.servlet.FilterChain;
@@ -23,7 +23,7 @@ public class JwtExceptionFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
             filterChain.doFilter(request, response);
-        } catch (TokenExpiredException exception) {
+        } catch (AccessTokenExpiredException exception) {
             sendErrorResponse(response, exception);
         }
     }

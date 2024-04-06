@@ -15,6 +15,8 @@ import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,6 +40,7 @@ public class FestivalService {
     }
 
     //전체 검색
+    @Cacheable(value = "FestivalInfo", cacheManager = "redisCacheManager")
     public List<FestivalSearchResponse> getAllFestival() {
         log.debug("[FestivalService.getAllFestival]");
 
@@ -45,6 +48,7 @@ public class FestivalService {
     }
 
     //지역별 검색
+    @Cacheable(value = "FestivalInfo", key = "#region",cacheManager = "redisCacheManager")
     public List<FestivalSearchResponse> getFestivalByRegion(String region) {
         log.debug("[FestivalService.getFestivalByRegion]");
 
@@ -82,6 +86,7 @@ public class FestivalService {
     }
 
     @Transactional
+    @CacheEvict(value = "FestivalInfo", allEntries = true)
     public Long createFestival(PostFestivalRequest request) {
         log.debug("[FestivalService.postFestival]");
 

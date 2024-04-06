@@ -8,14 +8,18 @@ spring:
     password: ${DATASOURCE_PASSWORD}
 
   jpa:
-    show-sql: true
+    hibernate:
+      ddl-auto: update
     properties:
       hibernate:
-        ddl-auto: update
-        format_sql: true
+#        show_sql: true
+#        format_sql: true
         default_batch_fetch_size: 1000
-
-
+  data:
+    redis:
+      host: ec2-43-200-72-31.ap-northeast-2.compute.amazonaws.com
+      port: 6379
+      password: ${REDIS_PASSWORD}
 springdoc:
   default-consumes-media-type: application/json
   default-produces-media-type: application/json
@@ -27,8 +31,8 @@ springdoc:
     tags-sorter: alpha
 jwt:
   secret: ${JWT_SECRETKEY}
-  access-token-expiration-minutes: 300000
-  refresh-token-expiration-minutes: 10080
+  access-token-expiration-minutes: 3000000
+  refresh-token-expiration-minutes: 6000000
 server:
   port: 8080
 # S3

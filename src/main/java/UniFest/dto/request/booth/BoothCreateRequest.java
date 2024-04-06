@@ -18,8 +18,9 @@ public class BoothCreateRequest {
     @NotBlank(message = "대표사진을 입력해주세요.")
     private String thumbnail;
     private String warning;
-    private boolean isEnabled;
     private Long festivalId;
+    @NotNull(message = "공백일 수 없습니다.")
+    private String location;
     @NotNull(message = "공백일 수 없습니다.")
     private float latitude;
     @NotNull(message = "공백일 수 없습니다.")

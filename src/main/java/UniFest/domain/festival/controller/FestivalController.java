@@ -7,6 +7,8 @@ import UniFest.dto.request.festival.PostFestivalRequest;
 import UniFest.dto.response.festival.TodayFestivalInfo;
 import java.time.LocalDate;
 import java.util.List;
+
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,7 +26,8 @@ public class FestivalController {
 
     private final FestivalService festivalService;
 
-    //학교명 검색
+
+    @Operation(summary = "학교명 검색")
     @GetMapping("")
     public Response<List<FestivalSearchResponse>> getFestivalByName(@RequestParam("name") String schoolName) {
         log.debug("[FestivalController.getFestivalByName]");
@@ -32,7 +35,8 @@ public class FestivalController {
         return Response.ofSuccess("OK", festivalService.getFestivalByName(schoolName));
     }
 
-    //전체 검색
+
+    @Operation(summary = "전체 검색")
     @GetMapping("/all")
     public Response<List<FestivalSearchResponse>> getAllFestival() {
         log.debug("[FestivalController.getAllFestival]");
@@ -40,7 +44,7 @@ public class FestivalController {
         return Response.ofSuccess("OK", festivalService.getAllFestival());
     }
 
-    //지역별 검색
+    @Operation(summary = "지역별 검색")
     @GetMapping("/region")
     public Response<List<FestivalSearchResponse>> getFestivalByRegion(@RequestParam("region") String region) {
         log.debug("[FestivalController.getFestivalByRegion]");
@@ -48,7 +52,8 @@ public class FestivalController {
         return Response.ofSuccess("OK", festivalService.getFestivalByRegion(region));
     }
 
-    //다가오는 축제일정
+
+    @Operation(summary = "다가오는 축제일정")
     @GetMapping("/after")
     public Response<List<FestivalSearchResponse>> getAfterFestival() {
         log.debug("[FestivalController.getAfterFestival]");
@@ -56,7 +61,8 @@ public class FestivalController {
         return Response.ofSuccess("OK", festivalService.getAfterFestival());
     }
 
-    //오늘의 축제일정
+
+    @Operation(summary = "오늘의 축제일정")
     @GetMapping("/today")
     public Response<List<TodayFestivalInfo>> getFestivalByDate(@RequestParam("date") LocalDate date) {
         log.debug("[FestivalController.getFestivalByDate]");
@@ -64,6 +70,7 @@ public class FestivalController {
         return Response.ofSuccess("OK", festivalService.getFestivalByDate(date));
     }
 
+    @Operation(summary = "축제 등록")
     @PostMapping("")
     public Response<Long> postFestival(@RequestBody PostFestivalRequest request) {
         log.debug("[FestivalController.postFestival]");

@@ -2,12 +2,16 @@ package UniFest.dto.response.booth;
 
 import UniFest.domain.booth.entity.Booth;
 import UniFest.dto.response.menu.MenuResponse;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Data
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class BoothDetailResponse {
 
     private Long id;
@@ -21,8 +25,6 @@ public class BoothDetailResponse {
     private String thumbnail;
 
     private String warning;
-
-    //private int likes;
 
     private String location;
 

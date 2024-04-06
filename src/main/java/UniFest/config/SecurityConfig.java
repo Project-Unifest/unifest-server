@@ -4,6 +4,7 @@ import UniFest.security.filter.LoginFilter;
 import UniFest.security.filter.JwtExceptionFilter;
 import UniFest.security.filter.JwtVerificationFilter;
 import UniFest.security.jwt.JwtTokenizer;
+import UniFest.security.redis.RedisRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -31,6 +32,7 @@ public class SecurityConfig{
 
     private final AuthenticationConfiguration authenticationConfiguration;
     private final JwtTokenizer jwtTokenizer;
+    private final RedisRepository redisRepository;
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
         //cors 설정
@@ -83,7 +85,7 @@ public class SecurityConfig{
         //필터 설정
         http.addFilterBefore(new JwtExceptionFilter(), UsernamePasswordAuthenticationFilter.class);
         http.addFilterBefore(new JwtVerificationFilter(jwtTokenizer), LoginFilter.class);
-        http.addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtTokenizer)
+        http.addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtTokenizer, redisRepository)
                 , UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
