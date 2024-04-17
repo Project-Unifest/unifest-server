@@ -8,6 +8,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public class FestivalSearchResponse {
 
+    private Long festivalId;
     //학교로고
     private String thumbnail;
     //학교명
