@@ -41,7 +41,7 @@ public interface FestivalRepository extends JpaRepository<Festival, Long> {
 
 
     //오늘
-    @Query("select new UniFest.dto.response.festival.TodayFestivalInfo(s.id, s.name, f.id, f.name, :date)"
+    @Query("select new UniFest.dto.response.festival.TodayFestivalInfo(s.id, s.name, s.thumbnail, f.id, f.name, :date)"
             + " from School s join Festival f on f.school.id=s.id"
             + " where :date between f.beginDate and f.endDate "
             + " order by s.name")
