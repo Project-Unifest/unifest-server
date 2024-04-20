@@ -75,9 +75,8 @@ public class FestivalService {
         for(TodayFestivalInfo todayFestivalInfo : festivalInfo) {
             Long festivalId = todayFestivalInfo.getFestivalId();
             for (EnrollInfo enrollInfo : starList) {
-                if (enrollInfo.getFestivalId().equals(todayFestivalInfo.getFestivalId())) {
-                    todayFestivalInfo.getStarList().add(new StarInfo(enrollInfo.getStarName(),
-                            enrollInfo.getStarImg()));
+                if (enrollInfo.getFestivalId().equals(festivalId)) {
+                    todayFestivalInfo.getStarList().add(new StarInfo(enrollInfo.getStarName(), enrollInfo.getImgUrl()));
                 }
             }
         }
