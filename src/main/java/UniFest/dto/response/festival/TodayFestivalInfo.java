@@ -15,18 +15,20 @@ public class TodayFestivalInfo {
     //축제명
     private Long festivalId;
     private String festivalName;
-    private LocalDate date;
+    private LocalDate beginDate;
+    private LocalDate endDate;
     //연예인 정보
     private List<StarInfo> starList;
 
     public TodayFestivalInfo(Long schoolId, String schoolName, String thumbnail, Long festivalId, String festivalName,
-            LocalDate date) {
+            LocalDate beginDate, LocalDate endDate) {
         this.schoolId = schoolId;
         this.schoolName = schoolName;
         this.thumbnail = thumbnail;
         this.festivalId = festivalId;
         this.festivalName = festivalName;
-        this.date = date;
+        this.beginDate = beginDate;
+        this.endDate = endDate;
         this.starList = new ArrayList<>();
     }
 }
