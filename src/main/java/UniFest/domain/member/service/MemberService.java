@@ -33,7 +33,7 @@ public class MemberService {
                 .password(encryptedPassword)
                 .schoolId(request.getSchoolId())
                 .phoneNum(request.getPhoneNum())
-                .memberRole(MemberRole.NORMAL)
+                .memberRole(MemberRole.PENDING)
                 .build();
 
         return memberRepository.save(member).getId();

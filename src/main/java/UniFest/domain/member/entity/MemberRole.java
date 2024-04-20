@@ -6,8 +6,9 @@ import lombok.Getter;
 @Getter
 public enum MemberRole {
     ADMIN("ADMIN"),
-    NORMAL("NORMAL"),
-    VERIFIED("VERIFIED");
+    PENDING("PENDING"),
+    VERIFIED("VERIFIED"),
+    DENIED("DENIED");
 
     private final String value;
 
