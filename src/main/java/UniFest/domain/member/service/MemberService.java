@@ -31,7 +31,7 @@ public class MemberService {
         Member member = Member.builder()
                 .email(request.getEmail())
                 .password(encryptedPassword)
-                .club(request.getClub())
+                .schoolId(request.getSchoolId())
                 .phoneNum(request.getPhoneNum())
                 .memberRole(MemberRole.NORMAL)
                 .build();

@@ -31,22 +31,21 @@ public class Member extends BaseEntity {
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Booth> boothList = new ArrayList<>();
 
-    private String club;
+    private Long schoolId;
 
     private String phoneNum;
 
     @Enumerated(value = EnumType.STRING)
     @Column(name = "member_role",nullable = false)
-    private MemberRole memberRole = MemberRole.NORMAL;
+    private MemberRole memberRole;
 
     @Builder
-    public Member(String email, String password , String club, String phoneNum, MemberRole memberRole){
+    public Member(String email, String password , Long schoolId, String phoneNum, MemberRole memberRole){
         this.email = email;
         this.password = password;
-        this.club = club;
+        this.schoolId = schoolId;
         this.phoneNum = phoneNum;
         this.memberRole = memberRole;
-
     }
 
     public void updateRole(MemberRole role){

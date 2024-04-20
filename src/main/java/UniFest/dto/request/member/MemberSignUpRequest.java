@@ -15,9 +15,8 @@ public class MemberSignUpRequest {
     @NotBlank(message = "공백일 수 없습니다.")
     private String password;
 
-    //소속과 혹은 동아리 등
     @NotBlank(message = "공백일 수 없습니다.")
-    private String club;
+    private Long schoolId;
 
     @NotBlank(message = "공백일 수 없습니다.")
     private String phoneNum;

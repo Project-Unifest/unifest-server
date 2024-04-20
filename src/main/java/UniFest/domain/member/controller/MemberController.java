@@ -19,12 +19,14 @@ import org.springframework.web.bind.annotation.*;
 public class MemberController {
 
     private final MemberService memberService;
+
     @Operation(summary = "회원가입")
     @PostMapping
     public Response postMember(@Valid @RequestBody MemberSignUpRequest memberSignUpRequest) {
         Long savedId = memberService.createMember(memberSignUpRequest);
         return Response.ofSuccess("OK",savedId);
     }
+
     @SecurityRequirement(name = "JWT")
     @GetMapping("info")
     public String testMember(@AuthenticationPrincipal MemberDetails memberDetails){
