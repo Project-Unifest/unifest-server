@@ -8,5 +8,5 @@ import lombok.Getter;
 public class StarInfo {
 
     private String name;
-    private String img;
+    private String imgUrl;
 }
