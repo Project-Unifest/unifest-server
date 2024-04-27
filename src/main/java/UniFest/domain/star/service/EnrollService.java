@@ -31,6 +31,11 @@ public class EnrollService {
                 .orElseThrow(FestivalNotFoundException::new);
         Star star = starRepository.findById(request.getStarId())
                 .orElseThrow(StarNotFoundException::new);
+        LocalDate visitDate = request.getVisitDate();
+        if (visitDate.isBefore(festival.getBeginDate()) || visitDate.isAfter(
+                festival.getEndDate())) {
+            throw new OutOfPeriodException();
+        }
         Enroll enroll = new Enroll(
                 festival, star, request.getVisitDate()
         );
