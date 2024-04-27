@@ -8,7 +8,9 @@ import UniFest.domain.star.repository.EnrollRepository;
 import UniFest.domain.star.repository.StarRepository;
 import UniFest.dto.request.PostEnrollRequest;
 import UniFest.exception.FestivalNotFoundException;
+import UniFest.exception.OutOfPeriodException;
 import UniFest.exception.StarNotFoundException;
+import java.time.LocalDate;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -24,6 +26,7 @@ public class EnrollService {
     private final FestivalRepository festivalRepository;
     private final StarRepository starRepository;
 
+    @Transactional
     public Long createEnroll(PostEnrollRequest request) {
         log.debug("[EnrollService.createEnroll]");
 
