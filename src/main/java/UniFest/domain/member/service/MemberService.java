@@ -4,7 +4,9 @@ import UniFest.domain.member.entity.Member;
 import UniFest.domain.member.entity.MemberRole;
 import UniFest.domain.member.repository.MemberRepository;
 import UniFest.dto.request.member.MemberSignUpRequest;
+import UniFest.dto.response.member.MemberDetailResponse;
 import UniFest.exception.member.MemberEmailExistException;
+import UniFest.exception.member.MemberNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -37,6 +39,13 @@ public class MemberService {
                 .build();
 
         return memberRepository.save(member).getId();
+    }
+
+    public MemberDetailResponse getMember(Long memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(MemberNotFoundException::new);
+        MemberDetailResponse response = new MemberDetailResponse(member);
+        return response;
     }
 
     private void verifyExistsEmail(String email) {
