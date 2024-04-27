@@ -2,51 +2,9 @@ spring:
   application:
     name: UniFest
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
     url: ${DATASOURCE_URL}
     username: ${DATASOURCE_USERNAME}
     password: ${DATASOURCE_PASSWORD}
-
-  jpa:
-    hibernate:
-      ddl-auto: update
-    properties:
-      hibernate:
-#        show_sql: true
-#        format_sql: true
-        default_batch_fetch_size: 1000
-  data:
-    redis:
-      host: ec2-43-200-72-31.ap-northeast-2.compute.amazonaws.com
-      port: 6379
-      password: ${REDIS_PASSWORD}
-springdoc:
-  default-consumes-media-type: application/json
-  default-produces-media-type: application/json
-  swagger-ui:
-    path: /swagger-ui.html
-    disable-swagger-default-url: true
-    display-request-duration: true
-    operations-sorter: alpha
-    tags-sorter: alpha
-jwt:
-  secret: ${JWT_SECRETKEY}
-  access-token-expiration-minutes: 3000000
-  refresh-token-expiration-minutes: 6000000
+    driver-class-name: com.mysql.cj.jdbc.Driver
 server:
   port: 8080
-# S3
-cloud:
-  aws:
-    credentials:
-      accessKey: ${S3_ACCESS}
-      secretKey: ${S3_SECRET}
-    s3:
-      bucket: ${UNIFEST_BUCKET}
-    region:
-      static: ap-northeast-2
-    stack:
-      auto: false
-
-
-
