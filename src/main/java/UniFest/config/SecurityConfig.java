@@ -73,7 +73,7 @@ public class SecurityConfig{
         http
                 .authorizeHttpRequests((auth) -> auth
                         .requestMatchers("/admin").hasRole("ADMIN")
-                        .requestMatchers("/api/booths").hasAnyRole("ADMIN","VERIFIED","NORMAL")
+                        .requestMatchers("/api/booths").hasAnyRole("ADMIN","VERIFIED")
                         //h2접속 설정
                         .requestMatchers("/h2-console/*", "/favicon.ico").permitAll()
                         .anyRequest().permitAll());

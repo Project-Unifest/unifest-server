@@ -88,6 +88,4 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         //로그인 실패시 실행되는 함수
         response.setStatus(401);
     }
-
-
 }
