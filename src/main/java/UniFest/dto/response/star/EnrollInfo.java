@@ -9,5 +9,5 @@ public class EnrollInfo {
 
     private Long festivalId;
     private String starName;
-    private String starImg;
+    private String imgUrl;
 }

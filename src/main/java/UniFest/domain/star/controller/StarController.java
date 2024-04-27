@@ -24,7 +24,7 @@ public class StarController {
         log.debug("[StarController.createStar]");
         Star star = new Star(
                 request.getName(),
-                request.getImg()
+                request.getImgUrl()
         );
 
         return Response.ofCreated("Created", starRepository.save(star).getId());
