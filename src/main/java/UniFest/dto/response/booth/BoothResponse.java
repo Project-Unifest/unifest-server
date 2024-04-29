@@ -31,5 +31,4 @@ public class BoothResponse {
         this.latitude = booth.getLatitude();
         this.longitude = booth.getLongitude();
     }
-
 }
