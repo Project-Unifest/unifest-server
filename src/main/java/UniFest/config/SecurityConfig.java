@@ -74,6 +74,7 @@ public class SecurityConfig{
                 .authorizeHttpRequests((auth) -> auth
                         .requestMatchers("/admin").hasRole("ADMIN")
                         .requestMatchers("/api/booths").hasAnyRole("ADMIN","VERIFIED")
+                        //TODO 상위 5개 부스 조회 시 VERIFIED여도 막힘
                         //h2접속 설정
                         .requestMatchers("/h2-console/*", "/favicon.ico").permitAll()
                         .anyRequest().permitAll());

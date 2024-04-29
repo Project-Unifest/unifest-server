@@ -2,6 +2,7 @@ package UniFest.dto.request.member;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 
@@ -15,7 +16,7 @@ public class MemberSignUpRequest {
     @NotBlank(message = "공백일 수 없습니다.")
     private String password;
 
-    @NotBlank(message = "공백일 수 없습니다.")
+    @NotNull(message = "공백일 수 없습니다.")
     private Long schoolId;
 
     @NotBlank(message = "공백일 수 없습니다.")
