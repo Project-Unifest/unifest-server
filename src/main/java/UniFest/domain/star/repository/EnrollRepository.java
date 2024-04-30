@@ -10,7 +10,7 @@ import org.springframework.data.repository.query.Param;
 
 public interface EnrollRepository extends JpaRepository<Enroll, Long> {
 
-    @Query("select new UniFest.dto.response.star.EnrollInfo(e.festival.id, s.name, s.img) from Enroll e"
+    @Query("select new UniFest.dto.response.star.EnrollInfo(e.festival.id, s.id, s.name, s.img) from Enroll e"
             + " join Star s on e.star.id=s.id"
             + " where e.visitDate=:date")
     List<EnrollInfo> findByDate(@Param("date") LocalDate date);

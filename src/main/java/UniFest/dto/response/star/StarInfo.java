@@ -7,6 +7,7 @@ import lombok.Getter;
 @Getter
 public class StarInfo {
 
+    private Long starId;
     private String name;
     private String imgUrl;
 }
