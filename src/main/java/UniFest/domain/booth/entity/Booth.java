@@ -72,9 +72,9 @@ public class Booth extends BaseEntity {
 
     private String location;
 
-    private float latitude;
+    private double latitude;
 
-    private float longitude;
+    private double longitude;
 
     @Builder
     public Booth(String name, BoothCategory category, String description, String detail, String thumbnail,

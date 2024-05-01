@@ -28,12 +28,12 @@ public class School extends BaseEntity {
 
     private String thumbnail;
 
-    private float latitude;
+    private double latitude;
 
-    private float longitude;
+    private double longitude;
 
-    public School(String name, String region, String address, String thumbnail, float latitude,
-            float longitude) {
+    public School(String name, String region, String address, String thumbnail, double latitude,
+                  double longitude) {
         this.name = name;
         this.region = region;
         this.address = address;
