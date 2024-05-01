@@ -1,4 +1,4 @@
-package UniFest.service;
+package UniFest;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

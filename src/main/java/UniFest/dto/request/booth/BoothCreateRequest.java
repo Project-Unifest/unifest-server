@@ -1,5 +1,6 @@
 package UniFest.dto.request.booth;
 
+import UniFest.domain.booth.entity.BoothCategory;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
@@ -11,8 +12,8 @@ public class BoothCreateRequest {
 
     @NotBlank(message = "공백일 수 없습니다.")
     private String name;
-    @NotBlank(message = "공백일 수 없습니다.")
-    private String category;
+    @NotNull(message = "공백일 수 없습니다.")
+    private BoothCategory category;
     private String description;
     private String detail;
     @NotBlank(message = "대표사진을 입력해주세요.")
