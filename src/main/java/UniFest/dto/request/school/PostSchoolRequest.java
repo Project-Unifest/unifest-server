@@ -10,7 +10,7 @@ public class PostSchoolRequest {
     private String name;
     private String region;
     private String address;
-    private float latitude;
-    private float longitude;
+    private double latitude;
+    private double longitude;
     private String thumbnail;
 }

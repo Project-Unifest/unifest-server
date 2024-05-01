@@ -1,6 +1,7 @@
 package UniFest.dto.response.booth;
 
 import UniFest.domain.booth.entity.Booth;
+import UniFest.domain.booth.entity.BoothCategory;
 import lombok.Data;
 
 @Data
@@ -9,7 +10,7 @@ public class BoothResponse {
 
     private String name;
 
-    private String category;
+    private BoothCategory category;
 
     private String description;
 
@@ -17,9 +18,9 @@ public class BoothResponse {
 
     private String location;
 
-    private float latitude;
+    private double latitude;
 
-    private float longitude;
+    private double longitude;
 
     public BoothResponse(Booth booth){
         this.id = booth.getId();

@@ -37,8 +37,9 @@ public class Booth extends BaseEntity {
     @Column(name = "name", length = 20)
     private String name;
 
-    @Column(name = "category", length = 100)
-    private String category;
+    @Enumerated(value = EnumType.STRING)
+    @Column(name = "booth_category", length = 50, nullable = false)
+    private BoothCategory category;
 
     @Column(name = "description", length = 500)
     private String description;
@@ -67,15 +68,17 @@ public class Booth extends BaseEntity {
     @OneToMany(mappedBy = "booth", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Waiting> waitingList = new ArrayList<>();
 
+
+
     private String location;
 
-    private float latitude;
+    private double latitude;
 
-    private float longitude;
+    private double longitude;
 
     @Builder
-    public Booth(String name, String category, String description, String detail, String thumbnail,
-                 String warning, boolean enabled, String location, float latitude, float longitude, Festival festival) {
+    public Booth(String name, BoothCategory category, String description, String detail, String thumbnail,
+                 String warning, boolean enabled, String location, double latitude, double longitude, Festival festival) {
         this.name = name;
         this.category = category;
         this.description = description;
@@ -88,6 +91,9 @@ public class Booth extends BaseEntity {
         this.longitude = longitude;
         this.festival = festival;
     }
+    public int getLikesCount(){
+        return this.likesList.size();
+    }
 
     public void updateEnabled(boolean enabled){
         this.enabled = enabled;
@@ -97,7 +103,7 @@ public class Booth extends BaseEntity {
         this.name = name;
     }
 
-    public void updateCategory(String category) {
+    public void updateCategory(BoothCategory category) {
         this.category = category;
     }
 
@@ -121,11 +127,11 @@ public class Booth extends BaseEntity {
         this.location = location;
     }
 
-    public void updateLatitude(float latitude) {
+    public void updateLatitude(double latitude) {
         this.latitude = latitude;
     }
 
-    public void updateLongitude(float longitude) {
+    public void updateLongitude(double longitude) {
         this.longitude = longitude;
     }
 
