@@ -30,6 +30,6 @@ public class FestivalSearchResponse {
     @JsonDeserialize(using = LocalDateDeserializer.class)
     private LocalDate endDate;
     //위치
-    private float latitude;
-    private float longitude;
+    private double latitude;
+    private double longitude;
 }

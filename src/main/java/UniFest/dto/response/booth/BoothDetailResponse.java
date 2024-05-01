@@ -29,9 +29,9 @@ public class BoothDetailResponse {
 
     private String location;
 
-    private float latitude;
+    private double latitude;
 
-    private float longitude;
+    private double longitude;
 
     private List<MenuResponse> menus;
 

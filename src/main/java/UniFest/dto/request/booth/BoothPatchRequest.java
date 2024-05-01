@@ -17,7 +17,7 @@ public class BoothPatchRequest {
     private String warning;
     private String location;
     private boolean enabled;
-    private float latitude;
-    private float longitude;
+    private double latitude;
+    private double longitude;
 
 }
