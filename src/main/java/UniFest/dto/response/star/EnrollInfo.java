@@ -8,6 +8,7 @@ import lombok.Getter;
 public class EnrollInfo {
 
     private Long festivalId;
+    private Long starId;
     private String starName;
     private String imgUrl;
 }

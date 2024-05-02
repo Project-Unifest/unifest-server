@@ -68,7 +68,7 @@ public class FestivalService {
 
         //축제명, 학교명, 축제id, 당일날짜
         List<TodayFestivalInfo> festivalInfo = festivalRepository.findFestivalByDate(date);
-        //축제id, 연예인이름 사진
+        //축제id, 연예인id, 연예인이름, 사진
         List<EnrollInfo> starList = enrollRepository.findByDate(date);
 
         //TODO 성능개선
@@ -76,7 +76,7 @@ public class FestivalService {
             Long festivalId = todayFestivalInfo.getFestivalId();
             for (EnrollInfo enrollInfo : starList) {
                 if (enrollInfo.getFestivalId().equals(festivalId)) {
-                    todayFestivalInfo.getStarList().add(new StarInfo(enrollInfo.getStarName(), enrollInfo.getImgUrl()));
+                    todayFestivalInfo.getStarList().add(new StarInfo(enrollInfo.getStarId(), enrollInfo.getStarName(), enrollInfo.getImgUrl()));
                 }
             }
         }
