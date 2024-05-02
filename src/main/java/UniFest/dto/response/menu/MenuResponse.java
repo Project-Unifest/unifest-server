@@ -1,9 +1,12 @@
 package UniFest.dto.response.menu;
 
 import UniFest.domain.menu.entity.Menu;
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class MenuResponse {
 
     private Long id;
