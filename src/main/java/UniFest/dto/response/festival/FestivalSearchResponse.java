@@ -22,6 +22,8 @@ public class FestivalSearchResponse {
     private String thumbnail;
     //학교명
     private String schoolName;
+    //지역명
+    private String region;
     //축제명
     private String festivalName;
     //축제기간
