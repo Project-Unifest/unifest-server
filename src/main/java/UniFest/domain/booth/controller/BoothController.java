@@ -70,8 +70,8 @@ public class BoothController {
 
     @Operation(summary = "상위 5개 부스 확인")
     @GetMapping
-    public Response<List<BoothDetailResponse>> getLikes(@RequestParam Long festivalId){
-        List<BoothDetailResponse> boothList = boothService.getTrendingBooths(festivalId);
+    public Response<List<BoothResponse>> getLikes(@RequestParam Long festivalId){
+        List<BoothResponse> boothList = boothService.getTrendingBooths(festivalId);
         return Response.ofSuccess("OK", boothList);
     }
 }

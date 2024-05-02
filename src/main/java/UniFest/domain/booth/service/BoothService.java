@@ -77,16 +77,15 @@ public class BoothService {
     }
 
     @Transactional
-    public List<BoothDetailResponse> getTrendingBooths(Long festivalId){
+    public List<BoothResponse> getTrendingBooths(Long festivalId){
         Festival festival = festivalRepository.findById(festivalId).orElseThrow();
-        List<BoothDetailResponse> boothDetailResponseList = new ArrayList<>();
+        List<BoothResponse> boothResponseList = new ArrayList<>();
         List<Booth> boothList = boothRepository.findTop5ByFestivalOrderByLikesListSizeDesc(festival);
-
         for(Booth booth : boothList){
-            boothDetailResponseList.add(new BoothDetailResponse(booth));
+            boothResponseList.add(new BoothResponse(booth));
         }
 
-        return boothDetailResponseList;
+        return boothResponseList;
     }
 
 
