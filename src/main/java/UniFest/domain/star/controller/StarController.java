@@ -2,6 +2,7 @@ package UniFest.domain.star.controller;
 
 import UniFest.domain.star.entity.Star;
 import UniFest.domain.star.repository.StarRepository;
+import UniFest.dto.request.star.PostStarRequest;
 import UniFest.dto.response.Response;
 import UniFest.dto.response.star.StarInfo;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +21,7 @@ public class StarController {
     private final StarRepository starRepository;
 
     @PostMapping("")
-    public Response<Long> createStar(@RequestBody StarInfo request) {
+    public Response<Long> createStar(@RequestBody PostStarRequest request) {
         log.debug("[StarController.createStar]");
         Star star = new Star(
                 request.getName(),
