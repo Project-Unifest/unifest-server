@@ -3,13 +3,10 @@ package UniFest.domain.likes.controller;
 import UniFest.domain.likes.service.LikesService;
 import UniFest.dto.request.likes.PostLikesRequest;
 import UniFest.dto.response.Response;
-import UniFest.dto.response.booth.BoothDetailResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -24,7 +21,12 @@ public class LikesController {
     public Response<Long> postLike( @RequestBody PostLikesRequest postLikeRequest) {
         log.debug("[LikesController.postLike]");
         Long retId = likesService.likeBooth(postLikeRequest.getBoothId(), postLikeRequest.getToken());
-        return Response.ofSuccess("OK", retId);
+        if(retId==-1){
+            return Response.ofSuccess("Delete Done", retId);
+        }
+        else{
+            return Response.ofSuccess("OK", retId);
+        }
     }
 
 }
