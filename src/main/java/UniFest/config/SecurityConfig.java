@@ -73,9 +73,10 @@ public class SecurityConfig{
         http
                 .authorizeHttpRequests((auth) -> auth
                         .requestMatchers("/admin").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/booths").permitAll()
                         .requestMatchers("/api/booths").hasAnyRole("ADMIN","VERIFIED")
                         //h2접속 설정
-                        .requestMatchers("/h2-console/*", "/favicon.ico").permitAll()
+                        .requestMatchers("/h2-console/**", "/favicon.ico").permitAll()
                         .anyRequest().permitAll());
 
         //jwt에서 세션 stateless
