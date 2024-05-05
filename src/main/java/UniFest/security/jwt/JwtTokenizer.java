@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
+import java.util.Calendar;
 import java.util.Date;
 
 @Component
@@ -69,7 +70,7 @@ public class JwtTokenizer {
                 .claim("username", username)
                 .claim("role", role)
                 .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + accessTokenExpirationMinutes))
+                .expiration(getTokenExpiration(accessTokenExpirationMinutes))
                 .signWith(secretKey)
                 .compact();
     }
@@ -78,9 +79,15 @@ public class JwtTokenizer {
         return Jwts.builder()
                 .claim("category", "refresh")
                 .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + refreshTokenExpirationMinutes))
+                .expiration(getTokenExpiration(refreshTokenExpirationMinutes))
                 .signWith(secretKey)
                 .compact();
+    }
+
+    public Date getTokenExpiration(int expirationMinutes) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.MINUTE, expirationMinutes);
+        return calendar.getTime();
     }
 
 }
