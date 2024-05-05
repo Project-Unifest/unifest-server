@@ -16,7 +16,6 @@ public class BoothCreateRequest {
     private BoothCategory category;
     private String description;
     private String detail;
-    @NotBlank(message = "대표사진을 입력해주세요.")
     private String thumbnail;
     private String warning;
     private Long festivalId;
