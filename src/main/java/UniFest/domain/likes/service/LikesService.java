@@ -42,5 +42,13 @@ public class LikesService {
          return retId;
     }
 
+    public int getLikes(Long boothId) {
+        Booth booth = boothRepository.findById(boothId)
+                .filter(Booth::isEnabled)
+                .orElseThrow(BoothNotFoundException::new);
+        return booth.getLikesCount();
+
+    }
+
 
 }
