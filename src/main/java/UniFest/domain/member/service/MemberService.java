@@ -7,6 +7,7 @@ import UniFest.dto.request.member.MemberSignUpRequest;
 import UniFest.dto.response.member.MemberDetailResponse;
 import UniFest.exception.member.MemberEmailExistException;
 import UniFest.exception.member.MemberNotFoundException;
+import UniFest.security.userdetails.MemberDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -52,5 +53,12 @@ public class MemberService {
         if (memberRepository.existsByEmail(email)) {
             throw new MemberEmailExistException();
         }
+    }
+    @Transactional
+    public Long updateMemberRole(Long memberId, MemberRole memberRole) {
+        Member member = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
+        if(member.getMemberRole() == MemberRole.ADMIN) throw new RuntimeException("ADMIN의 역할 변경은 불가합니다.");
+        member.updateRole(memberRole);
+        return member.getId();
     }
 }
