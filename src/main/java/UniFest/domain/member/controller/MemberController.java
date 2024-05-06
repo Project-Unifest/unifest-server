@@ -1,5 +1,6 @@
 package UniFest.domain.member.controller;
 
+import UniFest.domain.member.entity.MemberRole;
 import UniFest.domain.member.service.MemberService;
 import UniFest.dto.request.member.MemberSignUpRequest;
 import UniFest.dto.response.Response;
@@ -24,6 +25,14 @@ public class MemberController {
     public Response postMember(@Valid @RequestBody MemberSignUpRequest memberSignUpRequest) {
         Long savedId = memberService.createMember(memberSignUpRequest);
         return Response.ofSuccess("OK",savedId);
+    }
+    @SecurityRequirement(name = "JWT")
+    @Operation(summary = "회원역할변경")
+    @PatchMapping("/{member-id}")
+    public Response patchMemberRole(@PathVariable("member-id") Long memberId,
+                                    @RequestParam("role")MemberRole memberRole) {
+        Long updatedId = memberService.updateMemberRole(memberId,memberRole);
+        return Response.ofSuccess("OK",updatedId);
     }
 
     @SecurityRequirement(name = "JWT")
