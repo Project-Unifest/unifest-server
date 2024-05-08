@@ -10,12 +10,14 @@ import java.util.stream.Collectors;
 
 @Getter
 public class MemberDetailResponse {
+    private Long id;
     private String email;
     private List<BoothResponse> booths;
     private Long schoolId;
     private String phoneNum;
 
     public MemberDetailResponse(Member member){
+        this.id = member.getId();
         this.email = member.getEmail();
         this.booths = member.getBoothList().stream().map(BoothResponse::new).collect(Collectors.toList());
         this.schoolId = member.getSchool().getId();
