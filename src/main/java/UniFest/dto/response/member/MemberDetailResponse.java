@@ -18,7 +18,7 @@ public class MemberDetailResponse {
     public MemberDetailResponse(Member member){
         this.email = member.getEmail();
         this.booths = member.getBoothList().stream().map(BoothResponse::new).collect(Collectors.toList());
-        this.schoolId = member.getSchoolId();
+        this.schoolId = member.getSchool().getId();
         this.phoneNum = member.getPhoneNum();
     }
 }

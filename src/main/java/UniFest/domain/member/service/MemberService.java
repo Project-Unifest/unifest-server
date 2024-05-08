@@ -3,8 +3,11 @@ package UniFest.domain.member.service;
 import UniFest.domain.member.entity.Member;
 import UniFest.domain.member.entity.MemberRole;
 import UniFest.domain.member.repository.MemberRepository;
+import UniFest.domain.school.entity.School;
+import UniFest.domain.school.repository.SchoolRepository;
 import UniFest.dto.request.member.MemberSignUpRequest;
 import UniFest.dto.response.member.MemberDetailResponse;
+import UniFest.exception.SchoolNotFoundException;
 import UniFest.exception.member.MemberEmailExistException;
 import UniFest.exception.member.MemberNotFoundException;
 import UniFest.security.userdetails.MemberDetails;
@@ -19,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class MemberService {
 
+    private final SchoolRepository schoolRepository;
     private final MemberRepository memberRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
@@ -31,10 +35,13 @@ public class MemberService {
         // TODO 권한 ADIMN 부여
         // }
 
+        School school = schoolRepository.findById(request.getSchoolId())
+                .orElseThrow(SchoolNotFoundException::new);
+
         Member member = Member.builder()
                 .email(request.getEmail())
                 .password(encryptedPassword)
-                .schoolId(request.getSchoolId())
+                .school(school)
                 .phoneNum(request.getPhoneNum())
                 .memberRole(MemberRole.PENDING)
                 .build();
