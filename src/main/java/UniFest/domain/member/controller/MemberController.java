@@ -13,6 +13,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/members")
@@ -35,10 +37,25 @@ public class MemberController {
         return Response.ofSuccess("OK",updatedId);
     }
 
+    @SecurityRequirement(name="JWT")
+    @GetMapping
+    public Response<List<MemberDetailResponse>> getMembers() {
+        return Response.ofSuccess("OK", memberService.getAllId());
+    }
+
     @SecurityRequirement(name = "JWT")
     @GetMapping("my")
-    public Response getMyMemberInfo(@AuthenticationPrincipal MemberDetails memberDetails){
+    public Response getMyMember(@AuthenticationPrincipal MemberDetails memberDetails){
+
         MemberDetailResponse response = memberService.getMember(memberDetails.getMemberId());
+        return Response.ofSuccess("OK", response);
+    }
+
+    @SecurityRequirement(name = "JWT")
+    @Operation(summary = "회원 조회")
+    @GetMapping("/{member-id}")
+    public Response getMember(@PathVariable("member-id") Long memberId) {
+        MemberDetailResponse response = memberService.getMember(memberId);
         return Response.ofSuccess("OK", response);
     }
 }
