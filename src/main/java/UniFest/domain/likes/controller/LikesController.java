@@ -3,7 +3,7 @@ package UniFest.domain.likes.controller;
 import UniFest.domain.likes.service.LikesService;
 import UniFest.dto.request.likes.PostLikesRequest;
 import UniFest.dto.response.Response;
-import UniFest.dto.response.booth.BoothResponse;
+import UniFest.dto.response.booth.LikedBoothResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -42,7 +42,7 @@ public class LikesController {
 
     @Operation(summary = "특정 사용자가 좋아요한 부스 목록 조회")
     @GetMapping
-    public Response<List<BoothResponse>> getLikedBooths(@RequestParam String token) {
+    public Response<List<LikedBoothResponse>> getLikedBooths(@RequestParam String token) {
         log.debug("[LikesController.getLikedBooths]");
         return Response.ofSuccess("해당 사용자가 좋아요한 부스 목록 조회", likesService.getLikedBooths(token));
     }
