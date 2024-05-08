@@ -2,6 +2,7 @@ package UniFest.fileupload.utils;
 
 import UniFest.dto.response.file.FileResponse;
 import UniFest.exception.file.ImageConvertingFailedException;
+import UniFest.exception.file.UploadSizeExceedException;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.PutObjectRequest;
@@ -22,12 +23,19 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class S3ImageUploader {
 
+    private static final long MAX_IMAGE_SIZE = 3 * 1024 * 1024;
+
     private final AmazonS3Client amazonS3Client;
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
     // MultipartFile을 전달받아 File로 전환한 후 S3에 업로드
     public FileResponse uploadImage(MultipartFile file, String extension) throws IOException {
+
+        if (file.getSize() > MAX_IMAGE_SIZE) {
+            throw new UploadSizeExceedException();
+        }
+
         File convertedFile = convertFile(file).orElseThrow(ImageConvertingFailedException::new);
         //extension 확장자명 filename -> 저장용파일명
         String fileName = UUID.randomUUID() + "." + extension;
