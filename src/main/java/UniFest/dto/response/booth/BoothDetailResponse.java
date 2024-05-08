@@ -35,7 +35,6 @@ public class BoothDetailResponse {
 
     private List<MenuResponse> menus;
 
-    private int likes;
 
     public BoothDetailResponse(Booth booth){
         this.id = booth.getId();
@@ -48,7 +47,6 @@ public class BoothDetailResponse {
         this.latitude = booth.getLatitude();
         this.longitude = booth.getLongitude();
         this.menus = booth.getMenuList().stream().map(MenuResponse::new).collect(Collectors.toList());
-        this.likes = booth.getLikesCount();
     }
 
 }

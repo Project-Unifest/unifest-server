@@ -60,7 +60,6 @@ public class BoothService {
     //value::key의 형태로 redis key 생성
     @Cacheable(value = "BoothInfo", key = "#boothId",cacheManager = "redisCacheManager")
     public BoothDetailResponse getBooth(Long boothId) {
-        log.info("[특정 부스 조회]");
         Booth findBooth = boothRepository.findByBoothId(boothId)
                 .filter(b -> b.isEnabled())
                 .orElseThrow(BoothNotFoundException::new);
