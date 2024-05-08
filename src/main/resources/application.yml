@@ -6,7 +6,9 @@ spring:
     url: ${DATASOURCE_URL}
     username: ${DATASOURCE_USERNAME}
     password: ${DATASOURCE_PASSWORD}
-
+  servlet:
+    multipart:
+      max-file-size: 3MB
   jpa:
     hibernate:
       ddl-auto: update
