@@ -1,6 +1,7 @@
 package UniFest.dto.response.member;
 
 import UniFest.domain.member.entity.Member;
+import UniFest.domain.member.entity.MemberRole;
 import UniFest.dto.response.booth.BoothResponse;
 import UniFest.security.userdetails.MemberDetails;
 import lombok.Getter;
@@ -15,6 +16,7 @@ public class MemberDetailResponse {
     private List<BoothResponse> booths;
     private Long schoolId;
     private String phoneNum;
+    private MemberRole memberRole;
 
     public MemberDetailResponse(Member member){
         this.id = member.getId();
@@ -22,5 +24,6 @@ public class MemberDetailResponse {
         this.booths = member.getBoothList().stream().map(BoothResponse::new).collect(Collectors.toList());
         this.schoolId = member.getSchool().getId();
         this.phoneNum = member.getPhoneNum();
+        this.memberRole = member.getMemberRole();
     }
 }
