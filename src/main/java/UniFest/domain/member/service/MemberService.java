@@ -17,6 +17,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -67,5 +70,15 @@ public class MemberService {
         if(member.getMemberRole() == MemberRole.ADMIN) throw new RuntimeException("ADMIN의 역할 변경은 불가합니다.");
         member.updateRole(memberRole);
         return member.getId();
+    }
+
+    public List<MemberDetailResponse> getAll() {
+        return memberRepository.findAll().stream().map(member->new MemberDetailResponse(member))
+                .collect(Collectors.toList());
+    }
+
+    public List<MemberDetailResponse> getAllWithRole(MemberRole memberRole) {
+        return memberRepository.findAllByMemberRole(memberRole).stream().map(member->new MemberDetailResponse(member))
+                .collect(Collectors.toList());
     }
 }
