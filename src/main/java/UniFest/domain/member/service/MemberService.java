@@ -67,7 +67,7 @@ public class MemberService {
     @Transactional
     public Long updateMemberRole(Long memberId, MemberRole memberRole) {
         Member member = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
-        if(member.getMemberRole() == MemberRole.ADMIN) throw new RuntimeException("ADMIN의 역할 변경은 불가합니다.");
+        if(member.getMemberRole() == MemberRole.ADMIN || memberRole == MemberRole.ADMIN) throw new RuntimeException("ADMIN의 역할 변경은 불가합니다.");
         member.updateRole(memberRole);
         return member.getId();
     }
