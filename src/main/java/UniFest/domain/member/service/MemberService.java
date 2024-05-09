@@ -72,8 +72,13 @@ public class MemberService {
         return member.getId();
     }
 
-    public List<MemberDetailResponse> getAllId() {
+    public List<MemberDetailResponse> getAll() {
         return memberRepository.findAll().stream().map(member->new MemberDetailResponse(member))
+                .collect(Collectors.toList());
+    }
+
+    public List<MemberDetailResponse> getAllWithRole(MemberRole memberRole) {
+        return memberRepository.findAllByMemberRole(memberRole).stream().map(member->new MemberDetailResponse(member))
                 .collect(Collectors.toList());
     }
 }
