@@ -60,7 +60,6 @@ public class BoothService {
     //value::key의 형태로 redis key 생성
     @Cacheable(value = "BoothInfo", key = "#boothId",cacheManager = "redisCacheManager")
     public BoothDetailResponse getBooth(Long boothId) {
-        log.info("[특정 부스 조회]");
         Booth findBooth = boothRepository.findByBoothId(boothId)
                 .filter(b -> b.isEnabled())
                 .orElseThrow(BoothNotFoundException::new);
@@ -77,16 +76,15 @@ public class BoothService {
     }
 
     @Transactional
-    public List<BoothDetailResponse> getTrendingBooths(Long festivalId){
+    public List<BoothResponse> getTrendingBooths(Long festivalId){
         Festival festival = festivalRepository.findById(festivalId).orElseThrow();
-        List<BoothDetailResponse> boothDetailResponseList = new ArrayList<>();
+        List<BoothResponse> boothResponseList = new ArrayList<>();
         List<Booth> boothList = boothRepository.findTop5ByFestivalOrderByLikesListSizeDesc(festival);
-
         for(Booth booth : boothList){
-            boothDetailResponseList.add(new BoothDetailResponse(booth));
+            boothResponseList.add(new BoothResponse(booth));
         }
 
-        return boothDetailResponseList;
+        return boothResponseList;
     }
 
 

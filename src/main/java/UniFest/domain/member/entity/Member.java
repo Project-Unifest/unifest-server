@@ -2,6 +2,7 @@ package UniFest.domain.member.entity;
 
 import UniFest.domain.audit.BaseEntity;
 import UniFest.domain.booth.entity.Booth;
+import UniFest.domain.school.entity.School;
 import UniFest.domain.waiting.entity.Waiting;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -31,7 +32,9 @@ public class Member extends BaseEntity {
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Booth> boothList = new ArrayList<>();
 
-    private Long schoolId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "school_id")
+    private School school;
 
     private String phoneNum;
 
@@ -40,10 +43,10 @@ public class Member extends BaseEntity {
     private MemberRole memberRole;
 
     @Builder
-    public Member(String email, String password , Long schoolId, String phoneNum, MemberRole memberRole){
+    public Member(String email, String password , School school, String phoneNum, MemberRole memberRole){
         this.email = email;
         this.password = password;
-        this.schoolId = schoolId;
+        this.school = school;
         this.phoneNum = phoneNum;
         this.memberRole = memberRole;
     }

@@ -74,7 +74,7 @@ public class SecurityConfig{
         //경로별 인가작업
         http
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/admin").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PATCH,"/members/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/api/booths").permitAll()
                         .requestMatchers("/api/booths").hasAnyRole("ADMIN","VERIFIED")
                         //TODO 상위 5개 부스 조회 시 VERIFIED여도 막힘
