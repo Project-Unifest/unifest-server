@@ -33,7 +33,7 @@ public class MenuController {
     @SecurityRequirement(name = "JWT")
     @Operation(summary = "메뉴 삭제")
     @DeleteMapping("{menu-id}")
-    public Response postMenu(@PathVariable("menu-id") Long menuId,
+    public Response deleteMenu(@PathVariable("menu-id") Long menuId,
                              @AuthenticationPrincipal MemberDetails memberDetails) {
         menuService.deleteMenu(menuId, memberDetails);
         return Response.ofSuccess("OK",null);
