@@ -31,7 +31,7 @@ import java.util.List;
 @RequiredArgsConstructor
 //springsecurity 최신버전 (6.x)이상부터는 메서드체이닝을 지양하고 람다식을 통해 함수형으로 설계
 public class SecurityConfig{
-    private static final String APP_ADMIN = "https://www.unifest.app/";
+    private static final String APP_ADMIN = "https://www.unifest.app";
     private static final String LOCALHOST = "http://localhost:3000";
 
     private final AuthenticationConfiguration authenticationConfiguration;
@@ -48,9 +48,9 @@ public class SecurityConfig{
                     public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
                         CorsConfiguration configuration = new CorsConfiguration();
                         configuration.setAllowedOrigins(List.of(LOCALHOST,APP_ADMIN));
-                        configuration.setAllowedMethods(Collections.singletonList("*"));
+                        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS", "HEAD"));
                         configuration.setAllowCredentials(true);
-                        configuration.setAllowedHeaders(Collections.singletonList("*"));
+                        configuration.setAllowedHeaders(List.of("*"));
                         configuration.setMaxAge(10000L);
                         configuration.setExposedHeaders(List.of("RefreshToken", HttpHeaders.AUTHORIZATION));
 
