@@ -53,6 +53,7 @@ public class SecurityConfig{
                         configuration.setAllowedHeaders(List.of("*"));
                         configuration.setMaxAge(10000L);
                         configuration.setExposedHeaders(List.of("RefreshToken", HttpHeaders.AUTHORIZATION));
+                        configuration.setAllowCredentials(true);
 
                         return configuration;
                     }
