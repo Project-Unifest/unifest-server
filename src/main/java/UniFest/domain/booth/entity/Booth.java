@@ -68,8 +68,6 @@ public class Booth extends BaseEntity {
     @OneToMany(mappedBy = "booth", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Waiting> waitingList = new ArrayList<>();
 
-
-
     private String location;
 
     private double latitude;

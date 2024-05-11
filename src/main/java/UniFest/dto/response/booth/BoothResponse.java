@@ -22,6 +22,8 @@ public class BoothResponse {
 
     private double longitude;
 
+    private boolean enabled;
+
     public BoothResponse(Booth booth){
         this.id = booth.getId();
         this.name = booth.getName();
@@ -31,5 +33,6 @@ public class BoothResponse {
         this.location = booth.getLocation();
         this.latitude = booth.getLatitude();
         this.longitude = booth.getLongitude();
+        this.enabled = booth.isEnabled();
     }
 }
