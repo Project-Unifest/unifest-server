@@ -4,7 +4,6 @@ import UniFest.domain.booth.entity.Booth;
 import UniFest.domain.booth.entity.BoothCategory;
 import UniFest.dto.response.menu.MenuResponse;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -35,6 +34,7 @@ public class BoothDetailResponse {
 
     private List<MenuResponse> menus;
 
+    private boolean enabled;
 
     public BoothDetailResponse(Booth booth){
         this.id = booth.getId();
@@ -46,6 +46,7 @@ public class BoothDetailResponse {
         this.location = booth.getLocation();
         this.latitude = booth.getLatitude();
         this.longitude = booth.getLongitude();
+        this.enabled = booth.isEnabled();
         this.menus = booth.getMenuList().stream().map(MenuResponse::new).collect(Collectors.toList());
     }
 

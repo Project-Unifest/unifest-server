@@ -2,11 +2,8 @@ package UniFest.dto.response.booth;
 
 import UniFest.domain.booth.entity.Booth;
 import UniFest.domain.booth.entity.BoothCategory;
-import UniFest.dto.response.menu.MenuResponse;
 import lombok.Data;
 
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Data
 public class BoothResponse {
@@ -28,8 +25,6 @@ public class BoothResponse {
 
     private boolean enabled;
 
-    private List<MenuResponse> menus;
-
     public BoothResponse(Booth booth){
         this.id = booth.getId();
         this.name = booth.getName();
@@ -40,6 +35,5 @@ public class BoothResponse {
         this.latitude = booth.getLatitude();
         this.longitude = booth.getLongitude();
         this.enabled = booth.isEnabled();
-        this.menus = booth.getMenuList().stream().map(MenuResponse::new).collect(Collectors.toList());
     }
 }
