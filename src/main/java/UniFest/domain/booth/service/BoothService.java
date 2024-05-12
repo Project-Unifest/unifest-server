@@ -148,6 +148,12 @@ public class BoothService {
         boothRepository.updateBoothDisabled(now, false);
     }
 
+    @Transactional
+    public void deleteBoothSchedule() {
+        LocalDate now = LocalDate.now();
+        boothScheduleRepository.deleteBoothSchedule(now);
+    }
+
     public Booth verifyAuth(Long memberId, Long boothId){
         Booth findBooth = boothRepository.findByBoothId(boothId)
                 .orElseThrow(BoothNotFoundException::new);

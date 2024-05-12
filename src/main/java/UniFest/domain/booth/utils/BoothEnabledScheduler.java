@@ -13,11 +13,12 @@ public class BoothEnabledScheduler {
 
     private final BoothService boothService;
 
-    // 매일 새벽 3시 30분 : 금일 운영하지 않는 부스 disabled 처리
+    // 매일 새벽 3시 30분 : 금일 운영하지 않는 부스 disabled 처리, 운영하는 부스 enabled 처리
     @Scheduled(cron = "0 30 3 * * ?")
     public void updateMemberStatus() {
         boothService.updateBoothEnabled();
         boothService.updateBoothDisabled();
+        boothService.deleteBoothSchedule();
         log.info("booth-enabled updated successfully!");
     }
 }
