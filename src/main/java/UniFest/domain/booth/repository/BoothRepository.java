@@ -3,10 +3,13 @@ package UniFest.domain.booth.repository;
 import UniFest.domain.booth.entity.Booth;
 import UniFest.domain.festival.entity.Festival;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 @Repository
@@ -22,4 +25,12 @@ public interface BoothRepository extends JpaRepository<Booth,Long> {
     Optional<Booth> findByBoothId(@Param("boothId") Long boothId);
     List<Booth> findAllByFestivalAndEnabled(Festival festival, boolean enabled);
     List<Booth> findBoothsByIdIn(List<Long> boothIds);
+
+    @Modifying(clearAutomatically = true)
+    @Query("UPDATE Booth b SET b.enabled = :isEnabled WHERE EXISTS (SELECT s FROM b.scheduleList s WHERE FUNCTION('date', s.openDate) = :today)")
+    void updateBoothEnabled(LocalDate today, boolean isEnabled);
+
+    @Modifying(clearAutomatically = true)
+    @Query("UPDATE Booth b SET b.enabled = :isEnabled WHERE NOT EXISTS (SELECT s FROM b.scheduleList s WHERE FUNCTION('date', s.openDate) = :today)")
+    void updateBoothDisabled(LocalDate today, boolean isEnabled);
 }

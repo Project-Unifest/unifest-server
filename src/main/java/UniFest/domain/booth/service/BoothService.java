@@ -1,7 +1,9 @@
 package UniFest.domain.booth.service;
 
 import UniFest.domain.booth.entity.Booth;
+import UniFest.domain.booth.entity.BoothSchedule;
 import UniFest.domain.booth.repository.BoothRepository;
+import UniFest.domain.booth.repository.BoothScheduleRepository;
 import UniFest.domain.festival.entity.Festival;
 import UniFest.domain.festival.repository.FestivalRepository;
 import UniFest.domain.member.entity.Member;
@@ -22,6 +24,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -35,6 +38,7 @@ public class BoothService {
     private final MemberRepository memberRepository;
     private final BoothRepository boothRepository;
     private final FestivalRepository festivalRepository;
+    private final BoothScheduleRepository boothScheduleRepository;
 
     @Transactional
     public Long createBooth(BoothCreateRequest boothCreateRequest, MemberDetails memberDetails) {
@@ -54,6 +58,17 @@ public class BoothService {
                 .festival(festival)
                 .build();
         booth.setMember(member);
+        LocalDate beginDate = festival.getBeginDate();
+        LocalDate endDate = festival.getEndDate();
+        for(Long turn : boothCreateRequest.getOpenDates()){
+            LocalDate opendate = beginDate.plusDays(turn-1);
+            if(opendate.isAfter(endDate) || opendate.isBefore(beginDate)) throw new RuntimeException("부스 운영날짜는 축제날짜에 포함되어야 합니다.");
+            BoothSchedule schedule = BoothSchedule.builder()
+                    .openDate(opendate)
+                    .build();
+            schedule.setBooth(booth);
+            boothScheduleRepository.save(schedule);
+        }
         return boothRepository.save(booth).getId();
     }
 
@@ -119,6 +134,18 @@ public class BoothService {
     public void deleteBooth(MemberDetails memberDetails, Long boothId) {
         Booth findBooth = verifyAuth(memberDetails.getMemberId(), boothId);
         boothRepository.delete(findBooth);
+    }
+
+    @Transactional
+    public void updateBoothEnabled() {
+        LocalDate now = LocalDate.now();
+        boothRepository.updateBoothEnabled(now, true);
+    }
+
+    @Transactional
+    public void updateBoothDisabled() {
+        LocalDate now = LocalDate.now();
+        boothRepository.updateBoothDisabled(now, false);
     }
 
     public Booth verifyAuth(Long memberId, Long boothId){
