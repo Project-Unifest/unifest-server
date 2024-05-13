@@ -33,10 +33,13 @@ public class MemberDetails implements UserDetails {
     }
 
     private Collection<? extends GrantedAuthority> createAuthorities(String role) {
-        if (role.equals("PENDING") ) return PENDING_ROLES;
-        else if (role.equals("DENIED")) return DENIED_ROLES;
-        else if (role.equals("ADMIN")) return ADMIN_ROLES;
-        else return VERIFIED_ROLES;
+        return switch (role) {
+            case "DEV" -> DEV_ROLES;
+            case "PENDING" -> PENDING_ROLES;
+            case "DENIED" -> DENIED_ROLES;
+            case "ADMIN" -> ADMIN_ROLES;
+            default -> VERIFIED_ROLES;
+        };
     }
 
     @Override
