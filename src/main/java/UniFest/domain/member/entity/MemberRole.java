@@ -5,6 +5,7 @@ import lombok.Getter;
 
 @Getter
 public enum MemberRole {
+    DEV("DEV"),
     ADMIN("ADMIN"),
     PENDING("PENDING"),
     VERIFIED("VERIFIED"),

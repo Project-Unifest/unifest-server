@@ -97,4 +97,10 @@ public class FestivalService {
 
         return festivalRepository.save(festival).getId();
     }
+
+    @Transactional
+    @CacheEvict(value = "FestivalInfo", key = "#festivalId")
+    public void deleteFestival(Long festivalId) {
+        festivalRepository.deleteById(festivalId);
+    }
 }

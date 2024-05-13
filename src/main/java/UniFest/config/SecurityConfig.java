@@ -15,6 +15,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -23,7 +24,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 
-import java.util.Collections;
 import java.util.List;
 
 @Configuration
@@ -69,20 +69,21 @@ public class SecurityConfig{
                 );
         //csrf 비활성화
         http
-                .csrf((auth) -> auth.disable());
+                .csrf(AbstractHttpConfigurer::disable);
         //폼로그인 비활성화
         http
-                .formLogin((auth) -> auth.disable());
+                .formLogin(AbstractHttpConfigurer::disable);
         //http basic 비활성화
         http
-                .httpBasic((auth -> auth.disable()));
+                .httpBasic((AbstractHttpConfigurer::disable));
         //경로별 인가작업
         http
                 .authorizeHttpRequests((auth) -> auth
+                        .requestMatchers(HttpMethod.DELETE, "/festival/**").hasRole("DEV")
+                        .requestMatchers(HttpMethod.PUT, "/festival/**").hasRole("DEV")
                         .requestMatchers(HttpMethod.PATCH,"/members/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/api/booths").permitAll()
                         .requestMatchers("/api/booths").hasAnyRole("ADMIN","VERIFIED")
-                        //TODO 상위 5개 부스 조회 시 VERIFIED여도 막힘
                         //h2접속 설정
                         .requestMatchers("/h2-console/**", "/favicon.ico").permitAll()
                         .anyRequest().permitAll());

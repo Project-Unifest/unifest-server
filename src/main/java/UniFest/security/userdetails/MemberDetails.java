@@ -1,8 +1,6 @@
 package UniFest.security.userdetails;
 
-import UniFest.domain.member.entity.Member;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -12,32 +10,36 @@ import java.util.List;
 
 @Getter
 public class MemberDetails implements UserDetails {
-    private Long memberId;
-    private String email;
-    private String password;
-    private String role;
+    private final Long memberId;
+    private final String email;
+    private final String password;
+    private final String role;
 
     public MemberDetails(Long memberId, String email, String password, String role){
         this.memberId = memberId;
         this.email = email;
         this.password = password;
-        this.role = role;
+        this.role = role; //TODO role enum으로 관리
     }
 
     private final List<GrantedAuthority> PENDING_ROLES = AuthorityUtils.createAuthorityList("ROLE_PENDING");
     private final List<GrantedAuthority> DENIED_ROLES = AuthorityUtils.createAuthorityList("ROLE_DENIED");
     private final List<GrantedAuthority> VERIFIED_ROLES = AuthorityUtils.createAuthorityList("ROLE_VERIFIED");
     private final List<GrantedAuthority> ADMIN_ROLES = AuthorityUtils.createAuthorityList("ROLE_ADMIN");
+    private final List<GrantedAuthority> DEV_ROLES = AuthorityUtils.createAuthorityList("ROLE_DEV");
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return createAuthorities(this.role);
     }
 
     private Collection<? extends GrantedAuthority> createAuthorities(String role) {
-        if (role.equals("PENDING") ) return PENDING_ROLES;
-        else if (role.equals("DENIED")) return DENIED_ROLES;
-        else if (role.equals("ADMIN")) return ADMIN_ROLES;
-        else return VERIFIED_ROLES;
+        return switch (role) {
+            case "DEV" -> DEV_ROLES;
+            case "PENDING" -> PENDING_ROLES;
+            case "DENIED" -> DENIED_ROLES;
+            case "ADMIN" -> ADMIN_ROLES;
+            default -> VERIFIED_ROLES;
+        };
     }
 
     @Override
