@@ -9,14 +9,10 @@ import java.time.LocalDate;
 import java.util.List;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -76,5 +72,13 @@ public class FestivalController {
         log.debug("[FestivalController.postFestival]");
 
         return Response.ofCreated("Created", festivalService.createFestival(request));
+    }
+
+    @SecurityRequirement(name = "JWT")
+    @Operation(summary = "축제 삭제")
+    @DeleteMapping("/{festival-id}")
+    public Response deleteBooth(@PathVariable("festival-id") Long festivalId) {
+        festivalService.deleteFestival(festivalId);
+        return Response.ofSuccess("OK",null);
     }
 }
