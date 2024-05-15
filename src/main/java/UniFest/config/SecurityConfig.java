@@ -79,12 +79,17 @@ public class SecurityConfig{
         //경로별 인가작업
         http
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers(HttpMethod.DELETE, "/festival/**").hasRole("DEV")
-                        .requestMatchers(HttpMethod.PUT, "/festival/**").hasRole("DEV")
+                        .requestMatchers(HttpMethod.DELETE, "/festival/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/festival").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/school").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PATCH,"/members/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/members").hasRole("ADMIN") // 전체 멤버 조회는 ADMIN만
                         .requestMatchers(HttpMethod.GET, "/api/booths").permitAll()
                         .requestMatchers("/api/booths").hasAnyRole("ADMIN","VERIFIED")
-                        //h2접속 설정
+                        .requestMatchers(HttpMethod.POST, "/members").permitAll() // 회원가입은 아무나 가능
+                        .requestMatchers(HttpMethod.GET, "/members/my").authenticated() // 본인 정보 조회는 인증된 사용자만
+                        .requestMatchers(HttpMethod.GET, "/members/**").hasRole("ADMIN") // 회원 정보 조회는 ADMIN만
+                        //h2 접속 설정
                         .requestMatchers("/h2-console/**", "/favicon.ico").permitAll()
                         .anyRequest().permitAll());
 
