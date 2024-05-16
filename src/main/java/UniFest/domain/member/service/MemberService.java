@@ -46,7 +46,7 @@ public class MemberService {
                 .password(encryptedPassword)
                 .school(school)
                 .phoneNum(request.getPhoneNum())
-                .memberRole(MemberRole.VERIFIED)
+                .memberRole(MemberRole.PENDING)
                 .build();
 
         return memberRepository.save(member).getId();
