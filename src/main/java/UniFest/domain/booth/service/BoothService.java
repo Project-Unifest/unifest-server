@@ -92,7 +92,7 @@ public class BoothService {
     @CacheEvict(value = "BoothInfo", key = "#boothId")
     public Long updateBooth(BoothPatchRequest boothPatchRequest, MemberDetails memberDetails, Long boothId) {
         Booth findBooth = verifyAuth(memberDetails.getMemberId(), boothId);
-        Optional.ofNullable(boothPatchRequest.isEnabled())
+        Optional.ofNullable(boothPatchRequest.getEnabled())
                 .ifPresent(enabled -> findBooth.updateEnabled(enabled));
         Optional.ofNullable(boothPatchRequest.getName())
                 .ifPresent(name -> findBooth.updateName(name));
