@@ -24,24 +24,9 @@ import java.util.Optional;
 @Transactional
 public class MenuService {
 
-    private final BoothRepository boothRepository;
     private final MenuRepository menuRepository;
     private final CacheManager cacheManager;
 
-
-    @CacheEvict(value = "BoothInfo", key = "#boothId")
-    public Long postMenu(MenuCreateRequest menuCreateRequest, Long boothId, MemberDetails memberDetails) {
-        Booth findbooth = boothRepository.findById(boothId).orElseThrow(BoothNotFoundException::new);
-        checkBoothAuth(findbooth, memberDetails);
-        Menu menu = Menu.builder()
-                .name(menuCreateRequest.getName())
-                .price(menuCreateRequest.getPrice())
-                .imgUrl(menuCreateRequest.getImgUrl())
-                .build();
-        menu.setBooth(findbooth);
-
-        return menuRepository.save(menu).getId();
-    }
 
     public void deleteMenu(Long menuId, MemberDetails memberDetails) {
         Menu findMenu = menuRepository.findById(menuId).orElseThrow(MenuNotFoundException::new);

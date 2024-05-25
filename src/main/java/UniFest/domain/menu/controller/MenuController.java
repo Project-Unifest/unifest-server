@@ -20,17 +20,6 @@ public class MenuController {
     private final MenuService menuService;
 
     @SecurityRequirement(name = "JWT")
-    @Operation(summary = "메뉴 등록")
-    @PostMapping("{booth-id}")
-    public Response postMenu(@Valid @RequestBody MenuCreateRequest menuCreateRequest,
-                              @PathVariable("booth-id") Long boothId,
-                              @AuthenticationPrincipal MemberDetails memberDetails) {
-        Long savedId = menuService.postMenu(menuCreateRequest,boothId, memberDetails);
-        return Response.ofSuccess("OK",savedId);
-    }
-
-
-    @SecurityRequirement(name = "JWT")
     @Operation(summary = "메뉴 삭제")
     @DeleteMapping("{menu-id}")
     public Response deleteMenu(@PathVariable("menu-id") Long menuId,
