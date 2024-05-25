@@ -58,6 +58,7 @@ public class BoothService {
                 .festival(festival)
                 .build();
         booth.setMember(member);
+
         LocalDate beginDate = festival.getBeginDate();
         LocalDate endDate = festival.getEndDate();
         for(Long turn : boothCreateRequest.getOpenDates()){
