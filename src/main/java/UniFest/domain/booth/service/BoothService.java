@@ -8,8 +8,11 @@ import UniFest.domain.festival.entity.Festival;
 import UniFest.domain.festival.repository.FestivalRepository;
 import UniFest.domain.member.entity.Member;
 import UniFest.domain.member.repository.MemberRepository;
+import UniFest.domain.menu.entity.Menu;
+import UniFest.domain.menu.repository.MenuRepository;
 import UniFest.dto.request.booth.BoothCreateRequest;
 import UniFest.dto.request.booth.BoothPatchRequest;
+import UniFest.dto.request.menu.MenuCreateRequest;
 import UniFest.dto.response.booth.BoothDetailResponse;
 import UniFest.dto.response.booth.BoothResponse;
 import UniFest.exception.auth.NotAuthorizedException;
@@ -39,6 +42,7 @@ public class BoothService {
     private final BoothRepository boothRepository;
     private final FestivalRepository festivalRepository;
     private final BoothScheduleRepository boothScheduleRepository;
+    private final MenuRepository menuRepository;
 
     @Transactional
     public Long createBooth(BoothCreateRequest boothCreateRequest, MemberDetails memberDetails) {
@@ -58,7 +62,7 @@ public class BoothService {
                 .festival(festival)
                 .build();
         booth.setMember(member);
-
+        //오픈날짜
         LocalDate beginDate = festival.getBeginDate();
         LocalDate endDate = festival.getEndDate();
         for(Long turn : boothCreateRequest.getOpenDates()){
@@ -70,6 +74,17 @@ public class BoothService {
             schedule.setBooth(booth);
             boothScheduleRepository.save(schedule);
         }
+        //부스 메뉴
+        for(MenuCreateRequest menuCreateRequest : boothCreateRequest.getMenus()){
+            Menu menu = Menu.builder()
+                    .name(menuCreateRequest.getName())
+                    .price(menuCreateRequest.getPrice())
+                    .imgUrl(menuCreateRequest.getImgUrl())
+                    .build();
+            menu.setBooth(booth);
+            menuRepository.save(menu).getId();
+        }
+
         return boothRepository.save(booth).getId();
     }
 
