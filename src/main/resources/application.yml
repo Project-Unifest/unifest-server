@@ -17,6 +17,7 @@ spring:
 #        show_sql: true
 #        format_sql: true
         default_batch_fetch_size: 1000
+        dialect: org.hibernate.dialect.MySQLDialect
   data:
     redis:
       host: unifest-redis
