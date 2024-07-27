@@ -1,62 +1,66 @@
 package UniFest.domain.waiting.service;
 
+import UniFest.domain.booth.entity.Booth;
+import UniFest.domain.booth.repository.BoothRepository;
 import UniFest.domain.waiting.entity.ReservationStatus;
 import UniFest.domain.waiting.entity.Waiting;
 import UniFest.domain.waiting.repository.WaitingRepository;
 import UniFest.dto.response.waiting.WaitingInfo;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.redis.connection.RedisZSetCommands;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
 @Service
 @Transactional
 @RequiredArgsConstructor
 public class WaitingService {
-    private final RedisTemplate<String, String> redisTemplate;
     private final WaitingRepository waitingRepository;
-    private final AtomicLong counter = new AtomicLong();
+    private final BoothRepository boothRepository;
 
-    private String getZSetKey(Long boothId) {
-        return "waitingList:" + boothId;
-    }
-
-    public Waiting addWaiting(Waiting waiting) {
+    public WaitingInfo addWaiting(Waiting waiting) {
         // 예약 정보를 데이터베이스에 저장
         Waiting savedWaiting = waitingRepository.save(waiting);
-
-        // Redis에 우선순위 큐로 저장
-        ZSetOperations<String, String> zSetOps = redisTemplate.opsForZSet();
-        String zsetKey = getZSetKey(waiting.getBooth().getId());
-        double score = System.currentTimeMillis(); // 현재 시간 사용
-        String value = savedWaiting.getId().toString() + ":" + counter.incrementAndGet(); // 고유 인덱스 추가
-        zSetOps.add(zsetKey, value, score);
-
-        return savedWaiting;
+        return new WaitingInfo(
+                savedWaiting.getBooth().getId(),
+                savedWaiting.getId(),
+                savedWaiting.getPartySize(),
+                savedWaiting.getTel(),
+                savedWaiting.getDeviceId(),
+                savedWaiting.getCreatedAt(),
+                savedWaiting.getUpdatedAt(),
+                savedWaiting.getStatus()
+        );
     }
 
-    public List<WaitingInfo> getWaitingList(Long boothId) {
-        ZSetOperations<String, String> zSetOps = redisTemplate.opsForZSet();
-        String zsetKey = getZSetKey(boothId);
-        Set<String> waitingSet = zSetOps.range(zsetKey, 0, -1);
-        List<Long> waitingIds = waitingSet.stream()
-                .map(waitingId -> Long.parseLong(waitingId.split(":")[0]))
-                .collect(Collectors.toList());
+    public WaitingInfo cancelWaiting(String deviceId, Long waitingId){
+        Waiting waiting = waitingRepository.findWaitingByDeviceIdAndId(deviceId, waitingId);
+        if(waiting == null) {
+            return null;
+        }
+        waiting.setStatus(ReservationStatus.CANCELED);
+        waitingRepository.save(waiting);
+        return new WaitingInfo(
+                waiting.getBooth().getId(),
+                waiting.getId(),
+                waiting.getPartySize(),
+                waiting.getTel(),
+                waiting.getDeviceId(),
+                waiting.getCreatedAt(),
+                waiting.getUpdatedAt(),
+                waiting.getStatus()
+        );
+    }
 
-
-        List<Waiting> waitingList = waitingRepository.findAllByBoothIdAndStatus(boothId, ReservationStatus.RESERVED);
-        List<WaitingInfo> retList = new ArrayList<>();
-        for (Waiting waiting : waitingList) {
-            if(waitingIds.contains(waiting.getId())) {
-                retList.add(new WaitingInfo(
+    public List<WaitingInfo> getWaitingList(Long boothId, Boolean isReserved) {
+        // isReserved 가 true 이면 예약된 대기열만 조회, 아니면 전체 대기열 조회
+        List<Waiting> waitingList = isReserved?
+                waitingRepository.findAllByBoothIdAndStatus(boothId, ReservationStatus.RESERVED)
+                : waitingRepository.findAllByBoothId(boothId);
+        return waitingList.stream()
+                .map(waiting -> new WaitingInfo(
                         waiting.getBooth().getId(),
                         waiting.getId(),
                         waiting.getPartySize(),
@@ -65,17 +69,20 @@ public class WaitingService {
                         waiting.getCreatedAt(),
                         waiting.getUpdatedAt(),
                         waiting.getStatus()
-                ));
-            }
-        }
-        return retList;
+                ))
+                .collect(Collectors.toList());
     }
 
-    public List<WaitingInfo> getAllWaitingList(Long boothId) {
-        List<Waiting> waitingList = waitingRepository.findAllByBoothId(boothId);
-        List<WaitingInfo> retList = new ArrayList<>();
-        for (Waiting waiting : waitingList) {
-            retList.add(new WaitingInfo(
+    public WaitingInfo callWaiting(Long id) {
+        Waiting waiting = waitingRepository.findById(id).orElse(null);
+        if (waiting != null) {
+            if( waiting.getStatus() == ReservationStatus.COMPLETED) {
+                return null;
+            }
+            // 사용자를 명시적으로 호출하는 명령어를 실행해야함 (일단은 미구현)
+            waiting.setStatus(ReservationStatus.COMPLETED);
+            waitingRepository.save(waiting);
+            return new WaitingInfo(
                     waiting.getBooth().getId(),
                     waiting.getId(),
                     waiting.getPartySize(),
@@ -84,60 +91,36 @@ public class WaitingService {
                     waiting.getCreatedAt(),
                     waiting.getUpdatedAt(),
                     waiting.getStatus()
-            ));
+            );
         }
-        return retList;
+        return null;
     }
 
-    public void removeWaiting(Long boothId, Long id) {
-        ZSetOperations<String, String> zSetOps = redisTemplate.opsForZSet();
-        String zsetKey = getZSetKey(boothId);
-        Set<String> values = zSetOps.rangeByLex(zsetKey, RedisZSetCommands.Range.range().gte(id.toString()).lte(id.toString()));
-        for (String value : values) {
-            // REDIS 에서 제거
-            zSetOps.remove(zsetKey, value);
+    public WaitingInfo removeWaiting(Long id) {
+        Waiting waiting = waitingRepository.findById(id).orElse(null);
+        if (waiting == null) {
+            return null;
         }
+        WaitingInfo waitingInfo = new WaitingInfo(
+                waiting.getBooth().getId(),
+                waiting.getId(),
+                waiting.getPartySize(),
+                waiting.getTel(),
+                waiting.getDeviceId(),
+                waiting.getCreatedAt(),
+                waiting.getUpdatedAt(),
+                waiting.getStatus()
+        );
         waitingRepository.deleteById(id); // 데이터베이스에서 삭제
+        return waitingInfo;
     }
-
-    public WaitingInfo popHighestPriorityWaiting(Long boothId, int partySize) {
-        ZSetOperations<String, String> zSetOps = redisTemplate.opsForZSet();
-        String zsetKey = getZSetKey(boothId);
-        Set<String> highestPrioritySet = zSetOps.range(zsetKey, 0, -1); // 모든 항목 조회
-
-
-        WaitingInfo ret = null;
-        if (highestPrioritySet != null && !highestPrioritySet.isEmpty()) {
-            for (String highestPriorityId : highestPrioritySet) {
-                Long waitingId = Long.parseLong(highestPriorityId.split(":")[0]);
-                Waiting waiting = waitingRepository.findById(waitingId).orElse(null);
-                if (waiting != null && waiting.getPartySize() <= partySize) {
-                    // REDIS 에서 제거
-                    zSetOps.remove(zsetKey, highestPriorityId);
-
-                    // 데이터베이스에서 상태를 변경한다
-
-                    waiting.setStatus(ReservationStatus.COMPLETED);
-                    waitingRepository.save(waiting);
-                    ret = new WaitingInfo(
-                            waiting.getBooth().getId(),
-                            waiting.getId(),
-                            waiting.getPartySize(),
-                            waiting.getTel(),
-                            waiting.getDeviceId(),
-                            waiting.getCreatedAt(),
-                            waiting.getUpdatedAt(),
-                            waiting.getStatus()
-                    );
-                }
-            }
+    public Long getWaitingCount(Long boothId, ReservationStatus status) {
+        Booth booth = boothRepository.findByBoothId(boothId).orElse(null);
+        if(booth != null){
+            return Long.valueOf(waitingRepository.findAllByBoothIdAndStatus(boothId, status).size());
         }
-        return ret;
-    }
-
-    public Long getWaitingCount(Long boothId) {
-        ZSetOperations<String, String> zSetOps = redisTemplate.opsForZSet();
-        String zsetKey = getZSetKey(boothId);
-        return zSetOps.size(zsetKey);
+        else {
+            return null;
+        }
     }
 }

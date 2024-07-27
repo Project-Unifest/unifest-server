@@ -8,5 +8,8 @@ import java.util.List;
 
 public interface WaitingRepository extends JpaRepository<Waiting, Long> {
     List<Waiting> findAllByBoothId(Long boothId);
+
     List<Waiting> findAllByBoothIdAndStatus(Long boothId, ReservationStatus status);
+
+    Waiting findWaitingByDeviceIdAndId(String deviceId, Long waitingId);
 }
