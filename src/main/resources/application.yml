@@ -1,6 +1,9 @@
 spring:
   application:
     name: UniFest
+  firebase:
+    project-id: unifest-konkuk
+    key-path: ${FIREBASE_KEY_PATH}
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: ${DATASOURCE_URL}
