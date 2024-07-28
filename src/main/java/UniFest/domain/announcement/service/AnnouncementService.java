@@ -2,6 +2,7 @@ package UniFest.domain.announcement.service;
 
 import UniFest.dto.request.announcement.AddAnnouncementRequest;
 import UniFest.dto.request.announcement.BoothInterestRequest;
+import UniFest.exception.announcement.FcmFailException;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import com.google.firebase.messaging.Message;
@@ -26,10 +27,10 @@ public class AnnouncementService {
             TopicManagementResponse response = FirebaseMessaging.getInstance()
                     .subscribeToTopic(registrationTokens, String.valueOf(boothId));
             if (response.getSuccessCount() != 1) {
-                //TODO throw an exception
+                throw new FcmFailException();
             }
         } catch (FirebaseMessagingException e) {
-            //TODO throw an exception
+            throw new FcmFailException();
         }
     }
 
@@ -39,10 +40,10 @@ public class AnnouncementService {
             TopicManagementResponse response = FirebaseMessaging.getInstance()
                     .unsubscribeFromTopic(registrationTokens, String.valueOf(boothId));
             if (response.getSuccessCount() != 1) {
-                //TODO throw an exception
+                throw new FcmFailException();
             }
         } catch (FirebaseMessagingException e) {
-            //TODO throw an exception
+            throw new FcmFailException();
         }
     }
 
@@ -59,7 +60,7 @@ public class AnnouncementService {
         try {
             FirebaseMessaging.getInstance().send(message);
         } catch (FirebaseMessagingException e) {
-            //TODO throw an exception
+            throw new FcmFailException();
         }
 
         return announcementId;
