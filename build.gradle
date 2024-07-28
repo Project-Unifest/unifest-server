@@ -50,6 +50,8 @@ dependencies {
 	implementation 'io.jsonwebtoken:jjwt-impl:0.12.3'
 	implementation 'io.jsonwebtoken:jjwt-jackson:0.12.3'
 
+	// Google Firebase Admin
+	implementation 'com.google.firebase:firebase-admin:9.2.0'
 
 }
 
