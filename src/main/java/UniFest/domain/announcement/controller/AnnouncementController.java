@@ -1,7 +1,7 @@
 package UniFest.domain.announcement.controller;
 
 import UniFest.dto.request.announcement.AddAnnouncementRequest;
-import UniFest.dto.request.announcement.BoothInterestRequest;
+import UniFest.dto.request.announcement.FestivalInterestRequest;
 import UniFest.domain.announcement.service.AnnouncementService;
 import UniFest.dto.response.Response;
 import io.swagger.v3.oas.annotations.Operation;
@@ -16,20 +16,20 @@ import org.springframework.web.bind.annotation.*;
 public class AnnouncementController {
     private final AnnouncementService announcementService;
 
-    @Operation(summary = "관심 부스 등록")
-    @PostMapping("/{booth-id}/interest")
-    public Response postInterest(@PathVariable("booth-id") Long boothId,
-                                 @RequestBody BoothInterestRequest boothInterestRequest) {
-        announcementService.addBoothInterest(boothId, boothInterestRequest);
-        return Response.ofSuccess("관심 부스 등록에 성공했습니다.", null);
+    @Operation(summary = "관심 축제 등록")
+    @PostMapping("/{festival-id}/interest")
+    public Response postInterest(@PathVariable("festival-id") Long festivalId,
+                                 @RequestBody FestivalInterestRequest festivalInterestRequest) {
+        announcementService.addFestivalInterest(festivalId, festivalInterestRequest);
+        return Response.ofSuccess("관심 축제 등록에 성공했습니다.", null);
     }
 
-    @Operation(summary = "관심 부스 해제")
-    @DeleteMapping("/{booth-id}/intereset")
-    public Response deleteInterest(@PathVariable("booth-id") Long boothId,
-                                   @RequestBody BoothInterestRequest boothInterestRequest) {
-        announcementService.deleteBoothInterest(boothId, boothInterestRequest);
-        return Response.ofSuccess("관심 부스 해제에 성공했습니다.", null);
+    @Operation(summary = "관심 축제 해제")
+    @DeleteMapping("/{festival-id}/intereset")
+    public Response deleteInterest(@PathVariable("festival-id") Long festivalId,
+                                   @RequestBody FestivalInterestRequest festivalInterestRequest) {
+        announcementService.deleteFestivalInterest(festivalId, festivalInterestRequest);
+        return Response.ofSuccess("관심 축제 해제에 성공했습니다.", null);
     }
 
     @Operation(summary = "확성기 공지 메세지 등록")

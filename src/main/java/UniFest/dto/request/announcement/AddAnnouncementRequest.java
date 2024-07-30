@@ -6,6 +6,5 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class AddAnnouncementRequest {
-    private String title;
-    private String body;
+    private String msgBody;
 }

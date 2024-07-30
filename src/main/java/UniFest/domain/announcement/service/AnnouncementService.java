@@ -1,7 +1,9 @@
 package UniFest.domain.announcement.service;
 
+import UniFest.domain.booth.entity.Booth;
+import UniFest.domain.booth.repository.BoothRepository;
 import UniFest.dto.request.announcement.AddAnnouncementRequest;
-import UniFest.dto.request.announcement.BoothInterestRequest;
+import UniFest.dto.request.announcement.FestivalInterestRequest;
 import UniFest.exception.announcement.FcmFailException;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingException;
@@ -17,15 +19,17 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class AnnouncementService {
-    private List<String> wrapAsRegistrationTokens(BoothInterestRequest boothInterestRequest) {
-        return Arrays.asList(boothInterestRequest.getFcmToken());
+    private final BoothRepository boothRepository;
+
+    private List<String> wrapAsRegistrationTokens(FestivalInterestRequest festivalInterestRequest) {
+        return Arrays.asList(festivalInterestRequest.getFcmToken());
     }
 
-    public void addBoothInterest(Long boothId, BoothInterestRequest boothInterestRequest) {
-        List<String> registrationTokens = wrapAsRegistrationTokens(boothInterestRequest);
+    public void addFestivalInterest(Long FestivalId, FestivalInterestRequest festivalInterestRequest) {
+        List<String> registrationTokens = wrapAsRegistrationTokens(festivalInterestRequest);
         try {
             TopicManagementResponse response = FirebaseMessaging.getInstance()
-                    .subscribeToTopic(registrationTokens, String.valueOf(boothId));
+                    .subscribeToTopic(registrationTokens, String.valueOf(FestivalId));
             if (response.getSuccessCount() != 1) {
                 throw new FcmFailException();
             }
@@ -34,11 +38,11 @@ public class AnnouncementService {
         }
     }
 
-    public void deleteBoothInterest(Long boothId, BoothInterestRequest boothInterestRequest) {
-        List<String> registrationTokens = wrapAsRegistrationTokens(boothInterestRequest);
+    public void deleteFestivalInterest(Long FestivalId, FestivalInterestRequest festivalInterestRequest) {
+        List<String> registrationTokens = wrapAsRegistrationTokens(festivalInterestRequest);
         try {
             TopicManagementResponse response = FirebaseMessaging.getInstance()
-                    .unsubscribeFromTopic(registrationTokens, String.valueOf(boothId));
+                    .unsubscribeFromTopic(registrationTokens, String.valueOf(FestivalId));
             if (response.getSuccessCount() != 1) {
                 throw new FcmFailException();
             }
@@ -49,11 +53,13 @@ public class AnnouncementService {
 
     public Long addAnnouncement(Long boothId, AddAnnouncementRequest addAnnouncementRequest) {
         Long announcementId = 0L;
-        String topic = String.valueOf(boothId);
+        Booth booth = boothRepository.getReferenceById(boothId);
+        String topic = String.valueOf(booth.getFestival().getId());
 
         Message message = Message.builder()
-                .putData("title", addAnnouncementRequest.getTitle())
-                .putData("body", addAnnouncementRequest.getBody())
+                .putData("boothId", String.valueOf(boothId))
+                .putData("boothName", booth.getName())
+                .putData("msgBody", addAnnouncementRequest.getMsgBody())
                 .setTopic(topic)
                 .build();
 

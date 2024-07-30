@@ -5,6 +5,6 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class BoothInterestRequest {
+public class FestivalInterestRequest {
     private String FcmToken;
 }
