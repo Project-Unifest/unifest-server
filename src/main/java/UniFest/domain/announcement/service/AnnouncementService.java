@@ -1,5 +1,7 @@
 package UniFest.domain.announcement.service;
 
+import UniFest.domain.announcement.entity.Announcement;
+import UniFest.domain.announcement.repository.AnnouncementRepository;
 import UniFest.domain.booth.entity.Booth;
 import UniFest.domain.booth.repository.BoothRepository;
 import UniFest.dto.request.announcement.AddAnnouncementRequest;
@@ -20,6 +22,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AnnouncementService {
     private final BoothRepository boothRepository;
+    private final AnnouncementRepository announcementRepository;
 
     private List<String> wrapAsRegistrationTokens(FestivalInterestRequest festivalInterestRequest) {
         return Arrays.asList(festivalInterestRequest.getFcmToken());
@@ -52,7 +55,6 @@ public class AnnouncementService {
     }
 
     public Long addAnnouncement(Long boothId, AddAnnouncementRequest addAnnouncementRequest) {
-        Long announcementId = 0L;
         Booth booth = boothRepository.getReferenceById(boothId);
         String topic = String.valueOf(booth.getFestival().getId());
 
@@ -63,12 +65,22 @@ public class AnnouncementService {
                 .setTopic(topic)
                 .build();
 
+        Announcement announcement = Announcement.builder()
+                .msgBody(addAnnouncementRequest.getMsgBody())
+                .booth(booth)
+                .build();
+
         try {
             FirebaseMessaging.getInstance().send(message);
+            announcement.setIsSent(true);
         } catch (FirebaseMessagingException e) {
+            announcement.setIsSent(false);
+            announcement.setErrorMessage(e.getMessage());
             throw new FcmFailException();
+        } finally {
+            announcementRepository.save(announcement);
         }
 
-        return announcementId;
+        return announcement.getId();
     }
 }
