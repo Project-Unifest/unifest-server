@@ -15,7 +15,7 @@ import java.util.List;
 
 @Configuration
 public class FcmConfig {
-    @Value("${firebase.key-path}")
+    @Value("${spring.firebase.key-path}")
     String fcmKeyPath;
 
     @Bean
