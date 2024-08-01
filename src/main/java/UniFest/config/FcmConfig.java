@@ -15,8 +15,12 @@ import java.util.List;
 
 @Configuration
 public class FcmConfig {
-    @Value("${spring.firebase.key-path}")
-    String fcmKeyPath;
+
+    private final String fcmKeyPath;
+
+    public FcmConfig(@Value("${spring.firebase.key-path}") String fcmKeyPath) {
+        this.fcmKeyPath = fcmKeyPath;
+    }
 
     @Bean
     FirebaseMessaging firebaseMessaging() throws IOException {
