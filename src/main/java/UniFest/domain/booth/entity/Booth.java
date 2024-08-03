@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 @Getter
 @Entity
@@ -77,6 +78,8 @@ public class Booth extends BaseEntity {
 
     private double longitude;
 
+    private String pin;
+
     @Builder
     public Booth(String name, BoothCategory category, String description, String detail, String thumbnail,
                  String warning, boolean enabled, String location, double latitude, double longitude, Festival festival) {
@@ -139,6 +142,15 @@ public class Booth extends BaseEntity {
     public void setMember(Member member){
         this.member = member;
         member.getBoothList().add(this);
+    }
+
+    //핀 번호 발급/재발급시 사용
+    public String createPin(){
+        Random random = new Random(System.currentTimeMillis());
+        int tempIntPin = random.nextInt(10000);
+        this.pin = String.format("%0d", tempIntPin);    //4자리 숫자 문자열
+
+        return this.pin;
     }
 
 }
