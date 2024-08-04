@@ -47,7 +47,7 @@ public class WaitingController {
     }
 
     @GetMapping("/{boothId}/all")
-    @Operation(summary = "완료 포함 전체 웨이팅 조회")
+    @Operation(summary = "완료 포함 전체 웨이팅 조회(관리자용, 디버깅용")
     public Response<List<WaitingInfo>> getAllWaitingList(@PathVariable Long boothId) {
         return Response.ofSuccess("완료 포함 전체 웨이팅을 불러왔습니다", waitingService.getWaitingList(boothId, Boolean.FALSE));
     }
@@ -58,6 +58,16 @@ public class WaitingController {
         Long ret = waitingService.getWaitingCount(boothId, ReservationStatus.RESERVED);
         if(ret==null){
             return Response.ofNotFound("대기중인 팀이 없습니다", null);
+        }
+        return Response.ofSuccess("데이터를 가져왔습니다", ret);
+    }
+
+    @GetMapping("/me/{deviceId}")
+    @Operation(summary="내 RESERVED 웨이팅 조회(device ID 기준으로!)")
+    public Response<List<WaitingInfo>> getMyWaitingList(@PathVariable String deviceId){
+        List<WaitingInfo> ret = waitingService.getMyWaitingList(deviceId);
+        if(ret.isEmpty()){
+            return Response.ofNotFound("대기열이 존재하지 않습니다", null);
         }
         return Response.ofSuccess("데이터를 가져왔습니다", ret);
     }
