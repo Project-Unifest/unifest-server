@@ -4,37 +4,33 @@ import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.messaging.FirebaseMessaging;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.io.ClassPathResource;
 
-import java.io.FileNotFoundException;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
+@Slf4j
 @Configuration
 public class FcmConfig {
 
-    private final String fcmKeyPath;
+    private final String fcmKey;
 
-    public FcmConfig(@Value("${spring.firebase.key-path:#{null}}") String fcmKeyPath) {
-        this.fcmKeyPath = fcmKeyPath;
+    public FcmConfig(@Value("${spring.firebase.key:#{null}}") String fcmKey) {
+        this.fcmKey = fcmKey;
     }
 
     @Bean
     FirebaseMessaging firebaseMessaging() throws IOException {
-        if (fcmKeyPath == null || fcmKeyPath.isEmpty()) {
-            throw new IllegalArgumentException("Firebase key path is not set");
+        if (fcmKey == null || fcmKey.isEmpty()) {
+            throw new IllegalArgumentException("Firebase key is not set");
         }
 
-        ClassPathResource resource = new ClassPathResource(fcmKeyPath);
-        if (!resource.exists()) {
-            throw new FileNotFoundException("Firebase credentials file not found: " + fcmKeyPath);
-        }
-
-        try (InputStream refreshToken = resource.getInputStream()) {
+        try (InputStream refreshToken = new ByteArrayInputStream(fcmKey.getBytes())) {
             FirebaseApp firebaseApp = null;
             List<FirebaseApp> firebaseAppList = FirebaseApp.getApps();
             if (firebaseAppList != null && !firebaseAppList.isEmpty()) {
