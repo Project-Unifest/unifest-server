@@ -1,31 +1,43 @@
 spring:
   application:
     name: UniFest
+
   firebase:
     project-id: unifest-konkuk
-    key-path: ${FIREBASE_KEY_PATH}
+    key: ${FIREBASE_KEY}
+  h2:
+    console:
+      enabled: true  # H2 Console을 사용할지 여부 (H2 Console은 H2 Database를 UI로 제공해주는 기능)
+      path: /h2-console  # H2 Console의 Path
+  # Database Setting Info (Database를 H2로 사용하기 위해 H2연결 정보 입력)
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: ${DATASOURCE_URL}
-    username: ${DATASOURCE_USERNAME}
-    password: ${DATASOURCE_PASSWORD}
-  servlet:
-    multipart:
-      max-file-size: 3MB
+    driver-class-name: org.h2.Driver # Database를 H2로 사용하겠다.
+    url: jdbc:h2:~/test2;MODE=MYSQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;
+    username: sa  # H2 접속 시 입력할 username 정보 (원하는 것으로 입력)
+    password:  # H2 접속 시 입력할 password 정보 (원하는 것으로 입력)
+
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
     properties:
       hibernate:
-#        show_sql: true
-#        format_sql: true
+        show_sql: true
+        format_sql: true
         default_batch_fetch_size: 1000
-        dialect: org.hibernate.dialect.MySQLDialect
   data:
     redis:
-      host: unifest-redis
+      host: localhost
       port: 6379
-      password: ${REDIS_PASSWORD}
+      password: '0000'
+logging:
+  level:
+    org:
+      hibernate:
+        type:
+          descriptor:
+            sql: trace
+
+
 springdoc:
   default-consumes-media-type: application/json
   default-produces-media-type: application/json
@@ -36,23 +48,22 @@ springdoc:
     operations-sorter: alpha
     tags-sorter: alpha
 jwt:
-  secret: ${JWT_SECRETKEY}
-  access-token-expiration-minutes: 3000000
-  refresh-token-expiration-minutes: 6000000
+  secret: testesjthsejtkhesjkthskthejthskjthsekjthskjtheskjthskj
+  access-token-expiration-minutes: 2100000000
+  refresh-token-expiration-minutes: 10080
 server:
   port: 8080
 # S3
 cloud:
   aws:
     credentials:
-      accessKey: ${S3_ACCESS}
-      secretKey: ${S3_SECRET}
+      accessKey: test
+      secretKey: test
     s3:
-      bucket: ${UNIFEST_BUCKET}
+      bucket: test
     region:
       static: ap-northeast-2
     stack:
       auto: false
-
 
 
