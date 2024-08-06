@@ -148,7 +148,7 @@ public class Booth extends BaseEntity {
     public String createPin(){
         Random random = new Random(System.currentTimeMillis());
         int tempIntPin = random.nextInt(10000);
-        this.pin = String.format("%0d", tempIntPin);    //4자리 숫자 문자열
+        this.pin = String.format("%04d", tempIntPin);    //4자리 숫자 문자열
 
         return this.pin;
     }
