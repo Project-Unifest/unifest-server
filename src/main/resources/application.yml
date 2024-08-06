@@ -1,31 +1,37 @@
 spring:
   application:
     name: UniFest
+
   firebase:
     project-id: unifest-konkuk
     key: ${FIREBASE_KEY}
+
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: ${DATASOURCE_URL}
-    username: ${DATASOURCE_USERNAME}
-    password: ${DATASOURCE_PASSWORD}
-  servlet:
-    multipart:
-      max-file-size: 3MB
+    driver-class-name: org.h2.Driver # Database를 H2로 사용하겠다.
+    url: jdbc:h2:~/test2;MODE=MYSQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;
+    username: sa  # H2 접속 시 입력할 username 정보 (원하는 것으로 입력)
+    password:  # H2 접속 시 입력할 password 정보 (원하는 것으로 입력)
+
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
     properties:
       hibernate:
-        #        show_sql: true
-        #        format_sql: true
         default_batch_fetch_size: 1000
-        dialect: org.hibernate.dialect.MySQLDialect
   data:
     redis:
-      host: unifest-redis
+      host: localhost
       port: 6379
-      password: ${REDIS_PASSWORD}
+      password: '0000'
+logging:
+  level:
+    org:
+      hibernate:
+        type:
+          descriptor:
+            sql: trace
+
+
 springdoc:
   default-consumes-media-type: application/json
   default-produces-media-type: application/json
@@ -36,19 +42,19 @@ springdoc:
     operations-sorter: alpha
     tags-sorter: alpha
 jwt:
-  secret: ${JWT_SECRETKEY}
-  access-token-expiration-minutes: 3000000
-  refresh-token-expiration-minutes: 6000000
+  secret: testesjthsejtkhesjkthskthejthskjthsekjthskjtheskjthskj
+  access-token-expiration-minutes: 2100000000
+  refresh-token-expiration-minutes: 10080
 server:
   port: 8080
 # S3
 cloud:
   aws:
     credentials:
-      accessKey: ${S3_ACCESS}
-      secretKey: ${S3_SECRET}
+      accessKey: test
+      secretKey: test
     s3:
-      bucket: ${UNIFEST_BUCKET}
+      bucket: test
     region:
       static: ap-northeast-2
     stack:
