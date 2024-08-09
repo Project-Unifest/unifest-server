@@ -1,27 +1,56 @@
 package UniFest.domain.waiting.controller;
 
+import UniFest.domain.booth.service.BoothService;
 import UniFest.domain.booth.entity.Booth;
 import UniFest.domain.booth.repository.BoothRepository;
 import UniFest.domain.waiting.entity.ReservationStatus;
 import UniFest.domain.waiting.entity.Waiting;
 import UniFest.domain.waiting.service.WaitingService;
+import UniFest.dto.request.booth.BoothPatchRequest;
 import UniFest.dto.request.waiting.DeleteWaitingRequest;
 import UniFest.dto.request.waiting.PostWaitingRequest;
 import UniFest.dto.response.Response;
 import UniFest.dto.response.waiting.WaitingInfo;
 import UniFest.exception.booth.BoothNotFoundException;
+import UniFest.security.userdetails.MemberDetails;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/waiting")
 @RequiredArgsConstructor
+@Slf4j
+@RequestMapping("/waiting")
 public class WaitingController {
+
+    private final BoothService boothService;
     private final WaitingService waitingService;
     private final BoothRepository boothRepository;
+
+    @SecurityRequirement(name = "JWT")
+    @Operation(summary = "Pin 번호 받기")
+    @GetMapping("/pin/{booth-id}")
+    public Response getPin(@PathVariable("booth-id") Long boothId,
+                           @AuthenticationPrincipal MemberDetails memberDetails){
+        String pin = boothService.getPin(memberDetails, boothId);
+
+        return Response.ofSuccess("OK", pin);
+    }
+
+    @SecurityRequirement(name = "JWT")
+    @Operation(summary = "Pin 발급/재발급")
+    @PostMapping("/pin/{booth-id}")
+    public Response createPin(@PathVariable("booth-id") Long boothId,
+                           @AuthenticationPrincipal MemberDetails memberDetails){
+        String pin = boothService.createPin(memberDetails, boothId);
+
+        return Response.ofSuccess("OK", pin);
+    }
 
     @PostMapping
     @Operation(summary = "웨이팅 추가")
@@ -47,7 +76,7 @@ public class WaitingController {
     }
 
     @GetMapping("/{boothId}/all")
-    @Operation(summary = "완료 포함 전체 웨이팅 조회(관리자용, 디버깅용")
+    @Operation(summary = "완료 포함 전체 웨이팅 조회(관리자용, 디버깅용)")
     public Response<List<WaitingInfo>> getAllWaitingList(@PathVariable Long boothId) {
         return Response.ofSuccess("완료 포함 전체 웨이팅을 불러왔습니다", waitingService.getWaitingList(boothId, Boolean.FALSE));
     }
@@ -56,7 +85,7 @@ public class WaitingController {
     @Operation(summary = "대기중인 팀의 수 조회")
     public Response<Long> getWaitingCount(@PathVariable Long boothId) {
         Long ret = waitingService.getWaitingCount(boothId, ReservationStatus.RESERVED);
-        if(ret==null){
+        if(ret == null){
             return Response.ofNotFound("대기중인 팀이 없습니다", null);
         }
         return Response.ofSuccess("데이터를 가져왔습니다", ret);
@@ -82,7 +111,6 @@ public class WaitingController {
         return Response.ofSuccess("호출했습니다", ret);
 
     }
-
 
     @DeleteMapping("/{id}")
     @Operation(summary = "관리자가 직접 웨이팅 삭제")
