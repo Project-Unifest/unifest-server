@@ -18,4 +18,17 @@ public class Response<T> {
     public static <T> Response<T> ofCreated(String message, T data) {
         return new Response<>("201", message, data);
     }
+    public static <T> Response<T> ofFail(String message, T data) {
+        return new Response<>("400", message, data);
+    }
+    public static <T> Response<T> ofUnauthorized(String message, T data) {
+        return new Response<>("401", message, data);
+    }
+    public static <T> Response<T> ofForbidden(String message, T data) {
+        return new Response<>("403", message, data);
+    }
+
+    public static <T> Response<T> ofNotFound(String message, T data) {
+        return new Response<>("404", message, data);
+    }
 }
