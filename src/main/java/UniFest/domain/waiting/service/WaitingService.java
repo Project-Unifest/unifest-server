@@ -31,7 +31,8 @@ public class WaitingService {
                 waiting.getCreatedAt(),
                 waiting.getUpdatedAt(),
                 waiting.getStatus(),
-                waitingOrder
+                waitingOrder,
+                waiting.getBooth().getName()
         );
     }
     private List<WaitingInfo> addWaitingOrderByBooth(Map<Long, List<Waiting>> waitingMap, String deviceId) {
@@ -63,7 +64,6 @@ public class WaitingService {
 
     @Transactional
     public WaitingInfo addWaiting(Waiting waiting) {
-        // 예약 정보를 데이터베이스에 저장
         Waiting savedWaiting = waitingRepository.save(waiting);
         return createWaitingInfo(savedWaiting, null);
     }

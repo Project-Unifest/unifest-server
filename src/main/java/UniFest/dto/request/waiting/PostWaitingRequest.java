@@ -10,4 +10,5 @@ public class PostWaitingRequest {
     private String tel;
     private String deviceId;
     private int partySize;
+    private String pinNumber;
 }

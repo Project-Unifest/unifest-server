@@ -59,6 +59,11 @@ public class WaitingController {
                 .filter(Booth::isEnabled)
                 .orElseThrow(BoothNotFoundException::new);
 
+        String pinNumber = existBooth.getPin();
+        if(!pinNumber.equals(waitingRequest.getPinNumber())){
+            return Response.ofFail("Pin 번호가 일치하지 않습니다", null);
+        }
+
         Waiting newWaiting = new Waiting(
                 existBooth,
                 waitingRequest.getDeviceId(),

@@ -20,4 +20,5 @@ public class WaitingInfo {
 
     private ReservationStatus status;
     private Integer waitingOrder;
+    private String boothName;
 }
