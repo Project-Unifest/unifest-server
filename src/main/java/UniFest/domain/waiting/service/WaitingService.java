@@ -91,13 +91,23 @@ public class WaitingService {
 
     @Transactional
     public WaitingInfo callWaiting(Long id) {
+        WaitingInfo waitingInfo = getWaitingById(id, ReservationStatus.CALLED);
+        // 명시적으로 사용자를 호출한다
+        return waitingInfo;
+    }
+
+    @Transactional
+    public WaitingInfo completeWaiting(Long id){
+        return getWaitingById(id, ReservationStatus.COMPLETED);
+    }
+
+    private WaitingInfo getWaitingById(Long id, ReservationStatus status) {
         Waiting waiting = waitingRepository.findById(id).orElse(null);
-        if (waiting != null) {
-            if( waiting.getStatus() == ReservationStatus.COMPLETED) {
+        if (waiting !=null){
+            if(waiting.getStatus() == ReservationStatus.COMPLETED){
                 return null;
             }
-            // 사용자를 명시적으로 호출하는 명령어를 실행해야함 (일단은 미구현)
-            waiting.setStatus(ReservationStatus.COMPLETED);
+            waiting.setStatus(status);
             waitingRepository.save(waiting);
             return createWaitingInfo(waiting, null);
         }

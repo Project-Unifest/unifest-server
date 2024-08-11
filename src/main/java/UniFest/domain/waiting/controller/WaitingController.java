@@ -117,6 +117,16 @@ public class WaitingController {
 
     }
 
+    @PutMapping("/complete/{id}")
+    @Operation(summary="관리자의 입장 처리 완료")
+    public Response<WaitingInfo> completeWaiting(@PathVariable Long id) {
+        WaitingInfo ret =  waitingService.completeWaiting(id);
+        if (ret == null) {
+            return Response.ofNotFound("대기열이 존재하지 않습니다", null);
+        }
+        return Response.ofSuccess("완료했습니다", ret);
+    }
+
     @DeleteMapping("/{id}")
     @Operation(summary = "관리자가 직접 웨이팅 삭제")
     public Response<WaitingInfo> removeWaiting(@PathVariable Long id) {
