@@ -134,4 +134,8 @@ public class WaitingService {
             return null;
         }
     }
+    @Transactional(readOnly = true)
+    public Long getWaitingCountByBooth(Booth booth, ReservationStatus status){
+        return Long.valueOf(waitingRepository.findAllByBoothIdAndStatus(booth.getId(), status).size());
+    }
 }
