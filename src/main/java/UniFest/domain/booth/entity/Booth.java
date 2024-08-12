@@ -78,11 +78,15 @@ public class Booth extends BaseEntity {
 
     private double longitude;
 
+    //Waiting 가능 여부
+    private boolean waitingEnabled = false;
+
+    //Waiting을 위한 Booth별 pin
     private String pin;
 
     @Builder
     public Booth(String name, BoothCategory category, String description, String detail, String thumbnail,
-                 String warning, boolean enabled, String location, double latitude, double longitude, Festival festival) {
+                 String warning, boolean enabled, String location, double latitude, double longitude, Festival festival, boolean waitingEnabled) {
         this.name = name;
         this.category = category;
         this.description = description;
@@ -94,6 +98,7 @@ public class Booth extends BaseEntity {
         this.latitude = latitude;
         this.longitude = longitude;
         this.festival = festival;
+        this.waitingEnabled = waitingEnabled;
     }
     public int getLikesCount(){
         return this.likesList.size();
@@ -139,6 +144,10 @@ public class Booth extends BaseEntity {
         this.longitude = longitude;
     }
 
+    public void updateWaitingEnabled(boolean enabled){
+        this.waitingEnabled = enabled;
+    }
+
     public void setMember(Member member){
         this.member = member;
         member.getBoothList().add(this);
@@ -152,5 +161,7 @@ public class Booth extends BaseEntity {
 
         return this.pin;
     }
+
+
 
 }

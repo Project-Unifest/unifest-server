@@ -168,4 +168,12 @@ public class WaitingController {
         return Response.ofSuccess("대기열을 삭제했습니다", waitingInfo);
     }
 
+    @PostMapping("/{boothId}/waitingEnabled")
+    @Operation(summary = "부스 웨이팅 불/가 변경")
+    public Response<Boolean> changeBoothWaitingEnabled(@PathVariable Long boothId){
+        Boolean updatedVal = boothService.updateBoothWaitingEnabled(boothId);
+
+        return Response.ofSuccess("OK", updatedVal);
+    }
+
 }
