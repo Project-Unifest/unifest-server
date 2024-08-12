@@ -25,7 +25,7 @@ public class AnnouncementController {
     }
 
     @Operation(summary = "관심 축제 해제")
-    @DeleteMapping("/{festival-id}/intereset")
+    @DeleteMapping("/{festival-id}/interest")
     public Response deleteInterest(@PathVariable("festival-id") Long festivalId,
                                    @RequestBody FestivalInterestRequest festivalInterestRequest) {
         announcementService.deleteFestivalInterest(festivalId, festivalInterestRequest);
