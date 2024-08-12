@@ -9,6 +9,7 @@ import UniFest.domain.festival.repository.FestivalRepository;
 import UniFest.domain.member.entity.Member;
 import UniFest.domain.member.repository.MemberRepository;
 import UniFest.domain.menu.entity.Menu;
+import UniFest.domain.menu.entity.MenuStatus;
 import UniFest.domain.menu.repository.MenuRepository;
 import UniFest.dto.request.booth.BoothCreateRequest;
 import UniFest.dto.request.booth.BoothPatchRequest;
@@ -82,6 +83,7 @@ public class BoothService {
                     .imgUrl(menuCreateRequest.getImgUrl())
                     .build();
             menu.setBooth(booth);
+            menu.updateMenuStatus(MenuStatus.ENOUGH);   //메뉴 상태 기본값
             menuRepository.save(menu).getId();
         }
 

@@ -29,8 +29,7 @@ public class Menu {
     private Booth booth;
 
     @Enumerated(EnumType.STRING)
-    @ColumnDefault("'ENOUGH'")
-    private MenuStatus menuStatus = MenuStatus.ENOUGH;
+    private MenuStatus menuStatus;
 
     @Builder
     public Menu(String name, int price, String imgUrl, MenuStatus menuStatus){

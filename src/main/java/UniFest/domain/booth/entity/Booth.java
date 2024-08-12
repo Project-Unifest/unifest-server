@@ -11,6 +11,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -79,7 +80,8 @@ public class Booth extends BaseEntity {
     private double longitude;
 
     //Waiting 가능 여부
-    private boolean waitingEnabled = false;
+    @ColumnDefault("0")
+    private boolean waitingEnabled;
 
     //Waiting을 위한 Booth별 pin
     private String pin;
