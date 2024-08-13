@@ -9,6 +9,7 @@ import UniFest.domain.festival.repository.FestivalRepository;
 import UniFest.domain.member.entity.Member;
 import UniFest.domain.member.repository.MemberRepository;
 import UniFest.domain.menu.entity.Menu;
+import UniFest.domain.menu.entity.MenuStatus;
 import UniFest.domain.menu.repository.MenuRepository;
 import UniFest.dto.request.booth.BoothCreateRequest;
 import UniFest.dto.request.booth.BoothPatchRequest;
@@ -82,6 +83,7 @@ public class BoothService {
                     .imgUrl(menuCreateRequest.getImgUrl())
                     .build();
             menu.setBooth(booth);
+            menu.updateMenuStatus(MenuStatus.ENOUGH);   //메뉴 상태 기본값
             menuRepository.save(menu).getId();
         }
 
@@ -210,6 +212,15 @@ public class BoothService {
         String newPin = findBooth.createPin();
 
         return newPin;
+    }
+
+    @Transactional
+    public boolean updateBoothWaitingEnabled(Long boothId){
+        Booth findBooth = boothRepository.findByBoothId(boothId).orElseThrow(BoothNotFoundException::new);
+        Member boothMember = findBooth.getMember();
+
+        findBooth.updateWaitingEnabled(!findBooth.isWaitingEnabled());  //toggle 형식으로 작동
+        return findBooth.isWaitingEnabled();
     }
 
 }
