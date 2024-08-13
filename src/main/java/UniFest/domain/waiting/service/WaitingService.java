@@ -65,7 +65,8 @@ public class WaitingService {
     @Transactional
     public WaitingInfo addWaiting(Waiting waiting) {
         Waiting savedWaiting = waitingRepository.save(waiting);
-        return createWaitingInfo(savedWaiting, null);
+        Long waitingOrder = getWaitingCountByBooth(waiting.getBooth(), ReservationStatus.RESERVED);
+        return createWaitingInfo(savedWaiting, Integer.valueOf(waitingOrder.intValue() + 1));
     }
 
     @Transactional
