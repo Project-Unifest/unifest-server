@@ -25,6 +25,8 @@ public class BoothResponse {
 
     private boolean enabled;
 
+    private boolean waitingEnabled;
+
     public BoothResponse(Booth booth){
         this.id = booth.getId();
         this.name = booth.getName();
@@ -35,5 +37,6 @@ public class BoothResponse {
         this.latitude = booth.getLatitude();
         this.longitude = booth.getLongitude();
         this.enabled = booth.isEnabled();
+        this.waitingEnabled = booth.isWaitingEnabled();
     }
 }
