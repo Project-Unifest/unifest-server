@@ -36,6 +36,8 @@ public class BoothDetailResponse {
 
     private boolean enabled;
 
+    private boolean waitingEnabled;
+
     public BoothDetailResponse(Booth booth){
         this.id = booth.getId();
         this.name = booth.getName();
@@ -48,6 +50,7 @@ public class BoothDetailResponse {
         this.longitude = booth.getLongitude();
         this.enabled = booth.isEnabled();
         this.menus = booth.getMenuList().stream().map(MenuResponse::new).collect(Collectors.toList());
+        this.waitingEnabled = booth.isWaitingEnabled();
     }
 
 }
