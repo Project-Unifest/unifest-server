@@ -215,9 +215,9 @@ public class BoothService {
     }
 
     @Transactional
+    @CacheEvict(value = "BoothInfo", key = "#boothId")
     public boolean updateBoothWaitingEnabled(Long boothId){
         Booth findBooth = boothRepository.findByBoothId(boothId).orElseThrow(BoothNotFoundException::new);
-        Member boothMember = findBooth.getMember();
 
         findBooth.updateWaitingEnabled(!findBooth.isWaitingEnabled());  //toggle 형식으로 작동
         return findBooth.isWaitingEnabled();
