@@ -80,6 +80,17 @@ public class WaitingService {
         return createWaitingInfo(waiting, null);
     }
 
+    @Transactional
+    public WaitingInfo setNoShow(Long waitingId) {
+        Waiting waiting = waitingRepository.findById(waitingId).orElse(null);
+        if (waiting == null) {
+            return null;
+        }
+        waiting.setStatus(ReservationStatus.CANCELED);
+        waitingRepository.save(waiting);
+        return createWaitingInfo(waiting, null);
+    }
+
     @Transactional(readOnly = true)
     public List<WaitingInfo> getWaitingList(Long boothId, Boolean isReserved) {
         // isReserved 가 true 이면 예약된 대기열만 조회, 아니면 전체 대기열 조회

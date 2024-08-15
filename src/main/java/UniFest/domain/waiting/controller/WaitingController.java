@@ -145,7 +145,6 @@ public class WaitingController {
             return Response.ofNotFound("대기열이 존재하지 않습니다", null);
         }
         return Response.ofSuccess("호출했습니다", ret);
-
     }
 
     @PutMapping("/{waitingId}/complete")
@@ -156,6 +155,16 @@ public class WaitingController {
             return Response.ofNotFound("대기열이 존재하지 않습니다", null);
         }
         return Response.ofSuccess("완료했습니다", ret);
+    }
+
+    @PutMapping("/{waitingId}/noshow")
+    @Operation(summary="관리자가 예약 부재 처리")
+    public Response<WaitingInfo> noshowWaiting(@PathVariable Long waitingId) {
+        WaitingInfo ret =  waitingService.setNoShow(waitingId);
+        if (ret == null) {
+            return Response.ofNotFound("대기열이 존재하지 않습니다", null);
+        }
+        return Response.ofSuccess("취소했습니다", ret);
     }
 
     @DeleteMapping("/{waitingId}")
