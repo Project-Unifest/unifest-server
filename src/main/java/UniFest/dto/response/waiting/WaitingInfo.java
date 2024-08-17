@@ -4,7 +4,6 @@ import UniFest.domain.waiting.entity.ReservationStatus;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
@@ -20,4 +19,6 @@ public class WaitingInfo {
     private LocalDateTime updatedAt;
 
     private ReservationStatus status;
+    private Integer waitingOrder;
+    private String boothName;
 }

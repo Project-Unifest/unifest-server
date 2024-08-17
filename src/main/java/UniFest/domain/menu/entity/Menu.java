@@ -6,6 +6,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 
 @Getter
 @Entity
@@ -27,15 +28,23 @@ public class Menu {
     @JoinColumn(name = "booth_id")
     private Booth booth;
 
+    @Enumerated(EnumType.STRING)
+    private MenuStatus menuStatus;
+
     @Builder
-    public Menu(String name, int price, String imgUrl){
+    public Menu(String name, int price, String imgUrl, MenuStatus menuStatus){
         this.name = name;
         this.price = price;
         this.imgUrl = imgUrl;
+        this.menuStatus = menuStatus;
     }
 
     public void setBooth(Booth booth) {
         this.booth = booth;
         booth.getMenuList().add(this);
+    }
+
+    public void updateMenuStatus(MenuStatus menuStatus){
+        this.menuStatus = menuStatus;
     }
 }

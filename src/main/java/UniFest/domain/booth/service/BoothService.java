@@ -9,6 +9,7 @@ import UniFest.domain.festival.repository.FestivalRepository;
 import UniFest.domain.member.entity.Member;
 import UniFest.domain.member.repository.MemberRepository;
 import UniFest.domain.menu.entity.Menu;
+import UniFest.domain.menu.entity.MenuStatus;
 import UniFest.domain.menu.repository.MenuRepository;
 import UniFest.dto.request.booth.BoothCreateRequest;
 import UniFest.dto.request.booth.BoothPatchRequest;
@@ -82,6 +83,7 @@ public class BoothService {
                     .imgUrl(menuCreateRequest.getImgUrl())
                     .build();
             menu.setBooth(booth);
+            menu.updateMenuStatus(MenuStatus.ENOUGH);   //메뉴 상태 기본값
             menuRepository.save(menu).getId();
         }
 
@@ -176,4 +178,49 @@ public class BoothService {
         if(findBooth.getMember().getId() != memberId) throw new NotAuthorizedException();
         return findBooth;
     }
+
+    public String getPin(MemberDetails memberDetails, Long boothId){
+        Booth findBooth = boothRepository.findByBoothId(boothId)
+                .orElseThrow(BoothNotFoundException::new);
+        Member boothMember = findBooth.getMember();
+
+        //부스 운영자만 조회 가능하게
+        if(boothMember.getId() != memberDetails.getMemberId()){
+            throw new NotAuthorizedException();
+        }
+
+        //pin이 발급되지 않았을 경우 발급 후 전달
+        String boothPin = findBooth.getPin();
+        if(boothPin == null){
+            boothPin = findBooth.createPin();
+        }
+
+        return boothPin;
+    }
+
+    @Transactional
+    public String createPin(MemberDetails memberDetails, Long boothId){
+        Booth findBooth = boothRepository.findByBoothId(boothId)
+                .orElseThrow(BoothNotFoundException::new);
+        Member boothMember = findBooth.getMember();
+
+        //부스 운영자만 생성 가능하게
+        if(boothMember.getId() != memberDetails.getMemberId()){
+            throw new NotAuthorizedException();
+        }
+
+        String newPin = findBooth.createPin();
+
+        return newPin;
+    }
+
+    @Transactional
+    @CacheEvict(value = "BoothInfo", key = "#boothId")
+    public boolean updateBoothWaitingEnabled(Long boothId){
+        Booth findBooth = boothRepository.findByBoothId(boothId).orElseThrow(BoothNotFoundException::new);
+
+        findBooth.updateWaitingEnabled(!findBooth.isWaitingEnabled());  //toggle 형식으로 작동
+        return findBooth.isWaitingEnabled();
+    }
+
 }

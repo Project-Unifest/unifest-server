@@ -1,8 +1,8 @@
 package UniFest.domain.menu.controller;
 
+import UniFest.domain.menu.entity.MenuStatus;
 import UniFest.domain.menu.service.MenuService;
-import UniFest.dto.request.booth.BoothCreateRequest;
-import UniFest.dto.request.menu.MenuCreateRequest;
+import UniFest.dto.request.menu.MenuStatusChangeRequest;
 import UniFest.dto.response.Response;
 import UniFest.security.userdetails.MemberDetails;
 import io.swagger.v3.oas.annotations.Operation;
@@ -25,6 +25,18 @@ public class MenuController {
     public Response deleteMenu(@PathVariable("menu-id") Long menuId,
                              @AuthenticationPrincipal MemberDetails memberDetails) {
         menuService.deleteMenu(menuId, memberDetails);
+        return Response.ofSuccess("OK",null);
+    }
+
+    @SecurityRequirement(name = "JWT")
+    @Operation(summary = "메뉴 재고 상태 변경")
+    @PutMapping("{menu-id}/status")
+    public Response changeMenuStatus(@Valid @RequestBody MenuStatusChangeRequest menuStatusChangeRequest,
+                                     @AuthenticationPrincipal MemberDetails memberDetails) {
+        Long menuId = menuStatusChangeRequest.getMenuId();
+        MenuStatus menuStatus = menuStatusChangeRequest.getMenuStatus();
+        menuService.changeMenuStatus(memberDetails ,menuId, menuStatus);
+
         return Response.ofSuccess("OK",null);
     }
 }
