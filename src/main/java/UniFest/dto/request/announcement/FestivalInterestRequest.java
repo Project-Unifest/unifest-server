@@ -8,5 +8,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class FestivalInterestRequest {
-    private String FcmToken;
+    private String fcmToken;
 }
