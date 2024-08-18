@@ -68,8 +68,9 @@ public class WaitingService {
                     return booth.getId();
                 })
                 .collect(Collectors.toList());
+        boothIds = boothIds.stream().distinct().collect(Collectors.toList());
         System.out.println("boothIds = " + boothIds);
-        List<Waiting> allRelatedWaitings = waitingRepository.findAllByBoothInAndStatus(boothIds, ReservationStatus.RESERVED) ;
+        List<Waiting> allRelatedWaitings = waitingRepository.findAllByBoothIdInAndStatus(boothIds, ReservationStatus.RESERVED) ;
         System.out.println("allRelatedWaitings = " + allRelatedWaitings);
         List<WaitingInfo> allOrderList = addWaitingOrderByBooth(allRelatedWaitings);
         System.out.println("allOrderList = " + allOrderList);
