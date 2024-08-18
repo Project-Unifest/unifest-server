@@ -69,11 +69,10 @@ public class WaitingService {
                 })
                 .collect(Collectors.toList());
         System.out.println("boothIds = " + boothIds);
-
         List<Waiting> allRelatedWaitings = waitingRepository.findAllByBoothInAndStatus(boothIds, ReservationStatus.RESERVED) ;
-
+        System.out.println("allRelatedWaitings = " + allRelatedWaitings);
         List<WaitingInfo> allOrderList = addWaitingOrderByBooth(allRelatedWaitings);
-
+        System.out.println("allOrderList = " + allOrderList);
         return allOrderList.stream()
                 .filter(waitingInfo -> waitingInfo.getDeviceId().equals(deviceId))
                 .collect(Collectors.toList());
