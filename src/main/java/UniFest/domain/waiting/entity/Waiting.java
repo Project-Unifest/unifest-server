@@ -24,7 +24,7 @@ public class Waiting extends BaseEntity {
     @Column(name="waiting_id")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "booth_id")
     private Booth booth;
 
