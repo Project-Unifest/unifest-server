@@ -7,6 +7,7 @@ import UniFest.domain.waiting.entity.Waiting;
 import UniFest.domain.waiting.repository.WaitingRepository;
 import UniFest.dto.response.waiting.WaitingInfo;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.Hibernate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -56,9 +57,18 @@ public class WaitingService {
     public List<WaitingInfo> getMyWaitingList(String deviceId) {
         List<Waiting> myWaitings = waitingRepository.findAllByDeviceIdAndStatus(deviceId, ReservationStatus.RESERVED);
 
+        System.out.println("myWaitings = " + myWaitings);
         List<Long> boothIds = myWaitings.stream()
-                .map(waiting -> waiting.getBooth().getId())
+                .map(waiting -> {
+                    Booth booth = waiting.getBooth();
+                    if (booth == null) {
+                        throw new IllegalStateException("Booth entity is null for Waiting ID: " + waiting.getId());
+                    }
+                    Hibernate.initialize(booth); // 명시적으로 초기화
+                    return booth.getId();
+                })
                 .collect(Collectors.toList());
+        System.out.println("boothIds = " + boothIds);
 
         List<Waiting> allRelatedWaitings = waitingRepository.findAllByBoothInAndStatus(boothIds, ReservationStatus.RESERVED) ;
 
