@@ -52,7 +52,7 @@ public class WaitingService {
                 .collect(Collectors.toList());
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public List<WaitingInfo> getMyWaitingList(String deviceId) {
         List<Waiting> myWaitings = waitingRepository.findAllByDeviceIdAndStatus(deviceId, ReservationStatus.RESERVED);
 
