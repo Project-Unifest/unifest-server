@@ -67,7 +67,7 @@ public class Booth extends BaseEntity {
     @OneToMany(mappedBy = "booth", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Menu> menuList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "booth", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "booth", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Waiting> waitingList = new ArrayList<>();
 
     @OneToMany(mappedBy = "booth", cascade = CascadeType.ALL, orphanRemoval = true)
