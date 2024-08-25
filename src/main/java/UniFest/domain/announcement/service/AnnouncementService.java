@@ -45,10 +45,10 @@ public class AnnouncementService {
             TopicManagementResponse response = FirebaseMessaging.getInstance()
                     .subscribeToTopic(registrationTokens, String.valueOf(festivalId));
             if (response.getSuccessCount() != 1) {
-                throw new FcmFailException();
+                throw new FcmFailException(response.getErrors().get(0).getReason().toString());
             }
         } catch (FirebaseMessagingException e) {
-            throw new FcmFailException();
+            throw new FcmFailException(e.getMessage());
         }
     }
 
@@ -59,10 +59,10 @@ public class AnnouncementService {
             TopicManagementResponse response = FirebaseMessaging.getInstance()
                     .unsubscribeFromTopic(registrationTokens, String.valueOf(festivalId));
             if (response.getSuccessCount() != 1) {
-                throw new FcmFailException();
+                throw new FcmFailException(response.getErrors().get(0).getReason().toString());
             }
         } catch (FirebaseMessagingException e) {
-            throw new FcmFailException();
+            throw new FcmFailException(e.getMessage());
         }
     }
 
@@ -89,7 +89,7 @@ public class AnnouncementService {
         } catch (FirebaseMessagingException e) {
             announcement.setIsSent(false);
             announcement.setErrorMessage(e.getMessage());
-            throw new FcmFailException();
+            throw new FcmFailException(e.getMessage());
         } finally {
             announcementRepository.save(announcement);
         }
