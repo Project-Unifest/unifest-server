@@ -3,6 +3,9 @@ package UniFest.dto.response.booth;
 import UniFest.domain.booth.entity.Booth;
 import UniFest.domain.booth.entity.BoothCategory;
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import java.time.LocalTime;
 
 
 @Data
@@ -26,6 +29,12 @@ public class BoothResponse {
     private boolean enabled;
 
     private boolean waitingEnabled;
+
+    @DateTimeFormat(pattern = "HH:mm:ss")
+    private LocalTime openTime;
+
+    @DateTimeFormat(pattern = "HH:mm:ss")
+    private LocalTime closeTime;
 
     public BoothResponse(Booth booth){
         this.id = booth.getId();

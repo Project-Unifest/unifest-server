@@ -13,6 +13,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -86,9 +87,13 @@ public class Booth extends BaseEntity {
     //Waiting을 위한 Booth별 pin
     private String pin;
 
+    private LocalTime openTime;
+    private LocalTime closeTime;
+
     @Builder
     public Booth(String name, BoothCategory category, String description, String detail, String thumbnail,
-                 String warning, boolean enabled, String location, double latitude, double longitude, Festival festival, boolean waitingEnabled) {
+                 String warning, boolean enabled, String location, double latitude, double longitude, Festival festival, boolean waitingEnabled,
+                 LocalTime openTime, LocalTime closeTime) {
         this.name = name;
         this.category = category;
         this.description = description;
@@ -101,6 +106,8 @@ public class Booth extends BaseEntity {
         this.longitude = longitude;
         this.festival = festival;
         this.waitingEnabled = waitingEnabled;
+        this.openTime = openTime;
+        this.closeTime = closeTime;
     }
     public int getLikesCount(){
         return this.likesList.size();
@@ -164,6 +171,9 @@ public class Booth extends BaseEntity {
         return this.pin;
     }
 
-
+    public void setOpeningHour(LocalTime openTime, LocalTime closeTime){
+        this.openTime = openTime;
+        this.closeTime = closeTime;
+    }
 
 }
