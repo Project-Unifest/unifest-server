@@ -48,7 +48,7 @@ springdoc:
     operations-sorter: alpha
     tags-sorter: alpha
 jwt:
-  secret: testesjthsejtkhesjkthskthejthskjthsekjthskjtheskjthskj
+  secret: ${JWT_SECRETKEY}
   access-token-expiration-minutes: 2100000000
   refresh-token-expiration-minutes: 10080
 server:
