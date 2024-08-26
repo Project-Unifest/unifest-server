@@ -18,6 +18,7 @@ import UniFest.dto.response.booth.BoothDetailResponse;
 import UniFest.dto.response.booth.BoothResponse;
 import UniFest.exception.auth.NotAuthorizedException;
 import UniFest.exception.booth.BoothNotFoundException;
+import UniFest.exception.booth.OpeningTimeNotCorrectException;
 import UniFest.exception.festival.FestivalNotFoundException;
 import UniFest.exception.member.MemberNotFoundException;
 import UniFest.security.userdetails.MemberDetails;
@@ -29,6 +30,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -63,6 +65,10 @@ public class BoothService {
                 .festival(festival)
                 .build();
         booth.setMember(member);
+        //영업 시간
+        LocalTime openTime = boothCreateRequest.getOpenTime();
+        LocalTime closeTime = boothCreateRequest.getCloseTime();
+        setBoothOpeningHour(booth, openTime, closeTime);
         //오픈날짜
         LocalDate beginDate = festival.getBeginDate();
         LocalDate endDate = festival.getEndDate();
@@ -145,6 +151,13 @@ public class BoothService {
                 .ifPresent(lat -> findBooth.updateLatitude(lat));
         Optional.ofNullable(boothPatchRequest.getLongitude())
                 .ifPresent(lng -> findBooth.updateLongitude(lng));
+        Optional.ofNullable(boothPatchRequest.getWaitingEnabled())
+                .ifPresent(waiting -> findBooth.updateWaitingEnabled(waiting));
+
+        LocalTime openTime = Optional.ofNullable(boothPatchRequest.getOpenTime()).orElse(findBooth.getOpenTime());
+        LocalTime closeTime = Optional.ofNullable(boothPatchRequest.getCloseTime()).orElse(findBooth.getCloseTime());
+        setBoothOpeningHour(findBooth, openTime, closeTime);
+
         return findBooth.getId();
     }
     @Transactional
@@ -221,6 +234,13 @@ public class BoothService {
 
         findBooth.updateWaitingEnabled(!findBooth.isWaitingEnabled());  //toggle 형식으로 작동
         return findBooth.isWaitingEnabled();
+    }
+
+    public void setBoothOpeningHour(Booth booth, LocalTime openTime, LocalTime closeTime) {
+        if(closeTime.isBefore(openTime)){
+            throw new OpeningTimeNotCorrectException();
+        }
+        booth.setOpeningHour(openTime, closeTime);
     }
 
 }
