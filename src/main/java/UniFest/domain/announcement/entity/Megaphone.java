@@ -10,12 +10,12 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
-@Table(name = "announcement")
+@Table(name = "megaphone")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Announcement extends BaseEntity {
+public class Megaphone extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="announcement_id")
+    @Column(name="megaphone_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -32,7 +32,7 @@ public class Announcement extends BaseEntity {
     private String errorMessage;
 
     @Builder
-    public Announcement(Booth booth, String msgBody) {
+    public Megaphone(Booth booth, String msgBody) {
         this.booth = booth;
         this.msgBody = msgBody;
     }
