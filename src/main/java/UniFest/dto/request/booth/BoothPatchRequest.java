@@ -1,9 +1,10 @@
 package UniFest.dto.request.booth;
 
 import UniFest.domain.booth.entity.BoothCategory;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
+
+import java.time.LocalTime;
 
 
 @Data
@@ -19,5 +20,11 @@ public class BoothPatchRequest {
     private Boolean enabled;
     private Double latitude;
     private Double longitude;
+
+    private Boolean waitingEnabled;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss")
+    private LocalTime openTime;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss")
+    private LocalTime closeTime;
 
 }

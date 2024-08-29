@@ -142,7 +142,7 @@ public class WaitingController {
     public Response<WaitingInfo> callWaiting(@PathVariable Long waitingId) {
         WaitingInfo ret =  waitingService.callWaiting(waitingId);
         if (ret == null) {
-            return Response.ofNotFound("존재하지 않거나 상태 변경이 불가합니다", null);
+            return Response.ofNotFound("대기열이 존재하지 않습니다", null);
         }
         return Response.ofSuccess("호출했습니다", ret);
     }
@@ -152,9 +152,9 @@ public class WaitingController {
     public Response<WaitingInfo> completeWaiting(@PathVariable Long waitingId) {
         WaitingInfo ret =  waitingService.completeWaiting(waitingId);
         if (ret == null) {
-            return Response.ofNotFound("존재하지 않거나 상태 변경이 불가합니다", null);
+            return Response.ofNotFound("대기열이 존재하지 않습니다", null);
         }
-        return Response.ofSuccess("완료 처리했습니다", ret);
+        return Response.ofSuccess("완료했습니다", ret);
     }
 
     @PutMapping("/{waitingId}/noshow")
@@ -162,7 +162,7 @@ public class WaitingController {
     public Response<WaitingInfo> noshowWaiting(@PathVariable Long waitingId) {
         WaitingInfo ret =  waitingService.setNoShow(waitingId);
         if (ret == null) {
-            return Response.ofNotFound("존재하지 않거나 상태 변경이 불가합니다", null);
+            return Response.ofNotFound("대기열이 존재하지 않습니다", null);
         }
         return Response.ofSuccess("취소했습니다", ret);
     }
