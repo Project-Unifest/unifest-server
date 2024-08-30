@@ -3,10 +3,12 @@ package UniFest.dto.response.booth;
 import UniFest.domain.booth.entity.Booth;
 import UniFest.domain.booth.entity.BoothCategory;
 import UniFest.dto.response.menu.MenuResponse;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,6 +38,13 @@ public class BoothDetailResponse {
 
     private boolean enabled;
 
+    private boolean waitingEnabled;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING,pattern = "HH:mm:ss")
+    private LocalTime openTime;
+    @JsonFormat(shape = JsonFormat.Shape.STRING,pattern = "HH:mm:ss")
+    private LocalTime closeTime;
+
     public BoothDetailResponse(Booth booth){
         this.id = booth.getId();
         this.name = booth.getName();
@@ -48,6 +57,9 @@ public class BoothDetailResponse {
         this.longitude = booth.getLongitude();
         this.enabled = booth.isEnabled();
         this.menus = booth.getMenuList().stream().map(MenuResponse::new).collect(Collectors.toList());
+        this.waitingEnabled = booth.isWaitingEnabled();
+        this.openTime = booth.getOpenTime();
+        this.closeTime = booth.getCloseTime();
     }
 
 }

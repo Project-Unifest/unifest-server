@@ -9,6 +9,7 @@ import UniFest.domain.festival.repository.FestivalRepository;
 import UniFest.domain.member.entity.Member;
 import UniFest.domain.member.repository.MemberRepository;
 import UniFest.domain.menu.entity.Menu;
+import UniFest.domain.menu.entity.MenuStatus;
 import UniFest.domain.menu.repository.MenuRepository;
 import UniFest.dto.request.booth.BoothCreateRequest;
 import UniFest.dto.request.booth.BoothPatchRequest;
@@ -17,6 +18,7 @@ import UniFest.dto.response.booth.BoothDetailResponse;
 import UniFest.dto.response.booth.BoothResponse;
 import UniFest.exception.auth.NotAuthorizedException;
 import UniFest.exception.booth.BoothNotFoundException;
+import UniFest.exception.booth.OpeningTimeNotCorrectException;
 import UniFest.exception.festival.FestivalNotFoundException;
 import UniFest.exception.member.MemberNotFoundException;
 import UniFest.security.userdetails.MemberDetails;
@@ -28,6 +30,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -62,6 +65,10 @@ public class BoothService {
                 .festival(festival)
                 .build();
         booth.setMember(member);
+        //영업 시간
+        LocalTime openTime = boothCreateRequest.getOpenTime();
+        LocalTime closeTime = boothCreateRequest.getCloseTime();
+        setBoothOpeningHour(booth, openTime, closeTime);
         //오픈날짜
         LocalDate beginDate = festival.getBeginDate();
         LocalDate endDate = festival.getEndDate();
@@ -82,6 +89,7 @@ public class BoothService {
                     .imgUrl(menuCreateRequest.getImgUrl())
                     .build();
             menu.setBooth(booth);
+            menu.updateMenuStatus(MenuStatus.ENOUGH);   //메뉴 상태 기본값
             menuRepository.save(menu).getId();
         }
 
@@ -143,6 +151,13 @@ public class BoothService {
                 .ifPresent(lat -> findBooth.updateLatitude(lat));
         Optional.ofNullable(boothPatchRequest.getLongitude())
                 .ifPresent(lng -> findBooth.updateLongitude(lng));
+        Optional.ofNullable(boothPatchRequest.getWaitingEnabled())
+                .ifPresent(waiting -> findBooth.updateWaitingEnabled(waiting));
+
+        LocalTime openTime = Optional.ofNullable(boothPatchRequest.getOpenTime()).orElse(findBooth.getOpenTime());
+        LocalTime closeTime = Optional.ofNullable(boothPatchRequest.getCloseTime()).orElse(findBooth.getCloseTime());
+        setBoothOpeningHour(findBooth, openTime, closeTime);
+
         return findBooth.getId();
     }
     @Transactional
@@ -176,4 +191,56 @@ public class BoothService {
         if(findBooth.getMember().getId() != memberId) throw new NotAuthorizedException();
         return findBooth;
     }
+
+    public String getPin(MemberDetails memberDetails, Long boothId){
+        Booth findBooth = boothRepository.findByBoothId(boothId)
+                .orElseThrow(BoothNotFoundException::new);
+        Member boothMember = findBooth.getMember();
+
+        //부스 운영자만 조회 가능하게
+        if(boothMember.getId() != memberDetails.getMemberId()){
+            throw new NotAuthorizedException();
+        }
+
+        //pin이 발급되지 않았을 경우 발급 후 전달
+        String boothPin = findBooth.getPin();
+        if(boothPin == null){
+            boothPin = findBooth.createPin();
+        }
+
+        return boothPin;
+    }
+
+    @Transactional
+    public String createPin(MemberDetails memberDetails, Long boothId){
+        Booth findBooth = boothRepository.findByBoothId(boothId)
+                .orElseThrow(BoothNotFoundException::new);
+        Member boothMember = findBooth.getMember();
+
+        //부스 운영자만 생성 가능하게
+        if(boothMember.getId() != memberDetails.getMemberId()){
+            throw new NotAuthorizedException();
+        }
+
+        String newPin = findBooth.createPin();
+
+        return newPin;
+    }
+
+    @Transactional
+    @CacheEvict(value = "BoothInfo", key = "#boothId")
+    public boolean updateBoothWaitingEnabled(Long boothId){
+        Booth findBooth = boothRepository.findByBoothId(boothId).orElseThrow(BoothNotFoundException::new);
+
+        findBooth.updateWaitingEnabled(!findBooth.isWaitingEnabled());  //toggle 형식으로 작동
+        return findBooth.isWaitingEnabled();
+    }
+
+    public void setBoothOpeningHour(Booth booth, LocalTime openTime, LocalTime closeTime) {
+        if(closeTime.isBefore(openTime)){
+            throw new OpeningTimeNotCorrectException();
+        }
+        booth.setOpeningHour(openTime, closeTime);
+    }
+
 }
