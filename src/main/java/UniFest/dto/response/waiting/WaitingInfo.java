@@ -17,7 +17,8 @@ public class WaitingInfo {
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    private String status;
+
+    private ReservationStatus status;
     private Integer waitingOrder;
     private String boothName;
 }

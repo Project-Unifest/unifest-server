@@ -3,6 +3,7 @@ package UniFest.domain.waiting.controller;
 import UniFest.domain.booth.service.BoothService;
 import UniFest.domain.booth.entity.Booth;
 import UniFest.domain.booth.repository.BoothRepository;
+import UniFest.domain.waiting.entity.ReservationStatus;
 import UniFest.domain.waiting.entity.Waiting;
 import UniFest.domain.waiting.service.WaitingService;
 import UniFest.dto.request.waiting.CheckPinRequest;
@@ -34,9 +35,9 @@ public class WaitingController {
     @SecurityRequirement(name = "JWT")
     @Operation(summary = "Pin 번호 받기")
     @GetMapping("/pin/{booth-id}")
-
-    public Response<String> getPin(@PathVariable("booth-id") Long boothId){
-        String pin = boothService.getPin(boothId);
+    public Response<String> getPin(@PathVariable("booth-id") Long boothId,
+                           @AuthenticationPrincipal MemberDetails memberDetails){
+        String pin = boothService.getPin(memberDetails, boothId);
 
         return Response.ofSuccess("OK", pin);
     }
@@ -44,9 +45,9 @@ public class WaitingController {
     @SecurityRequirement(name = "JWT")
     @Operation(summary = "Pin 발급/재발급")
     @PostMapping("/pin/{booth-id}")
-
-    public Response<String> createPin(@PathVariable("booth-id") Long boothId){
-        String pin = boothService.createPin(boothId);
+    public Response<String> createPin(@PathVariable("booth-id") Long boothId,
+                           @AuthenticationPrincipal MemberDetails memberDetails){
+        String pin = boothService.createPin(memberDetails, boothId);
 
         return Response.ofSuccess("OK", pin);
     }
@@ -59,7 +60,7 @@ public class WaitingController {
         Booth existBooth = boothRepository.findByBoothId(boothId).filter(Booth::isEnabled)
                 .orElseThrow(BoothNotFoundException::new);
 
-        Long waitingCount = waitingService.getWaitingCountByBooth(existBooth, "RESERVED");
+        Long waitingCount = waitingService.getWaitingCountByBooth(existBooth, ReservationStatus.RESERVED);
         String pinNumber = existBooth.getPin();
         if(!pinNumber.equals(pin)){
             return Response.ofFail("Pin 번호가 일치하지 않습니다", -1L);
@@ -119,7 +120,7 @@ public class WaitingController {
     @GetMapping("/{boothId}/count")
     @Operation(summary = "대기중인 팀의 수 조회")
     public Response<Long> getWaitingCount(@PathVariable Long boothId) {
-        Long ret = waitingService.getWaitingCount(boothId, "RESERVED");
+        Long ret = waitingService.getWaitingCount(boothId, ReservationStatus.RESERVED);
         if(ret == null){
             return Response.ofNotFound("대기중인 팀이 없습니다", 0L);
         }
