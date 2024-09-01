@@ -2,14 +2,14 @@ package UniFest.dto.request.booth;
 
 import UniFest.domain.booth.entity.BoothCategory;
 import UniFest.dto.request.menu.MenuCreateRequest;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.Builder;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 
-import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 
@@ -38,5 +38,11 @@ public class BoothCreateRequest {
     private double latitude;
     @NotNull(message = "공백일 수 없습니다.")
     private double longitude;
+    @NotNull(message = "공백일 수 없습니다.")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss")
+    private LocalTime openTime;
+    @NotNull(message = "공백일 수 없습니다.")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss")
+    private LocalTime closeTime;
 
 }

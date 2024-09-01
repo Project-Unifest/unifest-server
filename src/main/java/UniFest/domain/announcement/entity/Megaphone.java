@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "announcement")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Announcement extends BaseEntity {
+public class Megaphone extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="announcement_id")
@@ -32,7 +32,7 @@ public class Announcement extends BaseEntity {
     private String errorMessage;
 
     @Builder
-    public Announcement(Booth booth, String msgBody) {
+    public Megaphone(Booth booth, String msgBody) {
         this.booth = booth;
         this.msgBody = msgBody;
     }

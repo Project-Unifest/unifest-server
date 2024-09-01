@@ -31,7 +31,8 @@ import java.util.List;
 @RequiredArgsConstructor
 //springsecurity 최신버전 (6.x)이상부터는 메서드체이닝을 지양하고 람다식을 통해 함수형으로 설계
 public class SecurityConfig{
-    private static final String APP_ADMIN = "https://www.unifest.app";
+    private static final String USER_WEB = "https://unifest.netlify.app";
+    private static final String USER_APP = "https://www.unifest.app";
     private static final String ADMIN_WEB = "https://project-unifest.github.io";
     private static final String LOCALHOST = "http://localhost:3000";
 
@@ -48,7 +49,7 @@ public class SecurityConfig{
                     @Override
                     public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
                         CorsConfiguration configuration = new CorsConfiguration();
-                        configuration.setAllowedOrigins(List.of(LOCALHOST,APP_ADMIN,ADMIN_WEB));
+                        configuration.setAllowedOrigins(List.of(LOCALHOST,USER_WEB,USER_APP,ADMIN_WEB));
                         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS", "HEAD"));
                         configuration.setAllowCredentials(true);
                         configuration.setAllowedHeaders(List.of("*"));
@@ -83,6 +84,8 @@ public class SecurityConfig{
                         .requestMatchers(HttpMethod.DELETE, "/festival/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/festival").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/school").hasRole("ADMIN")
+                        .requestMatchers("/megaphone/subscribe").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/megaphone").hasRole("VERIFIED")
                         .requestMatchers(HttpMethod.PATCH,"/members/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/members").hasRole("ADMIN") // 전체 멤버 조회는 ADMIN만
                         .requestMatchers(HttpMethod.GET, "/api/booths").permitAll()

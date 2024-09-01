@@ -11,7 +11,9 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -66,7 +68,7 @@ public class Booth extends BaseEntity {
     @OneToMany(mappedBy = "booth", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Menu> menuList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "booth", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "booth", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Waiting> waitingList = new ArrayList<>();
 
     @OneToMany(mappedBy = "booth", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -78,11 +80,20 @@ public class Booth extends BaseEntity {
 
     private double longitude;
 
+    //Waiting 가능 여부
+    @ColumnDefault("0")
+    private boolean waitingEnabled;
+
+    //Waiting을 위한 Booth별 pin
     private String pin;
+
+    private LocalTime openTime;
+    private LocalTime closeTime;
 
     @Builder
     public Booth(String name, BoothCategory category, String description, String detail, String thumbnail,
-                 String warning, boolean enabled, String location, double latitude, double longitude, Festival festival) {
+                 String warning, boolean enabled, String location, double latitude, double longitude, Festival festival, boolean waitingEnabled,
+                 LocalTime openTime, LocalTime closeTime) {
         this.name = name;
         this.category = category;
         this.description = description;
@@ -94,6 +105,9 @@ public class Booth extends BaseEntity {
         this.latitude = latitude;
         this.longitude = longitude;
         this.festival = festival;
+        this.waitingEnabled = waitingEnabled;
+        this.openTime = openTime;
+        this.closeTime = closeTime;
     }
     public int getLikesCount(){
         return this.likesList.size();
@@ -139,6 +153,10 @@ public class Booth extends BaseEntity {
         this.longitude = longitude;
     }
 
+    public void updateWaitingEnabled(boolean enabled){
+        this.waitingEnabled = enabled;
+    }
+
     public void setMember(Member member){
         this.member = member;
         member.getBoothList().add(this);
@@ -151,6 +169,11 @@ public class Booth extends BaseEntity {
         this.pin = String.format("%04d", tempIntPin);    //4자리 숫자 문자열
 
         return this.pin;
+    }
+
+    public void setOpeningHour(LocalTime openTime, LocalTime closeTime){
+        this.openTime = openTime;
+        this.closeTime = closeTime;
     }
 
 }

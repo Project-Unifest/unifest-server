@@ -7,11 +7,11 @@ import UniFest.domain.waiting.entity.Waiting;
 import UniFest.domain.waiting.repository.WaitingRepository;
 import UniFest.dto.response.waiting.WaitingInfo;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.Hibernate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -30,23 +30,10 @@ public class WaitingService {
                 waiting.getDeviceId(),
                 waiting.getCreatedAt(),
                 waiting.getUpdatedAt(),
-                waiting.getStatus(),
-                waitingOrder
+                waiting.getWaitingStatus(),
+                waitingOrder,
+                waiting.getBooth().getName()
         );
-    }
-    private List<WaitingInfo> addWaitingOrderByBooth(Map<Long, List<Waiting>> waitingMap, String deviceId) {
-        return waitingMap.entrySet().stream()
-                .flatMap(entry -> {
-                    AtomicInteger order = new AtomicInteger(1);
-                    List<WaitingInfo> boothWaitingList = entry.getValue().stream()
-                            .map(waiting -> createWaitingInfo(waiting, order.getAndIncrement()))
-                            .collect(Collectors.toList());
-
-                    // 사용자의 대기열 순서를 찾아 설정
-                    return boothWaitingList.stream()
-                            .filter(info -> info.getDeviceId().equals(deviceId));
-                })
-                .collect(Collectors.toList());
     }
     private List<WaitingInfo> addWaitingOrder(List<Waiting> waitingList) {
         AtomicInteger order = new AtomicInteger(1);
@@ -54,18 +41,48 @@ public class WaitingService {
                 .map(waiting -> createWaitingInfo(waiting, order.getAndIncrement()))
                 .collect(Collectors.toList());
     }
-    @Transactional(readOnly = true)
+    private List<WaitingInfo> addWaitingOrderByBooth(List<Waiting> waitingList) {
+        return waitingList.stream()
+                .collect(Collectors.groupingBy(Waiting::getBooth))
+                .entrySet().stream()
+                .flatMap(entry -> {
+                    AtomicInteger order = new AtomicInteger(1);
+                    return entry.getValue().stream()
+                            .map(waiting -> createWaitingInfo(waiting, order.getAndIncrement()));
+                })
+                .collect(Collectors.toList());
+    }
+
+    @Transactional
     public List<WaitingInfo> getMyWaitingList(String deviceId) {
-        List<Waiting> waitingList = waitingRepository.findAllByDeviceIdAndStatus(deviceId, ReservationStatus.RESERVED);
-        Map<Long, List<Waiting>> waitingMap = waitingList.stream().collect(Collectors.groupingBy(w -> w.getBooth().getId()));
-        return addWaitingOrderByBooth(waitingMap, deviceId);
+        List<Waiting> myWaitings = waitingRepository.findAllByDeviceIdAndWaitingStatus(deviceId, "RESERVED");
+        System.out.println("myWaitings = " + myWaitings);
+        List<Long> boothIds = myWaitings.stream()
+                .map(waiting -> {
+                    Booth booth = waiting.getBooth();
+                    if (booth == null) {
+                        throw new IllegalStateException("Booth entity is null for Waiting ID: " + waiting.getId());
+                    }
+                    Hibernate.initialize(booth); // 명시적으로 초기화
+                    return booth.getId();
+                })
+                .collect(Collectors.toList());
+        boothIds = boothIds.stream().distinct().collect(Collectors.toList());
+        System.out.println("boothIds = " + boothIds);
+        List<Waiting> allRelatedWaitings = waitingRepository.findAllByBoothIdInAndWaitingStatus(boothIds, "RESERVED") ;
+        System.out.println("allRelatedWaitings = " + allRelatedWaitings);
+        List<WaitingInfo> allOrderList = addWaitingOrderByBooth(allRelatedWaitings);
+        System.out.println("allOrderList = " + allOrderList);
+        return allOrderList.stream()
+                .filter(waitingInfo -> waitingInfo.getDeviceId().equals(deviceId))
+                .collect(Collectors.toList());
     }
 
     @Transactional
     public WaitingInfo addWaiting(Waiting waiting) {
-        // 예약 정보를 데이터베이스에 저장
         Waiting savedWaiting = waitingRepository.save(waiting);
-        return createWaitingInfo(savedWaiting, null);
+        Long waitingOrder = getWaitingCountByBooth(waiting.getBooth(), "RESERVED");
+        return createWaitingInfo(savedWaiting, Integer.valueOf(waitingOrder.intValue() + 1));
     }
 
     @Transactional
@@ -74,7 +91,18 @@ public class WaitingService {
         if(waiting == null) {
             return null;
         }
-        waiting.setStatus(ReservationStatus.CANCELED);
+        waiting.setWaitingStatus("CANCELED");
+        waitingRepository.save(waiting);
+        return createWaitingInfo(waiting, null);
+    }
+
+    @Transactional
+    public WaitingInfo setNoShow(Long waitingId) {
+        Waiting waiting = waitingRepository.findById(waitingId).orElse(null);
+        if (waiting == null) {
+            return null;
+        }
+        waiting.setWaitingStatus("NOSHOW");
         waitingRepository.save(waiting);
         return createWaitingInfo(waiting, null);
     }
@@ -83,7 +111,7 @@ public class WaitingService {
     public List<WaitingInfo> getWaitingList(Long boothId, Boolean isReserved) {
         // isReserved 가 true 이면 예약된 대기열만 조회, 아니면 전체 대기열 조회
         List<Waiting> waitingList = isReserved ?
-                waitingRepository.findAllByBoothIdAndStatus(boothId, ReservationStatus.RESERVED)
+                waitingRepository.findAllByBoothIdAndWaitingStatus(boothId, "RESERVED")
                 : waitingRepository.findAllByBoothId(boothId);
 
         return addWaitingOrder(waitingList);
@@ -91,13 +119,23 @@ public class WaitingService {
 
     @Transactional
     public WaitingInfo callWaiting(Long id) {
+        WaitingInfo waitingInfo = getWaitingById(id, "CALLED");
+        // 명시적으로 사용자를 호출한다
+        return waitingInfo;
+    }
+
+    @Transactional
+    public WaitingInfo completeWaiting(Long id){
+        return getWaitingById(id, "COMPLETED");
+    }
+
+    private WaitingInfo getWaitingById(Long id, String waitingStatus) {
         Waiting waiting = waitingRepository.findById(id).orElse(null);
-        if (waiting != null) {
-            if( waiting.getStatus() == ReservationStatus.COMPLETED) {
+        if (waiting !=null){
+            if(waiting.getWaitingStatus().equals("CANCELED")){
                 return null;
             }
-            // 사용자를 명시적으로 호출하는 명령어를 실행해야함 (일단은 미구현)
-            waiting.setStatus(ReservationStatus.COMPLETED);
+            waiting.setWaitingStatus(waitingStatus);
             waitingRepository.save(waiting);
             return createWaitingInfo(waiting, null);
         }
@@ -115,13 +153,17 @@ public class WaitingService {
         return waitingInfo;
     }
     @Transactional(readOnly = true)
-    public Long getWaitingCount(Long boothId, ReservationStatus status) {
+    public Long getWaitingCount(Long boothId, String waitingStatus) {
         Booth booth = boothRepository.findByBoothId(boothId).orElse(null);
         if(booth != null){
-            return Long.valueOf(waitingRepository.findAllByBoothIdAndStatus(boothId, status).size());
+            return Long.valueOf(waitingRepository.findAllByBoothIdAndWaitingStatus(boothId, waitingStatus).size());
         }
         else {
             return null;
         }
+    }
+    @Transactional(readOnly = true)
+    public Long getWaitingCountByBooth(Booth booth, String waitingStatus){
+        return Long.valueOf(waitingRepository.findAllByBoothIdAndWaitingStatus(booth.getId(), waitingStatus).size());
     }
 }
