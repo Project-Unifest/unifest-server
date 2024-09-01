@@ -35,7 +35,7 @@ public class WaitingController {
     @SecurityRequirement(name = "JWT")
     @Operation(summary = "Pin 번호 받기")
     @GetMapping("/pin/{booth-id}")
-    public Response getPin(@PathVariable("booth-id") Long boothId){
+    public Response<String> getPin(@PathVariable("booth-id") Long boothId){
         String pin = boothService.getPin(boothId);
 
         return Response.ofSuccess("OK", pin);
@@ -44,7 +44,7 @@ public class WaitingController {
     @SecurityRequirement(name = "JWT")
     @Operation(summary = "Pin 발급/재발급")
     @PostMapping("/pin/{booth-id}")
-    public Response createPin(@PathVariable("booth-id") Long boothId){
+    public Response<String> createPin(@PathVariable("booth-id") Long boothId){
         String pin = boothService.createPin(boothId);
 
         return Response.ofSuccess("OK", pin);
