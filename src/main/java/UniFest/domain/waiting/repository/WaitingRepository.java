@@ -9,11 +9,13 @@ import java.util.List;
 public interface WaitingRepository extends JpaRepository<Waiting, Long> {
     List<Waiting> findAllByBoothId(Long boothId);
 
-    List<Waiting> findAllByBoothIdAndStatus(Long boothId, ReservationStatus status);
-
     Waiting findWaitingByDeviceIdAndId(String deviceId, Long waitingId);
 
-    List<Waiting> findAllByDeviceIdAndStatus(String deviceId, ReservationStatus status);
+    // prune all the ENUM Based stuffs
+    List<Waiting> findAllByBoothIdAndWaitingStatus(Long boothId, String waitingStatus);
 
-    List<Waiting> findAllByBoothIdInAndStatus(List<Long> boothIds, ReservationStatus status);
+    List<Waiting> findAllByDeviceIdAndWaitingStatus(String deviceId, String waitingStatus);
+
+    List<Waiting> findAllByBoothIdInAndWaitingStatus(List<Long> boothIds, String waitingStatus);
+
 }

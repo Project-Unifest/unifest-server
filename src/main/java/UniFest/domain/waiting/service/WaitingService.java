@@ -30,7 +30,7 @@ public class WaitingService {
                 waiting.getDeviceId(),
                 waiting.getCreatedAt(),
                 waiting.getUpdatedAt(),
-                waiting.getStatus(),
+                waiting.getWaitingStatus(),
                 waitingOrder,
                 waiting.getBooth().getName()
         );
@@ -55,8 +55,7 @@ public class WaitingService {
 
     @Transactional
     public List<WaitingInfo> getMyWaitingList(String deviceId) {
-        List<Waiting> myWaitings = waitingRepository.findAllByDeviceIdAndStatus(deviceId, ReservationStatus.RESERVED);
-
+        List<Waiting> myWaitings = waitingRepository.findAllByDeviceIdAndWaitingStatus(deviceId, "RESERVED");
         System.out.println("myWaitings = " + myWaitings);
         List<Long> boothIds = myWaitings.stream()
                 .map(waiting -> {
@@ -70,7 +69,7 @@ public class WaitingService {
                 .collect(Collectors.toList());
         boothIds = boothIds.stream().distinct().collect(Collectors.toList());
         System.out.println("boothIds = " + boothIds);
-        List<Waiting> allRelatedWaitings = waitingRepository.findAllByBoothIdInAndStatus(boothIds, ReservationStatus.RESERVED) ;
+        List<Waiting> allRelatedWaitings = waitingRepository.findAllByBoothIdInAndWaitingStatus(boothIds, "RESERVED") ;
         System.out.println("allRelatedWaitings = " + allRelatedWaitings);
         List<WaitingInfo> allOrderList = addWaitingOrderByBooth(allRelatedWaitings);
         System.out.println("allOrderList = " + allOrderList);
@@ -82,7 +81,7 @@ public class WaitingService {
     @Transactional
     public WaitingInfo addWaiting(Waiting waiting) {
         Waiting savedWaiting = waitingRepository.save(waiting);
-        Long waitingOrder = getWaitingCountByBooth(waiting.getBooth(), ReservationStatus.RESERVED);
+        Long waitingOrder = getWaitingCountByBooth(waiting.getBooth(), "RESERVED");
         return createWaitingInfo(savedWaiting, Integer.valueOf(waitingOrder.intValue() + 1));
     }
 
@@ -92,7 +91,7 @@ public class WaitingService {
         if(waiting == null) {
             return null;
         }
-        waiting.setStatus(ReservationStatus.CANCELED);
+        waiting.setWaitingStatus("CANCELED");
         waitingRepository.save(waiting);
         return createWaitingInfo(waiting, null);
     }
@@ -103,7 +102,7 @@ public class WaitingService {
         if (waiting == null) {
             return null;
         }
-        waiting.setStatus(ReservationStatus.CANCELED);
+        waiting.setWaitingStatus("NOSHOW");
         waitingRepository.save(waiting);
         return createWaitingInfo(waiting, null);
     }
@@ -112,7 +111,7 @@ public class WaitingService {
     public List<WaitingInfo> getWaitingList(Long boothId, Boolean isReserved) {
         // isReserved 가 true 이면 예약된 대기열만 조회, 아니면 전체 대기열 조회
         List<Waiting> waitingList = isReserved ?
-                waitingRepository.findAllByBoothIdAndStatus(boothId, ReservationStatus.RESERVED)
+                waitingRepository.findAllByBoothIdAndWaitingStatus(boothId, "RESERVED")
                 : waitingRepository.findAllByBoothId(boothId);
 
         return addWaitingOrder(waitingList);
@@ -120,23 +119,23 @@ public class WaitingService {
 
     @Transactional
     public WaitingInfo callWaiting(Long id) {
-        WaitingInfo waitingInfo = getWaitingById(id, ReservationStatus.CALLED);
+        WaitingInfo waitingInfo = getWaitingById(id, "CALLED");
         // 명시적으로 사용자를 호출한다
         return waitingInfo;
     }
 
     @Transactional
     public WaitingInfo completeWaiting(Long id){
-        return getWaitingById(id, ReservationStatus.COMPLETED);
+        return getWaitingById(id, "COMPLETED");
     }
 
-    private WaitingInfo getWaitingById(Long id, ReservationStatus status) {
+    private WaitingInfo getWaitingById(Long id, String waitingStatus) {
         Waiting waiting = waitingRepository.findById(id).orElse(null);
         if (waiting !=null){
-            if(waiting.getStatus() == ReservationStatus.COMPLETED){
+            if(waiting.getWaitingStatus().equals("CANCELED")){
                 return null;
             }
-            waiting.setStatus(status);
+            waiting.setWaitingStatus(waitingStatus);
             waitingRepository.save(waiting);
             return createWaitingInfo(waiting, null);
         }
@@ -154,17 +153,17 @@ public class WaitingService {
         return waitingInfo;
     }
     @Transactional(readOnly = true)
-    public Long getWaitingCount(Long boothId, ReservationStatus status) {
+    public Long getWaitingCount(Long boothId, String waitingStatus) {
         Booth booth = boothRepository.findByBoothId(boothId).orElse(null);
         if(booth != null){
-            return Long.valueOf(waitingRepository.findAllByBoothIdAndStatus(boothId, status).size());
+            return Long.valueOf(waitingRepository.findAllByBoothIdAndWaitingStatus(boothId, waitingStatus).size());
         }
         else {
             return null;
         }
     }
     @Transactional(readOnly = true)
-    public Long getWaitingCountByBooth(Booth booth, ReservationStatus status){
-        return Long.valueOf(waitingRepository.findAllByBoothIdAndStatus(booth.getId(), status).size());
+    public Long getWaitingCountByBooth(Booth booth, String waitingStatus){
+        return Long.valueOf(waitingRepository.findAllByBoothIdAndWaitingStatus(booth.getId(), waitingStatus).size());
     }
 }
