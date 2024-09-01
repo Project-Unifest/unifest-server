@@ -10,12 +10,12 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
-@Table(name = "megaphone")
+@Table(name = "announcement")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Megaphone extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="megaphone_id")
+    @Column(name="announcement_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
