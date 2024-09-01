@@ -1,12 +1,12 @@
 package UniFest.domain.announcement.service;
 
-import UniFest.domain.announcement.entity.Announcement;
-import UniFest.domain.announcement.repository.AnnouncementRepository;
+import UniFest.domain.announcement.entity.Megaphone;
+import UniFest.domain.announcement.repository.MegaphoneRepository;
 import UniFest.domain.booth.entity.Booth;
 import UniFest.domain.booth.repository.BoothRepository;
 import UniFest.domain.festival.repository.FestivalRepository;
-import UniFest.dto.request.announcement.AddAnnouncementRequest;
-import UniFest.dto.request.announcement.FestivalInterestRequest;
+import UniFest.dto.request.megaphone.AddMegaphoneRequest;
+import UniFest.dto.request.megaphone.SubscribeMegaphoneRequest;
 import UniFest.exception.announcement.FcmFailException;
 import UniFest.exception.booth.BoothNotFoundException;
 import UniFest.exception.festival.FestivalNotFoundException;
@@ -23,13 +23,13 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class AnnouncementService {
+public class MegaphoneService {
     private final FestivalRepository festivalRepository;
     private final BoothRepository boothRepository;
-    private final AnnouncementRepository announcementRepository;
+    private final MegaphoneRepository megaphoneRepository;
 
-    private List<String> wrapAsRegistrationTokens(FestivalInterestRequest festivalInterestRequest) {
-        return Arrays.asList(festivalInterestRequest.getFcmToken());
+    private List<String> wrapAsRegistrationTokens(SubscribeMegaphoneRequest subscribeMegaphoneRequest) {
+        return Arrays.asList(subscribeMegaphoneRequest.getFcmToken());
     }
 
     private void checkIsValidFestivalId(Long festivalId) {
@@ -38,9 +38,10 @@ public class AnnouncementService {
         }
     }
 
-    public void addFestivalInterest(Long festivalId, FestivalInterestRequest festivalInterestRequest) {
+    public void addFestivalInterest(SubscribeMegaphoneRequest subscribeMegaphoneRequest) {
+        Long festivalId = subscribeMegaphoneRequest.getFestivalId();
         checkIsValidFestivalId(festivalId);
-        List<String> registrationTokens = wrapAsRegistrationTokens(festivalInterestRequest);
+        List<String> registrationTokens = wrapAsRegistrationTokens(subscribeMegaphoneRequest);
         try {
             TopicManagementResponse response = FirebaseMessaging.getInstance()
                     .subscribeToTopic(registrationTokens, String.valueOf(festivalId));
@@ -52,9 +53,10 @@ public class AnnouncementService {
         }
     }
 
-    public void deleteFestivalInterest(Long festivalId, FestivalInterestRequest festivalInterestRequest) {
+    public void deleteFestivalInterest(SubscribeMegaphoneRequest subscribeMegaphoneRequest) {
+        Long festivalId = subscribeMegaphoneRequest.getFestivalId();
         checkIsValidFestivalId(festivalId);
-        List<String> registrationTokens = wrapAsRegistrationTokens(festivalInterestRequest);
+        List<String> registrationTokens = wrapAsRegistrationTokens(subscribeMegaphoneRequest);
         try {
             TopicManagementResponse response = FirebaseMessaging.getInstance()
                     .unsubscribeFromTopic(registrationTokens, String.valueOf(festivalId));
@@ -66,7 +68,8 @@ public class AnnouncementService {
         }
     }
 
-    public Long addAnnouncement(Long boothId, AddAnnouncementRequest addAnnouncementRequest) {
+    public Long addMegaphone(AddMegaphoneRequest addMegaphoneRequest) {
+        Long boothId = addMegaphoneRequest.getBoothId();
         Booth booth = boothRepository.findByBoothId(boothId)
                 .orElseThrow(() -> new BoothNotFoundException());
         String topic = String.valueOf(booth.getFestival().getId());
@@ -74,26 +77,26 @@ public class AnnouncementService {
         Message message = Message.builder()
                 .putData("boothId", String.valueOf(boothId))
                 .putData("boothName", booth.getName())
-                .putData("msgBody", addAnnouncementRequest.getMsgBody())
+                .putData("msgBody", addMegaphoneRequest.getMsgBody())
                 .setTopic(topic)
                 .build();
 
-        Announcement announcement = Announcement.builder()
-                .msgBody(addAnnouncementRequest.getMsgBody())
+        Megaphone megaphone = Megaphone.builder()
+                .msgBody(addMegaphoneRequest.getMsgBody())
                 .booth(booth)
                 .build();
 
         try {
             FirebaseMessaging.getInstance().send(message);
-            announcement.setIsSent(true);
+            megaphone.setIsSent(true);
         } catch (FirebaseMessagingException e) {
-            announcement.setIsSent(false);
-            announcement.setErrorMessage(e.getMessage());
+            megaphone.setIsSent(false);
+            megaphone.setErrorMessage(e.getMessage());
             throw new FcmFailException(e.getMessage());
         } finally {
-            announcementRepository.save(announcement);
+            megaphoneRepository.save(megaphone);
         }
 
-        return announcement.getId();
+        return megaphone.getId();
     }
 }
