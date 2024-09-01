@@ -4,6 +4,8 @@ import UniFest.dto.response.star.StarInfo;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 
 @Getter
@@ -15,7 +17,9 @@ public class TodayFestivalInfo {
     //축제명
     private Long festivalId;
     private String festivalName;
+    @JsonFormat(shape = JsonFormat.Shape.STRING,pattern = "yyyy-MM-dd")
     private LocalDate beginDate;
+    @JsonFormat(shape = JsonFormat.Shape.STRING,pattern = "yyyy-MM-dd")
     private LocalDate endDate;
     //연예인 정보
     private List<StarInfo> starList;
