@@ -3,7 +3,6 @@ package UniFest.domain.waiting.controller;
 import UniFest.domain.booth.service.BoothService;
 import UniFest.domain.booth.entity.Booth;
 import UniFest.domain.booth.repository.BoothRepository;
-import UniFest.domain.waiting.entity.ReservationStatus;
 import UniFest.domain.waiting.entity.Waiting;
 import UniFest.domain.waiting.service.WaitingService;
 import UniFest.dto.request.waiting.CheckPinRequest;
@@ -60,7 +59,7 @@ public class WaitingController {
         Booth existBooth = boothRepository.findByBoothId(boothId).filter(Booth::isEnabled)
                 .orElseThrow(BoothNotFoundException::new);
 
-        Long waitingCount = waitingService.getWaitingCountByBooth(existBooth, ReservationStatus.RESERVED);
+        Long waitingCount = waitingService.getWaitingCountByBooth(existBooth, "RESERVED");
         String pinNumber = existBooth.getPin();
         if(!pinNumber.equals(pin)){
             return Response.ofFail("Pin 번호가 일치하지 않습니다", -1L);
@@ -120,7 +119,7 @@ public class WaitingController {
     @GetMapping("/{boothId}/count")
     @Operation(summary = "대기중인 팀의 수 조회")
     public Response<Long> getWaitingCount(@PathVariable Long boothId) {
-        Long ret = waitingService.getWaitingCount(boothId, ReservationStatus.RESERVED);
+        Long ret = waitingService.getWaitingCount(boothId, "RESERVED");
         if(ret == null){
             return Response.ofNotFound("대기중인 팀이 없습니다", 0L);
         }
