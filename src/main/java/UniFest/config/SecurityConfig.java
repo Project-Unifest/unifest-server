@@ -84,6 +84,8 @@ public class SecurityConfig{
                         .requestMatchers(HttpMethod.DELETE, "/festival/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/festival").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/school").hasRole("ADMIN")
+                        .requestMatchers("/megaphone/subscribe").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/megaphone").hasRole("VERIFIED")
                         .requestMatchers(HttpMethod.PATCH,"/members/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/members").hasRole("ADMIN") // 전체 멤버 조회는 ADMIN만
                         .requestMatchers(HttpMethod.GET, "/api/booths").permitAll()
