@@ -19,6 +19,7 @@ import UniFest.dto.response.booth.BoothResponse;
 import UniFest.exception.auth.NotAuthorizedException;
 import UniFest.exception.booth.BoothNotFoundException;
 import UniFest.exception.booth.OpeningTimeNotCorrectException;
+import UniFest.exception.booth.PinNotCreatedException;
 import UniFest.exception.festival.FestivalNotFoundException;
 import UniFest.exception.member.MemberNotFoundException;
 import UniFest.security.userdetails.MemberDetails;
@@ -81,6 +82,8 @@ public class BoothService {
             schedule.setBooth(booth);
             boothScheduleRepository.save(schedule);
         }
+        //핀 생성
+        booth.createPin();
         //부스 메뉴
         for(MenuCreateRequest menuCreateRequest : boothCreateRequest.getMenus()){
             Menu menu = Menu.builder()
@@ -203,10 +206,10 @@ public class BoothService {
 //            throw new NotAuthorizedException();
 //        }
 
-        //pin이 발급되지 않았을 경우 발급 후 전달
+        //pin이 발급되지 않았을 경우 에러
         String boothPin = findBooth.getPin();
         if(boothPin == null){
-            boothPin = findBooth.createPin();
+            throw new PinNotCreatedException();
         }
 
         return boothPin;
