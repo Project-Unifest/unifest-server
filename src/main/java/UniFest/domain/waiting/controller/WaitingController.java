@@ -32,7 +32,6 @@ public class WaitingController {
     @SecurityRequirement(name = "JWT")
     @Operation(summary = "Pin 번호 받기")
     @GetMapping("/pin/{booth-id}")
-
     public Response<String> getPin(@PathVariable("booth-id") Long boothId){
         String pin = boothService.getPin(boothId);
 
