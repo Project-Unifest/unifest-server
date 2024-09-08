@@ -11,12 +11,10 @@ import UniFest.dto.request.waiting.PostWaitingRequest;
 import UniFest.dto.response.Response;
 import UniFest.dto.response.waiting.WaitingInfo;
 import UniFest.exception.booth.BoothNotFoundException;
-import UniFest.security.userdetails.MemberDetails;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -81,14 +79,16 @@ public class WaitingController {
         if(!pinNumber.equals(waitingRequest.getPinNumber())){
             return Response.ofFail("Pin 번호가 일치하지 않습니다", null);
         }
-
         Waiting newWaiting = new Waiting(
                 existBooth,
                 waitingRequest.getDeviceId(),
                 waitingRequest.getTel(),
                 waitingRequest.getPartySize()
         );
-        WaitingInfo ret = waitingService.addWaiting(newWaiting);
+        WaitingInfo ret = waitingService.createWaitingIfNotExist(newWaiting);
+        if(ret==null){
+            return Response.ofFail("이미 대기열에 존재합니다", null);
+        }
         return Response.ofCreated("웨이팅이 추가되었습니다", ret);
     }
     @PutMapping

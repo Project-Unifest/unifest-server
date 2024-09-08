@@ -2,7 +2,6 @@ package UniFest.domain.waiting.service;
 
 import UniFest.domain.booth.entity.Booth;
 import UniFest.domain.booth.repository.BoothRepository;
-import UniFest.domain.waiting.entity.ReservationStatus;
 import UniFest.domain.waiting.entity.Waiting;
 import UniFest.domain.waiting.repository.WaitingRepository;
 import UniFest.dto.response.waiting.WaitingInfo;
@@ -105,6 +104,15 @@ public class WaitingService {
         waiting.setWaitingStatus("NOSHOW");
         waitingRepository.save(waiting);
         return createWaitingInfo(waiting, null);
+    }
+
+    @Transactional
+    public WaitingInfo createWaitingIfNotExist(Waiting waiting){
+        Waiting existWaiting = waitingRepository.findWaitingByDeviceIdAndBoothIdAndWaitingStatus(waiting.getDeviceId(), waiting.getBooth().getId(), "RESERVED");
+        if(existWaiting == null){
+            return addWaiting(waiting);
+        }
+        return null;
     }
 
     @Transactional(readOnly = true)
