@@ -5,6 +5,7 @@ import UniFest.domain.festival.entity.Festival;
 import UniFest.domain.likes.entity.Likes;
 import UniFest.domain.member.entity.Member;
 import UniFest.domain.menu.entity.Menu;
+import UniFest.domain.stamp.entity.Stamp;
 import UniFest.domain.waiting.entity.Waiting;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -73,6 +74,9 @@ public class Booth extends BaseEntity {
 
     @OneToMany(mappedBy = "booth", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<BoothSchedule> scheduleList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "booth", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Stamp> stampList = new ArrayList<>();
 
     private String location;
 
@@ -174,6 +178,10 @@ public class Booth extends BaseEntity {
     public void setOpeningHour(LocalTime openTime, LocalTime closeTime){
         this.openTime = openTime;
         this.closeTime = closeTime;
+    }
+
+    public void addStampList(Stamp stamp){
+        this.stampList.add(stamp);
     }
 
 }
