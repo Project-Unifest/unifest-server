@@ -55,7 +55,6 @@ public class WaitingService {
     @Transactional
     public List<WaitingInfo> getMyWaitingList(String deviceId) {
         List<Waiting> myWaitings = waitingRepository.findAllByDeviceIdAndWaitingStatus(deviceId, "RESERVED");
-        System.out.println("myWaitings = " + myWaitings);
         List<Long> boothIds = myWaitings.stream()
                 .map(waiting -> {
                     Booth booth = waiting.getBooth();
@@ -67,11 +66,8 @@ public class WaitingService {
                 })
                 .collect(Collectors.toList());
         boothIds = boothIds.stream().distinct().collect(Collectors.toList());
-        System.out.println("boothIds = " + boothIds);
         List<Waiting> allRelatedWaitings = waitingRepository.findAllByBoothIdInAndWaitingStatus(boothIds, "RESERVED") ;
-        System.out.println("allRelatedWaitings = " + allRelatedWaitings);
         List<WaitingInfo> allOrderList = addWaitingOrderByBooth(allRelatedWaitings);
-        System.out.println("allOrderList = " + allOrderList);
         return allOrderList.stream()
                 .filter(waitingInfo -> waitingInfo.getDeviceId().equals(deviceId))
                 .collect(Collectors.toList());
