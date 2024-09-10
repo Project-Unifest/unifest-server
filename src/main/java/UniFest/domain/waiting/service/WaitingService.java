@@ -123,17 +123,17 @@ public class WaitingService {
 
     @Transactional
     public WaitingInfo callWaiting(Long id) {
-        WaitingInfo waitingInfo = getWaitingById(id, "CALLED");
+        WaitingInfo waitingInfo = setWaitingById(id, "CALLED");
         // 명시적으로 사용자를 호출한다
         return waitingInfo;
     }
 
     @Transactional
     public WaitingInfo completeWaiting(Long id){
-        return getWaitingById(id, "COMPLETED");
+        return setWaitingById(id, "COMPLETED");
     }
 
-    private WaitingInfo getWaitingById(Long id, String waitingStatus) {
+    private WaitingInfo setWaitingById(Long id, String waitingStatus) {
         Waiting waiting = waitingRepository.findById(id).orElse(null);
         if (waiting !=null){
             if(waiting.getWaitingStatus().equals("CANCELED")){

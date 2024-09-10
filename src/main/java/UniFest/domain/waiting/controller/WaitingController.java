@@ -6,7 +6,7 @@ import UniFest.domain.booth.repository.BoothRepository;
 import UniFest.domain.waiting.entity.Waiting;
 import UniFest.domain.waiting.service.WaitingService;
 import UniFest.dto.request.waiting.CheckPinRequest;
-import UniFest.dto.request.waiting.DeleteWaitingRequest;
+import UniFest.dto.request.waiting.CancelWaitingRequest;
 import UniFest.dto.request.waiting.PostWaitingRequest;
 import UniFest.dto.response.Response;
 import UniFest.dto.response.waiting.WaitingInfo;
@@ -92,9 +92,9 @@ public class WaitingController {
     }
     @PutMapping
     @Operation(summary="사용자 측의 웨이팅 취소")
-    public Response<WaitingInfo> cancelWaiting(@RequestBody DeleteWaitingRequest deleteWaitingRequest){
-        String deviceId = deleteWaitingRequest.getDeviceId();
-        Long waitingId = deleteWaitingRequest.getWaitingId();
+    public Response<WaitingInfo> cancelWaiting(@RequestBody CancelWaitingRequest cancelWaitingRequest){
+        String deviceId = cancelWaitingRequest.getDeviceId();
+        Long waitingId = cancelWaitingRequest.getWaitingId();
 
         WaitingInfo ret = waitingService.cancelWaiting(deviceId, waitingId);
         if(ret == null){
