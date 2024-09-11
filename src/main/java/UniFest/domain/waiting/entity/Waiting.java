@@ -5,6 +5,7 @@ import UniFest.domain.booth.entity.Booth;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -38,7 +39,8 @@ public class Waiting extends BaseEntity {
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
-    private String waitingStatus = "RESERVED";
+    @Enumerated(EnumType.STRING)
+    private ReservationStatus status = ReservationStatus.RESERVED;
 
     @Builder
     public Waiting(Booth booth, String deviceId, String tel, int partySize){
@@ -46,7 +48,7 @@ public class Waiting extends BaseEntity {
         this.deviceId = deviceId;
         this.tel = tel;
         this.partySize = partySize;
-        this.waitingStatus = "RESERVED";
+        this.status = ReservationStatus.RESERVED;
     }
 
     public Waiting(){
