@@ -20,7 +20,7 @@ import java.time.LocalDateTime;
 public class Waiting extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="waiting_id")
+    @Column(name = "waiting_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -41,7 +41,7 @@ public class Waiting extends BaseEntity {
     private String waitingStatus = "RESERVED";
 
     @Builder
-    public Waiting(Booth booth, String deviceId, String tel, int partySize){
+    public Waiting(Booth booth, String deviceId, String tel, int partySize) {
         this.booth = booth;
         this.deviceId = deviceId;
         this.tel = tel;
@@ -49,7 +49,7 @@ public class Waiting extends BaseEntity {
         this.waitingStatus = "RESERVED";
     }
 
-    public Waiting(){
+    public Waiting() {
 
     }
 }

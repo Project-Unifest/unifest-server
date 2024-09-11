@@ -32,7 +32,7 @@ public class WaitingController {
     @SecurityRequirement(name = "JWT")
     @Operation(summary = "Pin 번호 받기")
     @GetMapping("/pin/{booth-id}")
-    public Response<String> getPin(@PathVariable("booth-id") Long boothId){
+    public Response<String> getPin(@PathVariable("booth-id") Long boothId) {
         String pin = boothService.getPin(boothId);
 
         return Response.ofSuccess("OK", pin);
@@ -42,7 +42,7 @@ public class WaitingController {
     @Operation(summary = "Pin 발급/재발급")
     @PostMapping("/pin/{booth-id}")
 
-    public Response<String> createPin(@PathVariable("booth-id") Long boothId){
+    public Response<String> createPin(@PathVariable("booth-id") Long boothId) {
         String pin = boothService.createPin(boothId);
 
         return Response.ofSuccess("OK", pin);
@@ -50,7 +50,7 @@ public class WaitingController {
 
     @PostMapping("/pin/check")
     @Operation(summary = "Pin 번호 확인")
-    public Response<Long> checkPin(@RequestBody CheckPinRequest checkPinRequest){
+    public Response<Long> checkPin(@RequestBody CheckPinRequest checkPinRequest) {
         Long boothId = checkPinRequest.getBoothId();
         String pin = checkPinRequest.getPinNumber();
         Booth existBooth = boothRepository.findByBoothId(boothId).filter(Booth::isEnabled)
@@ -58,14 +58,12 @@ public class WaitingController {
 
         Long waitingCount = waitingService.getWaitingCountByBooth(existBooth, "RESERVED");
         String pinNumber = existBooth.getPin();
-        if(!pinNumber.equals(pin)){
+        if (!pinNumber.equals(pin)) {
             return Response.ofFail("Pin 번호가 일치하지 않습니다", -1L);
         }
 
         return Response.ofSuccess("Pin 번호가 일치합니다", waitingCount);
     }
-
-
 
     @PostMapping
     @Operation(summary = "웨이팅 추가")
@@ -75,29 +73,29 @@ public class WaitingController {
                 .orElseThrow(BoothNotFoundException::new);
 
         String pinNumber = existBooth.getPin();
-        if(!pinNumber.equals(waitingRequest.getPinNumber())){
+        if (!pinNumber.equals(waitingRequest.getPinNumber())) {
             return Response.ofFail("Pin 번호가 일치하지 않습니다", null);
         }
         Waiting newWaiting = new Waiting(
                 existBooth,
                 waitingRequest.getDeviceId(),
                 waitingRequest.getTel(),
-                waitingRequest.getPartySize()
-        );
+                waitingRequest.getPartySize());
         WaitingInfo ret = waitingService.createWaitingIfNotExist(newWaiting);
-        if(ret==null){
+        if (ret == null) {
             return Response.ofFail("이미 대기열에 존재합니다", null);
         }
         return Response.ofCreated("웨이팅이 추가되었습니다", ret);
     }
+
     @PutMapping
-    @Operation(summary="사용자 측의 웨이팅 취소")
-    public Response<WaitingInfo> cancelWaiting(@RequestBody CancelWaitingRequest cancelWaitingRequest){
+    @Operation(summary = "사용자 측의 웨이팅 취소")
+    public Response<WaitingInfo> cancelWaiting(@RequestBody CancelWaitingRequest cancelWaitingRequest) {
         String deviceId = cancelWaitingRequest.getDeviceId();
         Long waitingId = cancelWaitingRequest.getWaitingId();
 
         WaitingInfo ret = waitingService.cancelWaiting(deviceId, waitingId);
-        if(ret == null){
+        if (ret == null) {
             return Response.ofNotFound("대기열이 존재하지 않습니다", null);
         }
         return Response.ofSuccess("웨이팅을 취소했습니다", ret);
@@ -119,26 +117,26 @@ public class WaitingController {
     @Operation(summary = "대기중인 팀의 수 조회")
     public Response<Long> getWaitingCount(@PathVariable Long boothId) {
         Long ret = waitingService.getWaitingCount(boothId, "RESERVED");
-        if(ret == null){
+        if (ret == null) {
             return Response.ofNotFound("대기중인 팀이 없습니다", 0L);
         }
         return Response.ofSuccess("데이터를 가져왔습니다", ret);
     }
 
     @GetMapping("/me/{deviceId}")
-    @Operation(summary="내 RESERVED 웨이팅 조회(device ID 기준으로!)")
-    public Response<List<WaitingInfo>> getMyWaitingList(@PathVariable String deviceId){
+    @Operation(summary = "내 RESERVED 웨이팅 조회(device ID 기준으로!)")
+    public Response<List<WaitingInfo>> getMyWaitingList(@PathVariable String deviceId) {
         List<WaitingInfo> ret = waitingService.getMyWaitingList(deviceId);
-        if(ret.isEmpty()){
+        if (ret.isEmpty()) {
             return Response.ofNotFound("대기열이 존재하지 않습니다", null);
         }
         return Response.ofSuccess("데이터를 가져왔습니다", ret);
     }
 
     @PutMapping("/{waitingId}/call")
-    @Operation(summary="관리자가 예약 호출")
+    @Operation(summary = "관리자가 예약 호출")
     public Response<WaitingInfo> callWaiting(@PathVariable Long waitingId) {
-        WaitingInfo ret =  waitingService.callWaiting(waitingId);
+        WaitingInfo ret = waitingService.callWaiting(waitingId);
         if (ret == null) {
             return Response.ofNotFound("대기열이 존재하지 않습니다", null);
         }
@@ -146,9 +144,9 @@ public class WaitingController {
     }
 
     @PutMapping("/{waitingId}/complete")
-    @Operation(summary="관리자의 입장 처리 완료")
+    @Operation(summary = "관리자의 입장 처리 완료")
     public Response<WaitingInfo> completeWaiting(@PathVariable Long waitingId) {
-        WaitingInfo ret =  waitingService.completeWaiting(waitingId);
+        WaitingInfo ret = waitingService.completeWaiting(waitingId);
         if (ret == null) {
             return Response.ofNotFound("대기열이 존재하지 않습니다", null);
         }
@@ -156,9 +154,9 @@ public class WaitingController {
     }
 
     @PutMapping("/{waitingId}/noshow")
-    @Operation(summary="관리자가 예약 부재 처리")
+    @Operation(summary = "관리자가 예약 부재 처리")
     public Response<WaitingInfo> noshowWaiting(@PathVariable Long waitingId) {
-        WaitingInfo ret =  waitingService.setNoShow(waitingId);
+        WaitingInfo ret = waitingService.setNoShow(waitingId);
         if (ret == null) {
             return Response.ofNotFound("대기열이 존재하지 않습니다", null);
         }
@@ -168,8 +166,8 @@ public class WaitingController {
     @DeleteMapping("/{waitingId}")
     @Operation(summary = "관리자가 직접 웨이팅 삭제")
     public Response<WaitingInfo> removeWaiting(@PathVariable Long waitingId) {
-        WaitingInfo waitingInfo =  waitingService.removeWaiting(waitingId);
-        if(waitingInfo == null){
+        WaitingInfo waitingInfo = waitingService.removeWaiting(waitingId);
+        if (waitingInfo == null) {
             return Response.ofNotFound("대기열이 존재하지 않습니다", null);
         }
         return Response.ofSuccess("대기열을 삭제했습니다", waitingInfo);
@@ -177,7 +175,7 @@ public class WaitingController {
 
     @PostMapping("/{boothId}/waitingEnabled")
     @Operation(summary = "부스 웨이팅 불/가 변경")
-    public Response<Boolean> changeBoothWaitingEnabled(@PathVariable Long boothId){
+    public Response<Boolean> changeBoothWaitingEnabled(@PathVariable Long boothId) {
         Boolean updatedVal = boothService.updateBoothWaitingEnabled(boothId);
 
         return Response.ofSuccess("OK", updatedVal);

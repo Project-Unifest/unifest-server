@@ -11,6 +11,7 @@ public interface WaitingRepository extends JpaRepository<Waiting, Long> {
     Waiting findWaitingByDeviceIdAndId(String deviceId, Long waitingId);
 
     Waiting findWaitingByDeviceIdAndBoothIdAndWaitingStatus(String deviceId, Long boothId, String waitingStatus);
+
     // prune all the ENUM Based stuffs
     List<Waiting> findAllByBoothIdAndWaitingStatus(Long boothId, String waitingStatus);
 

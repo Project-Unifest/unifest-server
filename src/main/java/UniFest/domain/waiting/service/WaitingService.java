@@ -31,15 +31,16 @@ public class WaitingService {
                 waiting.getUpdatedAt(),
                 waiting.getWaitingStatus(),
                 waitingOrder,
-                waiting.getBooth().getName()
-        );
+                waiting.getBooth().getName());
     }
+
     private List<WaitingInfo> addWaitingOrder(List<Waiting> waitingList) {
         AtomicInteger order = new AtomicInteger(1);
         return waitingList.stream()
                 .map(waiting -> createWaitingInfo(waiting, order.getAndIncrement()))
                 .collect(Collectors.toList());
     }
+
     private List<WaitingInfo> addWaitingOrderByBooth(List<Waiting> waitingList) {
         return waitingList.stream()
                 .collect(Collectors.groupingBy(Waiting::getBooth))
@@ -66,7 +67,7 @@ public class WaitingService {
                 })
                 .collect(Collectors.toList());
         boothIds = boothIds.stream().distinct().collect(Collectors.toList());
-        List<Waiting> allRelatedWaitings = waitingRepository.findAllByBoothIdInAndWaitingStatus(boothIds, "RESERVED") ;
+        List<Waiting> allRelatedWaitings = waitingRepository.findAllByBoothIdInAndWaitingStatus(boothIds, "RESERVED");
         List<WaitingInfo> allOrderList = addWaitingOrderByBooth(allRelatedWaitings);
         return allOrderList.stream()
                 .filter(waitingInfo -> waitingInfo.getDeviceId().equals(deviceId))
@@ -81,9 +82,9 @@ public class WaitingService {
     }
 
     @Transactional
-    public WaitingInfo cancelWaiting(String deviceId, Long waitingId){
+    public WaitingInfo cancelWaiting(String deviceId, Long waitingId) {
         Waiting waiting = waitingRepository.findWaitingByDeviceIdAndId(deviceId, waitingId);
-        if(waiting == null) {
+        if (waiting == null) {
             return null;
         }
         waiting.setWaitingStatus("CANCELED");
@@ -103,9 +104,10 @@ public class WaitingService {
     }
 
     @Transactional
-    public WaitingInfo createWaitingIfNotExist(Waiting waiting){
-        Waiting existWaiting = waitingRepository.findWaitingByDeviceIdAndBoothIdAndWaitingStatus(waiting.getDeviceId(), waiting.getBooth().getId(), "RESERVED");
-        if(existWaiting == null){
+    public WaitingInfo createWaitingIfNotExist(Waiting waiting) {
+        Waiting existWaiting = waitingRepository.findWaitingByDeviceIdAndBoothIdAndWaitingStatus(waiting.getDeviceId(),
+                waiting.getBooth().getId(), "RESERVED");
+        if (existWaiting == null) {
             return addWaiting(waiting);
         }
         return null;
@@ -114,8 +116,7 @@ public class WaitingService {
     @Transactional(readOnly = true)
     public List<WaitingInfo> getWaitingList(Long boothId, Boolean isReserved) {
         // isReserved 가 true 이면 예약된 대기열만 조회, 아니면 전체 대기열 조회
-        List<Waiting> waitingList = isReserved ?
-                waitingRepository.findAllByBoothIdAndWaitingStatus(boothId, "RESERVED")
+        List<Waiting> waitingList = isReserved ? waitingRepository.findAllByBoothIdAndWaitingStatus(boothId, "RESERVED")
                 : waitingRepository.findAllByBoothId(boothId);
 
         return addWaitingOrder(waitingList);
@@ -129,14 +130,14 @@ public class WaitingService {
     }
 
     @Transactional
-    public WaitingInfo completeWaiting(Long id){
+    public WaitingInfo completeWaiting(Long id) {
         return setWaitingById(id, "COMPLETED");
     }
 
     private WaitingInfo setWaitingById(Long id, String waitingStatus) {
         Waiting waiting = waitingRepository.findById(id).orElse(null);
-        if (waiting !=null){
-            if(waiting.getWaitingStatus().equals("CANCELED")){
+        if (waiting != null) {
+            if (waiting.getWaitingStatus().equals("CANCELED")) {
                 return null;
             }
             waiting.setWaitingStatus(waitingStatus);
@@ -156,18 +157,19 @@ public class WaitingService {
         waitingRepository.deleteById(id); // 데이터베이스에서 삭제
         return waitingInfo;
     }
+
     @Transactional(readOnly = true)
     public Long getWaitingCount(Long boothId, String waitingStatus) {
         Booth booth = boothRepository.findByBoothId(boothId).orElse(null);
-        if(booth != null){
+        if (booth != null) {
             return Long.valueOf(waitingRepository.findAllByBoothIdAndWaitingStatus(boothId, waitingStatus).size());
-        }
-        else {
+        } else {
             return null;
         }
     }
+
     @Transactional(readOnly = true)
-    public Long getWaitingCountByBooth(Booth booth, String waitingStatus){
+    public Long getWaitingCountByBooth(Booth booth, String waitingStatus) {
         return Long.valueOf(waitingRepository.findAllByBoothIdAndWaitingStatus(booth.getId(), waitingStatus).size());
     }
 }
