@@ -1,6 +1,5 @@
 package UniFest.dto.response.waiting;
 
-import UniFest.domain.waiting.entity.ReservationStatus;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
