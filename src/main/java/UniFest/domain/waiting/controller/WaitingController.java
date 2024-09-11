@@ -7,15 +7,17 @@ import UniFest.domain.waiting.entity.ReservationStatus;
 import UniFest.domain.waiting.entity.Waiting;
 import UniFest.domain.waiting.service.WaitingService;
 import UniFest.dto.request.waiting.CheckPinRequest;
-import UniFest.dto.request.waiting.CancelWaitingRequest;
+import UniFest.dto.request.waiting.DeleteWaitingRequest;
 import UniFest.dto.request.waiting.PostWaitingRequest;
 import UniFest.dto.response.Response;
 import UniFest.dto.response.waiting.WaitingInfo;
 import UniFest.exception.booth.BoothNotFoundException;
+import UniFest.security.userdetails.MemberDetails;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -33,8 +35,9 @@ public class WaitingController {
     @SecurityRequirement(name = "JWT")
     @Operation(summary = "Pin 번호 받기")
     @GetMapping("/pin/{booth-id}")
-    public Response<String> getPin(@PathVariable("booth-id") Long boothId){
-        String pin = boothService.getPin(boothId);
+    public Response<String> getPin(@PathVariable("booth-id") Long boothId,
+                           @AuthenticationPrincipal MemberDetails memberDetails){
+        String pin = boothService.getPin(memberDetails, boothId);
 
         return Response.ofSuccess("OK", pin);
     }
@@ -79,23 +82,21 @@ public class WaitingController {
         if(!pinNumber.equals(waitingRequest.getPinNumber())){
             return Response.ofFail("Pin 번호가 일치하지 않습니다", null);
         }
+
         Waiting newWaiting = new Waiting(
                 existBooth,
                 waitingRequest.getDeviceId(),
                 waitingRequest.getTel(),
                 waitingRequest.getPartySize()
         );
-        WaitingInfo ret = waitingService.createWaitingIfNotExist(newWaiting);
-        if(ret==null){
-            return Response.ofFail("이미 대기열에 존재합니다", null);
-        }
+        WaitingInfo ret = waitingService.addWaiting(newWaiting);
         return Response.ofCreated("웨이팅이 추가되었습니다", ret);
     }
     @PutMapping
     @Operation(summary="사용자 측의 웨이팅 취소")
-    public Response<WaitingInfo> cancelWaiting(@RequestBody CancelWaitingRequest cancelWaitingRequest){
-        String deviceId = cancelWaitingRequest.getDeviceId();
-        Long waitingId = cancelWaitingRequest.getWaitingId();
+    public Response<WaitingInfo> cancelWaiting(@RequestBody DeleteWaitingRequest deleteWaitingRequest){
+        String deviceId = deleteWaitingRequest.getDeviceId();
+        Long waitingId = deleteWaitingRequest.getWaitingId();
 
         WaitingInfo ret = waitingService.cancelWaiting(deviceId, waitingId);
         if(ret == null){
