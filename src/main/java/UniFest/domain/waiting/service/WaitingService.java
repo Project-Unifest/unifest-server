@@ -2,7 +2,6 @@ package UniFest.domain.waiting.service;
 
 import UniFest.domain.booth.entity.Booth;
 import UniFest.domain.booth.repository.BoothRepository;
-import UniFest.domain.waiting.entity.ReservationStatus;
 import UniFest.domain.waiting.entity.Waiting;
 import UniFest.domain.waiting.repository.WaitingRepository;
 import UniFest.dto.response.waiting.WaitingInfo;
@@ -55,9 +54,7 @@ public class WaitingService {
 
     @Transactional
     public List<WaitingInfo> getMyWaitingList(String deviceId) {
-        List<Waiting> myWaitings = waitingRepository.findAllByDeviceIdAndStatus(deviceId, ReservationStatus.RESERVED);
-
-        System.out.println("myWaitings = " + myWaitings);
+        List<Waiting> myWaitings = waitingRepository.findAllByDeviceIdAndWaitingStatus(deviceId, "RESERVED");
         List<Long> boothIds = myWaitings.stream()
                 .map(waiting -> {
                     Booth booth = waiting.getBooth();
@@ -69,11 +66,8 @@ public class WaitingService {
                 })
                 .collect(Collectors.toList());
         boothIds = boothIds.stream().distinct().collect(Collectors.toList());
-        System.out.println("boothIds = " + boothIds);
-        List<Waiting> allRelatedWaitings = waitingRepository.findAllByBoothIdInAndStatus(boothIds, ReservationStatus.RESERVED) ;
-        System.out.println("allRelatedWaitings = " + allRelatedWaitings);
+        List<Waiting> allRelatedWaitings = waitingRepository.findAllByBoothIdInAndWaitingStatus(boothIds, "RESERVED") ;
         List<WaitingInfo> allOrderList = addWaitingOrderByBooth(allRelatedWaitings);
-        System.out.println("allOrderList = " + allOrderList);
         return allOrderList.stream()
                 .filter(waitingInfo -> waitingInfo.getDeviceId().equals(deviceId))
                 .collect(Collectors.toList());
@@ -108,6 +102,15 @@ public class WaitingService {
         return createWaitingInfo(waiting, null);
     }
 
+    @Transactional
+    public WaitingInfo createWaitingIfNotExist(Waiting waiting){
+        Waiting existWaiting = waitingRepository.findWaitingByDeviceIdAndBoothIdAndWaitingStatus(waiting.getDeviceId(), waiting.getBooth().getId(), "RESERVED");
+        if(existWaiting == null){
+            return addWaiting(waiting);
+        }
+        return null;
+    }
+
     @Transactional(readOnly = true)
     public List<WaitingInfo> getWaitingList(Long boothId, Boolean isReserved) {
         // isReserved 가 true 이면 예약된 대기열만 조회, 아니면 전체 대기열 조회
@@ -120,17 +123,17 @@ public class WaitingService {
 
     @Transactional
     public WaitingInfo callWaiting(Long id) {
-        WaitingInfo waitingInfo = getWaitingById(id, ReservationStatus.CALLED);
+        WaitingInfo waitingInfo = setWaitingById(id, "CALLED");
         // 명시적으로 사용자를 호출한다
         return waitingInfo;
     }
 
     @Transactional
     public WaitingInfo completeWaiting(Long id){
-        return getWaitingById(id, ReservationStatus.COMPLETED);
+        return setWaitingById(id, "COMPLETED");
     }
 
-    private WaitingInfo getWaitingById(Long id, ReservationStatus status) {
+    private WaitingInfo setWaitingById(Long id, String waitingStatus) {
         Waiting waiting = waitingRepository.findById(id).orElse(null);
         if (waiting !=null){
             if(waiting.getStatus() == ReservationStatus.COMPLETED){
