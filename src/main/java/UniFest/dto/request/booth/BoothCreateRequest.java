@@ -38,10 +38,12 @@ public class BoothCreateRequest {
     private double latitude;
     @NotNull(message = "공백일 수 없습니다.")
     private double longitude;
-    @NotNull(message = "공백일 수 없습니다.")
+
+    @Schema(example = "HH:mm:ss / null 가능")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss")
     private LocalTime openTime;
-    @NotNull(message = "공백일 수 없습니다.")
+
+    @Schema(example = "HH:mm:ss / null 가능")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss")
     private LocalTime closeTime;
 

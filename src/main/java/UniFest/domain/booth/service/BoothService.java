@@ -68,7 +68,9 @@ public class BoothService {
         //영업 시간
         LocalTime openTime = boothCreateRequest.getOpenTime();
         LocalTime closeTime = boothCreateRequest.getCloseTime();
-        setBoothOpeningHour(booth, openTime, closeTime);
+        if(openTime != null || closeTime != null) {
+            setBoothOpeningHour(booth, openTime, closeTime);
+        }
         //오픈날짜
         LocalDate beginDate = festival.getBeginDate();
         LocalDate endDate = festival.getEndDate();
