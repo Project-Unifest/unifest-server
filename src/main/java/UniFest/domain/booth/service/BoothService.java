@@ -50,10 +50,8 @@ public class BoothService {
 
     @Transactional
     public Long createBooth(BoothCreateRequest boothCreateRequest, MemberDetails memberDetails) {
-        Member member = memberRepository.findByEmail(memberDetails.getEmail())
-                .orElseThrow(MemberNotFoundException::new);
-        Festival festival = festivalRepository.findById(boothCreateRequest.getFestivalId())
-                .orElseThrow(FestivalNotFoundException::new);
+        Member member = memberRepository.findByEmail(memberDetails.getEmail()).orElseThrow(MemberNotFoundException::new);
+        Festival festival = festivalRepository.findById(boothCreateRequest.getFestivalId()).orElseThrow(FestivalNotFoundException::new);
         Booth booth = Booth.builder()
                 .description(boothCreateRequest.getDescription())
                 .detail(boothCreateRequest.getDetail())
@@ -68,42 +66,43 @@ public class BoothService {
                 .festival(festival)
                 .build();
         booth.setMember(member);
-        // 영업 시간
+        //영업 시간
         LocalTime openTime = boothCreateRequest.getOpenTime();
         LocalTime closeTime = boothCreateRequest.getCloseTime();
-        setBoothOpeningHour(booth, openTime, closeTime);
-        // 오픈날짜
+        if(openTime != null || closeTime != null) {
+            setBoothOpeningHour(booth, openTime, closeTime);
+        }
+        //오픈날짜
         LocalDate beginDate = festival.getBeginDate();
         LocalDate endDate = festival.getEndDate();
-        for (Long turn : boothCreateRequest.getOpenDates()) {
-            LocalDate opendate = beginDate.plusDays(turn - 1);
-            if (opendate.isAfter(endDate) || opendate.isBefore(beginDate))
-                throw new RuntimeException("부스 운영날짜는 축제날짜에 포함되어야 합니다.");
+        for(Long turn : boothCreateRequest.getOpenDates()){
+            LocalDate opendate = beginDate.plusDays(turn-1);
+            if(opendate.isAfter(endDate) || opendate.isBefore(beginDate)) throw new RuntimeException("부스 운영날짜는 축제날짜에 포함되어야 합니다.");
             BoothSchedule schedule = BoothSchedule.builder()
                     .openDate(opendate)
                     .build();
             schedule.setBooth(booth);
             boothScheduleRepository.save(schedule);
         }
-        // 핀 생성
+        //핀 생성
         booth.createPin();
-        // 부스 메뉴
-        for (MenuCreateRequest menuCreateRequest : boothCreateRequest.getMenus()) {
+        //부스 메뉴
+        for(MenuCreateRequest menuCreateRequest : boothCreateRequest.getMenus()){
             Menu menu = Menu.builder()
                     .name(menuCreateRequest.getName())
                     .price(menuCreateRequest.getPrice())
                     .imgUrl(menuCreateRequest.getImgUrl())
                     .build();
             menu.setBooth(booth);
-            menu.updateMenuStatus(MenuStatus.ENOUGH); // 메뉴 상태 기본값
+            menu.updateMenuStatus(MenuStatus.ENOUGH);   //메뉴 상태 기본값
             menuRepository.save(menu).getId();
         }
 
         return boothRepository.save(booth).getId();
     }
 
-    // value::key의 형태로 redis key 생성
-    @Cacheable(value = "BoothInfo", key = "#boothId", cacheManager = "redisCacheManager")
+    //value::key의 형태로 redis key 생성
+    @Cacheable(value = "BoothInfo", key = "#boothId",cacheManager = "redisCacheManager")
     public BoothDetailResponse getBooth(Long boothId) {
         Booth findBooth = boothRepository.findByBoothId(boothId)
                 .filter(b -> b.isEnabled())
@@ -114,23 +113,24 @@ public class BoothService {
 
     public List<BoothResponse> getBooths(Long festivalId) {
         Festival festival = festivalRepository.findById(festivalId).orElseThrow(FestivalNotFoundException::new);
-        List<BoothResponse> responses = boothRepository.findAllByFestivalAndEnabled(festival, true)
+        List<BoothResponse> responses = boothRepository.findAllByFestivalAndEnabled(festival,true)
                 .stream().filter(b -> b.isEnabled())
                 .map(BoothResponse::new).toList();
         return responses;
     }
 
     @Transactional
-    public List<BoothResponse> getTrendingBooths(Long festivalId) {
+    public List<BoothResponse> getTrendingBooths(Long festivalId){
         Festival festival = festivalRepository.findById(festivalId).orElseThrow();
         List<BoothResponse> boothResponseList = new ArrayList<>();
         List<Booth> boothList = boothRepository.findTop5ByFestivalOrderByLikesListSizeDesc(festival);
-        for (Booth booth : boothList) {
+        for(Booth booth : boothList){
             boothResponseList.add(new BoothResponse(booth));
         }
 
         return boothResponseList;
     }
+
 
     @Transactional
     @CacheEvict(value = "BoothInfo", key = "#boothId")
@@ -165,7 +165,6 @@ public class BoothService {
 
         return findBooth.getId();
     }
-
     @Transactional
     @CacheEvict(value = "BoothInfo", key = "#boothId")
     public void deleteBooth(MemberDetails memberDetails, Long boothId) {
@@ -191,20 +190,27 @@ public class BoothService {
         boothScheduleRepository.deleteBoothSchedule(now);
     }
 
-    public Booth verifyAuth(Long memberId, Long boothId) {
+    public Booth verifyAuth(Long memberId, Long boothId){
         Booth findBooth = boothRepository.findByBoothId(boothId)
                 .orElseThrow(BoothNotFoundException::new);
-        if (findBooth.getMember().getId() != memberId)
-            throw new NotAuthorizedException();
+        if(findBooth.getMember().getId() != memberId) throw new NotAuthorizedException();
         return findBooth;
     }
 
-    public String getPin(Long boothId) {
+//    public String getPin(MemberDetails memberDetails,Long boothId){
+    public String getPin(Long boothId){
         Booth findBooth = boothRepository.findByBoothId(boothId)
                 .orElseThrow(BoothNotFoundException::new);
-        // pin이 발급되지 않았을 경우 에러
+        Member boothMember = findBooth.getMember();
+
+        //부스 운영자만 조회 가능하게
+//        if(boothMember.getId() != memberDetails.getMemberId()){
+//            throw new NotAuthorizedException();
+//        }
+
+        //pin이 발급되지 않았을 경우 에러
         String boothPin = findBooth.getPin();
-        if (boothPin == null) {
+        if(boothPin == null){
             throw new PinNotCreatedException();
         }
 
@@ -212,9 +218,16 @@ public class BoothService {
     }
 
     @Transactional
-    public String createPin(Long boothId) {
+//    public String createPin(MemberDetails memberDetails, Long boothId){
+    public String createPin(Long boothId){
         Booth findBooth = boothRepository.findByBoothId(boothId)
                 .orElseThrow(BoothNotFoundException::new);
+        Member boothMember = findBooth.getMember();
+
+        //부스 운영자만 생성 가능하게
+//        if(boothMember.getId() != memberDetails.getMemberId()){
+//            throw new NotAuthorizedException();
+//        }
 
         String newPin = findBooth.createPin();
 
@@ -223,15 +236,15 @@ public class BoothService {
 
     @Transactional
     @CacheEvict(value = "BoothInfo", key = "#boothId")
-    public boolean updateBoothWaitingEnabled(Long boothId) {
+    public boolean updateBoothWaitingEnabled(Long boothId){
         Booth findBooth = boothRepository.findByBoothId(boothId).orElseThrow(BoothNotFoundException::new);
 
-        findBooth.updateWaitingEnabled(!findBooth.isWaitingEnabled()); // toggle 형식으로 작동
+        findBooth.updateWaitingEnabled(!findBooth.isWaitingEnabled());  //toggle 형식으로 작동
         return findBooth.isWaitingEnabled();
     }
 
     public void setBoothOpeningHour(Booth booth, LocalTime openTime, LocalTime closeTime) {
-        if (closeTime.isBefore(openTime)) {
+        if(closeTime.isBefore(openTime)){
             throw new OpeningTimeNotCorrectException();
         }
         booth.setOpeningHour(openTime, closeTime);
