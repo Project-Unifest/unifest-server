@@ -2,6 +2,7 @@ package UniFest.domain.menu.controller;
 
 import UniFest.domain.menu.entity.MenuStatus;
 import UniFest.domain.menu.service.MenuService;
+import UniFest.dto.request.menu.MenuPatchRequest;
 import UniFest.dto.request.menu.MenuStatusChangeRequest;
 import UniFest.dto.response.Response;
 import UniFest.security.userdetails.MemberDetails;
@@ -26,6 +27,17 @@ public class MenuController {
                              @AuthenticationPrincipal MemberDetails memberDetails) {
         menuService.deleteMenu(menuId, memberDetails);
         return Response.ofSuccess("OK",null);
+    }
+
+    @SecurityRequirement(name = "JWT")
+    @Operation(summary = "메뉴 수정")
+    @PatchMapping("{menu-id}")
+    public Response patchMenu(@Valid @RequestBody MenuPatchRequest menuPatchRequest,
+                                     @AuthenticationPrincipal MemberDetails memberDetails,
+                              @RequestParam Long menuId) {
+        menuService.patchMenu(menuId, memberDetails, menuPatchRequest);
+
+        return Response.ofSuccess("OK", menuId);
     }
 
     @SecurityRequirement(name = "JWT")
