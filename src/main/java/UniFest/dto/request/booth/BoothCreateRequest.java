@@ -28,8 +28,8 @@ public class BoothCreateRequest {
     @Length(max=100)
     private String warning;
     private Long festivalId;
-    @Schema(description = "부스 운영날짜", example = ": 첫째날 둘째날 셋째날 운영 시 : [1,2,3] ")
-    private List<Long> openDates;
+//    @Schema(description = "부스 운영날짜", example = ": 첫째날 둘째날 셋째날 운영 시 : [1,2,3] ")
+//    private List<Long> openDates;
     private List<MenuCreateRequest> menus;
     @NotNull(message = "공백일 수 없습니다.")
     @Length(max=40)
