@@ -46,7 +46,7 @@ public class MenuController {
     @PatchMapping("{menu-id}")
     public Response patchMenu(@Valid @RequestBody MenuPatchRequest menuPatchRequest,
                                      @AuthenticationPrincipal MemberDetails memberDetails,
-                              @RequestParam Long menuId) {
+                              @PathVariable("menu-id") Long menuId) {
         menuService.patchMenu(menuId, memberDetails, menuPatchRequest);
 
         return Response.ofSuccess("OK", menuId);
