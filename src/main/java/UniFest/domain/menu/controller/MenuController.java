@@ -56,8 +56,8 @@ public class MenuController {
     @Operation(summary = "메뉴 재고 상태 변경")
     @PutMapping("{menu-id}/status")
     public Response changeMenuStatus(@Valid @RequestBody MenuStatusChangeRequest menuStatusChangeRequest,
+                                     @PathVariable("menu-id") Long menuId,
                                      @AuthenticationPrincipal MemberDetails memberDetails) {
-        Long menuId = menuStatusChangeRequest.getMenuId();
         MenuStatus menuStatus = menuStatusChangeRequest.getMenuStatus();
         menuService.changeMenuStatus(memberDetails ,menuId, menuStatus);
 

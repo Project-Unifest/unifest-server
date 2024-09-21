@@ -78,8 +78,10 @@ public class MenuService {
     public void changeMenuStatus(MemberDetails memberDetails, Long menuId, MenuStatus menuStatus){
         Menu findMenu = menuRepository.findById(menuId).orElseThrow(MenuNotFoundException::new);
         Booth findBooth = findMenu.getBooth();
+
         cacheManager.getCache("BoothInfo").evict(findMenu.getId());
         checkBoothAuth(findBooth, memberDetails);
+
         findMenu.updateMenuStatus(menuStatus);
     }
 }
