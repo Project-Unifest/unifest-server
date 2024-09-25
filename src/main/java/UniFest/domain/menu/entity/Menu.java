@@ -44,6 +44,16 @@ public class Menu {
         booth.getMenuList().add(this);
     }
 
+    public void updateName(String name){
+        this.name = name;
+    }
+    public void updatePrice(int price){
+        this.price = price;
+    }
+    public void updateImgUrl(String imgUrl){
+        this.imgUrl = imgUrl;
+    }
+
     public void updateMenuStatus(MenuStatus menuStatus){
         this.menuStatus = menuStatus;
     }

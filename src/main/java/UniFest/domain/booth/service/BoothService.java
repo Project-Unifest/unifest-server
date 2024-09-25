@@ -75,15 +75,15 @@ public class BoothService {
         //오픈날짜
         LocalDate beginDate = festival.getBeginDate();
         LocalDate endDate = festival.getEndDate();
-        for(Long turn : boothCreateRequest.getOpenDates()){
-            LocalDate opendate = beginDate.plusDays(turn-1);
-            if(opendate.isAfter(endDate) || opendate.isBefore(beginDate)) throw new RuntimeException("부스 운영날짜는 축제날짜에 포함되어야 합니다.");
-            BoothSchedule schedule = BoothSchedule.builder()
-                    .openDate(opendate)
-                    .build();
-            schedule.setBooth(booth);
-            boothScheduleRepository.save(schedule);
-        }
+//        for(Long turn : boothCreateRequest.getOpenDates()){
+//            LocalDate opendate = beginDate.plusDays(turn-1);
+//            if(opendate.isAfter(endDate) || opendate.isBefore(beginDate)) throw new RuntimeException("부스 운영날짜는 축제날짜에 포함되어야 합니다.");
+//            BoothSchedule schedule = BoothSchedule.builder()
+//                    .openDate(opendate)
+//                    .build();
+//            schedule.setBooth(booth);
+//            boothScheduleRepository.save(schedule);
+//        }
         //핀 생성
         booth.createPin();
         //부스 메뉴
@@ -244,9 +244,9 @@ public class BoothService {
     }
 
     public void setBoothOpeningHour(Booth booth, LocalTime openTime, LocalTime closeTime) {
-        if(closeTime.isBefore(openTime)){
-            throw new OpeningTimeNotCorrectException();
-        }
+//        if(closeTime.isBefore(openTime)){
+//            throw new OpeningTimeNotCorrectException();
+//        }
         booth.setOpeningHour(openTime, closeTime);
     }
 
