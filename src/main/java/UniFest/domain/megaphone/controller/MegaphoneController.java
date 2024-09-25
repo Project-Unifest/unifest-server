@@ -1,8 +1,8 @@
-package UniFest.domain.announcement.controller;
+package UniFest.domain.megaphone.controller;
 
 import UniFest.dto.request.megaphone.AddMegaphoneRequest;
 import UniFest.dto.request.megaphone.SubscribeMegaphoneRequest;
-import UniFest.domain.announcement.service.MegaphoneService;
+import UniFest.domain.megaphone.service.MegaphoneService;
 import UniFest.dto.response.Response;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
