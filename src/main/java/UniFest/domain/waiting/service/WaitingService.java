@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.hibernate.Hibernate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -54,22 +56,24 @@ public class WaitingService {
 
     @Transactional
     public List<WaitingInfo> getMyWaitingList(String deviceId) {
-        List<Waiting> myWaitings = waitingRepository.findAllByDeviceIdAndWaitingStatus(deviceId, "RESERVED");
+        List<String> statuses = Arrays.asList("RESERVED", "CALLED");
+        List<Waiting> myWaitings = waitingRepository.findAllByDeviceIdAndWaitingStatusIn(deviceId, statuses);
         List<Long> boothIds = myWaitings.stream()
                 .map(waiting -> {
                     Booth booth = waiting.getBooth();
                     if (booth == null) {
                         throw new IllegalStateException("Booth entity is null for Waiting ID: " + waiting.getId());
                     }
-                    Hibernate.initialize(booth); // 명시적으로 초기화
+                    Hibernate.initialize(booth);
                     return booth.getId();
                 })
                 .collect(Collectors.toList());
+
         boothIds = boothIds.stream().distinct().collect(Collectors.toList());
-        List<Waiting> allRelatedWaitings = waitingRepository.findAllByBoothIdInAndWaitingStatus(boothIds, "RESERVED");
-        List<Waiting> allCalledWaitings = waitingRepository.findAllByBoothIdInAndWaitingStatus(boothIds, "CALLED");
-        allRelatedWaitings.addAll(allCalledWaitings);
+        List<Waiting> allRelatedWaitings = waitingRepository.findAllByBoothIdInAndWaitingStatusIn(boothIds, statuses);
+
         List<WaitingInfo> allOrderList = addWaitingOrderByBooth(allRelatedWaitings);
+
         return allOrderList.stream()
                 .filter(waitingInfo -> waitingInfo.getDeviceId().equals(deviceId))
                 .collect(Collectors.toList());

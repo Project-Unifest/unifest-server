@@ -19,4 +19,7 @@ public interface WaitingRepository extends JpaRepository<Waiting, Long> {
 
     List<Waiting> findAllByBoothIdInAndWaitingStatus(List<Long> boothIds, String waitingStatus);
 
+    List<Waiting> findAllByDeviceIdAndWaitingStatusIn(String deviceId, List<String> statuses);
+    List<Waiting> findAllByBoothIdInAndWaitingStatusIn(List<Long> boothIds, List<String> statuses);
+
 }
