@@ -81,6 +81,7 @@ public class SecurityConfig{
         //경로별 인가작업
         http
                 .authorizeHttpRequests((auth) -> auth
+                        .requestMatchers("/admin/").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/festival/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/festival").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/school").hasRole("ADMIN")
