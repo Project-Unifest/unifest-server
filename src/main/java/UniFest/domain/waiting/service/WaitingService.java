@@ -9,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import org.hibernate.Hibernate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -68,6 +67,8 @@ public class WaitingService {
                 .collect(Collectors.toList());
         boothIds = boothIds.stream().distinct().collect(Collectors.toList());
         List<Waiting> allRelatedWaitings = waitingRepository.findAllByBoothIdInAndWaitingStatus(boothIds, "RESERVED");
+        List<Waiting> allCalledWaitings = waitingRepository.findAllByBoothIdInAndWaitingStatus(boothIds, "CALLED");
+        allRelatedWaitings.addAll(allCalledWaitings);
         List<WaitingInfo> allOrderList = addWaitingOrderByBooth(allRelatedWaitings);
         return allOrderList.stream()
                 .filter(waitingInfo -> waitingInfo.getDeviceId().equals(deviceId))
@@ -125,7 +126,6 @@ public class WaitingService {
     @Transactional
     public WaitingInfo callWaiting(Long id) {
         WaitingInfo waitingInfo = setWaitingById(id, "CALLED");
-        // 명시적으로 사용자를 호출한다
         return waitingInfo;
     }
 

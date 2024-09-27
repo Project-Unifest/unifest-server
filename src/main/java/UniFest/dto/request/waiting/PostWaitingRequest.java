@@ -13,4 +13,5 @@ public class PostWaitingRequest {
     private String deviceId;
     private int partySize;
     private String pinNumber;
+    private String fcmToken;
 }
