@@ -76,13 +76,7 @@ public class WaitingController {
         if (!pinNumber.equals(waitingRequest.getPinNumber())) {
             return Response.ofFail("Pin 번호가 일치하지 않습니다", null);
         }
-        Waiting newWaiting = new Waiting(
-                existBooth,
-                waitingRequest.getDeviceId(),
-                waitingRequest.getTel(),
-                waitingRequest.getPartySize());
-        String fcmToken = waitingRequest.getFcmToken();
-        WaitingInfo ret = waitingService.createWaitingIfNotExist(newWaiting, fcmToken);
+        WaitingInfo ret = waitingService.createWaitingIfNotExist(waitingRequest, existBooth);
         if (ret == null) {
             return Response.ofFail("이미 대기열에 존재합니다", null);
         }

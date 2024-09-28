@@ -40,6 +40,9 @@ public class Waiting extends BaseEntity {
 
     private String waitingStatus = "RESERVED";
 
+
+    private String fcmToken = null;
+
     @Builder
     public Waiting(Booth booth, String deviceId, String tel, int partySize) {
         this.booth = booth;
@@ -47,6 +50,16 @@ public class Waiting extends BaseEntity {
         this.tel = tel;
         this.partySize = partySize;
         this.waitingStatus = "RESERVED";
+    }
+
+    @Builder
+    public Waiting(Booth booth, String deviceId, String tel, int partySize, String fcmToken) {
+        this.booth = booth;
+        this.deviceId = deviceId;
+        this.tel = tel;
+        this.partySize = partySize;
+        this.waitingStatus = "RESERVED";
+        this.fcmToken = fcmToken;
     }
 
     public Waiting() {
