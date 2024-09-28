@@ -81,7 +81,8 @@ public class WaitingController {
                 waitingRequest.getDeviceId(),
                 waitingRequest.getTel(),
                 waitingRequest.getPartySize());
-        WaitingInfo ret = waitingService.createWaitingIfNotExist(newWaiting);
+        String fcmToken = waitingRequest.getFcmToken();
+        WaitingInfo ret = waitingService.createWaitingIfNotExist(newWaiting, fcmToken);
         if (ret == null) {
             return Response.ofFail("이미 대기열에 존재합니다", null);
         }

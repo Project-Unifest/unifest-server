@@ -5,6 +5,8 @@ import UniFest.domain.booth.repository.BoothRepository;
 import UniFest.domain.waiting.entity.Waiting;
 import UniFest.domain.waiting.repository.WaitingRepository;
 import UniFest.dto.response.waiting.WaitingInfo;
+import UniFest.exception.announcement.FcmFailException;
+import com.google.firebase.messaging.*;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.Hibernate;
 import org.springframework.stereotype.Service;
@@ -108,12 +110,30 @@ public class WaitingService {
         return createWaitingInfo(waiting, null);
     }
 
+
+    public void subscribeWaiting(WaitingInfo ret, String fcmToken) {
+        String waitingTopic = "waiting_"+String.valueOf(ret.getWaitingId());
+        List<String> registrationTokens = Arrays.asList(fcmToken);
+        try {
+            TopicManagementResponse response = FirebaseMessaging.getInstance()
+                    .subscribeToTopic(registrationTokens, waitingTopic);
+            if (response.getSuccessCount() != 1) {
+                throw new FcmFailException(response.getErrors().get(0).getReason().toString());
+            }
+        } catch (FirebaseMessagingException e) {
+            throw new FcmFailException(e.getMessage());
+        }
+    }
     @Transactional
-    public WaitingInfo createWaitingIfNotExist(Waiting waiting) {
+    public WaitingInfo createWaitingIfNotExist(Waiting waiting, String fcmToken) {
         Waiting existWaiting = waitingRepository.findWaitingByDeviceIdAndBoothIdAndWaitingStatus(waiting.getDeviceId(),
                 waiting.getBooth().getId(), "RESERVED");
         if (existWaiting == null) {
-            return addWaiting(waiting);
+            WaitingInfo ret = addWaiting(waiting);
+            if(fcmToken != null) {
+                subscribeWaiting(ret, fcmToken);
+            }
+            return ret;
         }
         return null;
     }
@@ -130,7 +150,30 @@ public class WaitingService {
     @Transactional
     public WaitingInfo callWaiting(Long id) {
         WaitingInfo waitingInfo = setWaitingById(id, "CALLED");
-        return waitingInfo;
+
+        String waitingTopic = "waiting_"+String.valueOf(waitingInfo.getWaitingId());
+        String waitingTitle = "대기열 호출 -> "+waitingInfo.getBoothName();
+        String waitingBody = String.valueOf(waitingInfo.getWaitingId())+ "번 대기열이 호출되었습니다";
+
+        Notification notification = Notification.builder()
+                .setTitle(waitingTitle)
+                .setBody(waitingBody)
+                .build();
+        Message message = Message.builder()
+                .setTopic(waitingTopic)
+                .setNotification(notification)
+                .putData("waiting_id", String.valueOf(waitingInfo.getWaitingId()))
+                .putData("booth_id", String.valueOf(waitingInfo.getBoothId()))
+                .putData("booth_name", waitingInfo.getBoothName())
+                .build();
+        try{
+            FirebaseMessaging.getInstance().send(message);
+        } catch (FirebaseMessagingException e) {
+            throw new FcmFailException(e.getMessage());
+        }
+        finally {
+            return waitingInfo;
+        }
     }
 
     @Transactional
