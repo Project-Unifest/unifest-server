@@ -197,17 +197,9 @@ public class BoothService {
         return findBooth;
     }
 
-//    public String getPin(MemberDetails memberDetails,Long boothId){
     public String getPin(Long boothId){
         Booth findBooth = boothRepository.findByBoothId(boothId)
                 .orElseThrow(BoothNotFoundException::new);
-        Member boothMember = findBooth.getMember();
-
-        //부스 운영자만 조회 가능하게
-//        if(boothMember.getId() != memberDetails.getMemberId()){
-//            throw new NotAuthorizedException();
-//        }
-
         //pin이 발급되지 않았을 경우 에러
         String boothPin = findBooth.getPin();
         if(boothPin == null){
@@ -218,16 +210,9 @@ public class BoothService {
     }
 
     @Transactional
-//    public String createPin(MemberDetails memberDetails, Long boothId){
     public String createPin(Long boothId){
         Booth findBooth = boothRepository.findByBoothId(boothId)
                 .orElseThrow(BoothNotFoundException::new);
-        Member boothMember = findBooth.getMember();
-
-        //부스 운영자만 생성 가능하게
-//        if(boothMember.getId() != memberDetails.getMemberId()){
-//            throw new NotAuthorizedException();
-//        }
 
         String newPin = findBooth.createPin();
 

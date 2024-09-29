@@ -7,16 +7,22 @@ import UniFest.domain.waiting.entity.Waiting;
 import UniFest.domain.waiting.service.WaitingService;
 import UniFest.dto.request.waiting.CheckPinRequest;
 import UniFest.dto.request.waiting.CancelWaitingRequest;
+import UniFest.dto.request.waiting.PostTokenTestRequest;
 import UniFest.dto.request.waiting.PostWaitingRequest;
 import UniFest.dto.response.Response;
 import UniFest.dto.response.waiting.WaitingInfo;
 import UniFest.exception.booth.BoothNotFoundException;
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.messaging.Message;
+import com.google.firebase.messaging.Notification;
+import com.google.firebase.messaging.TopicManagementResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -76,12 +82,7 @@ public class WaitingController {
         if (!pinNumber.equals(waitingRequest.getPinNumber())) {
             return Response.ofFail("Pin 번호가 일치하지 않습니다", null);
         }
-        Waiting newWaiting = new Waiting(
-                existBooth,
-                waitingRequest.getDeviceId(),
-                waitingRequest.getTel(),
-                waitingRequest.getPartySize());
-        WaitingInfo ret = waitingService.createWaitingIfNotExist(newWaiting);
+        WaitingInfo ret = waitingService.createWaitingIfNotExist(waitingRequest, existBooth);
         if (ret == null) {
             return Response.ofFail("이미 대기열에 존재합니다", null);
         }
@@ -181,4 +182,41 @@ public class WaitingController {
         return Response.ofSuccess("OK", updatedVal);
     }
 
+
+    @PostMapping("/tokenTest")
+    @Operation(summary = "토큰 테스트")
+    public Response<String> tokenTest(@RequestBody PostTokenTestRequest postTokenTestRequest) {
+        String fcmToken = postTokenTestRequest.getFcmToken();
+        List<String> registrationTokens = Arrays.asList(fcmToken);
+        try{
+            TopicManagementResponse response = FirebaseMessaging.getInstance().subscribeToTopic(registrationTokens, "test");
+            if(response.getSuccessCount() != 1) {
+                return Response.ofFail("Fail", fcmToken);
+            }
+        } catch (Exception e) {
+            return Response.ofFail("Fail", fcmToken);
+        }
+        return Response.ofSuccess("OK", fcmToken);
+    }
+
+    @GetMapping("/tokenTest")
+    @Operation(summary = "토큰 테스트")
+    public Response<String> tokenTest2() {
+        Notification notification = Notification.builder()
+                .setTitle("test")
+                .setBody("test")
+                .build();
+
+        Message message = Message.builder()
+                .setTopic("test")
+                .setNotification(notification)
+                .putData("boothId", "196")
+                .build();
+        try{
+            FirebaseMessaging.getInstance().send(message);
+        } catch (Exception e) {
+            return Response.ofFail("Fail", "test");
+        }
+        return Response.ofSuccess("OK", "test");
+    }
 }

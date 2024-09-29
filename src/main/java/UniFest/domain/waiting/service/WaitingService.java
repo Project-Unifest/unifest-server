@@ -4,12 +4,16 @@ import UniFest.domain.booth.entity.Booth;
 import UniFest.domain.booth.repository.BoothRepository;
 import UniFest.domain.waiting.entity.Waiting;
 import UniFest.domain.waiting.repository.WaitingRepository;
+import UniFest.dto.request.waiting.PostWaitingRequest;
 import UniFest.dto.response.waiting.WaitingInfo;
+import UniFest.exception.announcement.FcmFailException;
+import com.google.firebase.messaging.*;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.Hibernate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -43,32 +47,41 @@ public class WaitingService {
 
     private List<WaitingInfo> addWaitingOrderByBooth(List<Waiting> waitingList) {
         return waitingList.stream()
-                .collect(Collectors.groupingBy(Waiting::getBooth))
+                .collect(Collectors.groupingBy(Waiting::getBooth)) // Booth별로 그룹화
                 .entrySet().stream()
                 .flatMap(entry -> {
                     AtomicInteger order = new AtomicInteger(1);
                     return entry.getValue().stream()
-                            .map(waiting -> createWaitingInfo(waiting, order.getAndIncrement()));
+                            .map(waiting -> {
+                                // "RESERVED" 상태인 경우에만 order를 부여
+                                Integer waitingOrder = "RESERVED".equals(waiting.getWaitingStatus())
+                                        ? order.getAndIncrement()
+                                        : null;
+                                return createWaitingInfo(waiting, waitingOrder);
+                            });
                 })
                 .collect(Collectors.toList());
     }
 
     @Transactional
     public List<WaitingInfo> getMyWaitingList(String deviceId) {
-        List<Waiting> myWaitings = waitingRepository.findAllByDeviceIdAndWaitingStatus(deviceId, "RESERVED");
+        List<String> statuses = Arrays.asList("RESERVED", "CALLED");
+        List<Waiting> myWaitings = waitingRepository.findAllByDeviceIdAndWaitingStatusIn(deviceId, statuses);
         List<Long> boothIds = myWaitings.stream()
                 .map(waiting -> {
                     Booth booth = waiting.getBooth();
                     if (booth == null) {
                         throw new IllegalStateException("Booth entity is null for Waiting ID: " + waiting.getId());
                     }
-                    Hibernate.initialize(booth); // 명시적으로 초기화
+                    Hibernate.initialize(booth);
                     return booth.getId();
                 })
                 .collect(Collectors.toList());
+
         boothIds = boothIds.stream().distinct().collect(Collectors.toList());
-        List<Waiting> allRelatedWaitings = waitingRepository.findAllByBoothIdInAndWaitingStatus(boothIds, "RESERVED");
+        List<Waiting> allRelatedWaitings = waitingRepository.findAllByBoothIdInAndWaitingStatusIn(boothIds, statuses);
         List<WaitingInfo> allOrderList = addWaitingOrderByBooth(allRelatedWaitings);
+
         return allOrderList.stream()
                 .filter(waitingInfo -> waitingInfo.getDeviceId().equals(deviceId))
                 .collect(Collectors.toList());
@@ -102,13 +115,24 @@ public class WaitingService {
         waitingRepository.save(waiting);
         return createWaitingInfo(waiting, null);
     }
-
     @Transactional
-    public WaitingInfo createWaitingIfNotExist(Waiting waiting) {
-        Waiting existWaiting = waitingRepository.findWaitingByDeviceIdAndBoothIdAndWaitingStatus(waiting.getDeviceId(),
-                waiting.getBooth().getId(), "RESERVED");
+    public WaitingInfo createWaitingIfNotExist(PostWaitingRequest waitingRequest, Booth existBooth) {
+
+        String deviceId = waitingRequest.getDeviceId();
+        String fcmToken = waitingRequest.getFcmToken();
+        Long boothId = waitingRequest.getBoothId();
+        Waiting existWaiting = waitingRepository.findWaitingByDeviceIdAndBoothIdAndWaitingStatus(deviceId,
+                boothId, "RESERVED");
         if (existWaiting == null) {
-            return addWaiting(waiting);
+            Waiting newWaiting = new Waiting(
+                    existBooth,
+                    deviceId,
+                    waitingRequest.getTel(),
+                    waitingRequest.getPartySize(),
+                    fcmToken
+            );
+            WaitingInfo ret = addWaiting(newWaiting);
+            return ret;
         }
         return null;
     }
@@ -125,7 +149,28 @@ public class WaitingService {
     @Transactional
     public WaitingInfo callWaiting(Long id) {
         WaitingInfo waitingInfo = setWaitingById(id, "CALLED");
-        // 명시적으로 사용자를 호출한다
+        String fcmToken = waitingRepository.findById(id).get().getFcmToken();
+        String waitingTitle = "대기열 호출 -> "+waitingInfo.getBoothName();
+        String waitingBody = String.valueOf(waitingInfo.getWaitingId())+ "번 대기열이 호출되었습니다";
+        if(fcmToken!=null){
+            Notification notification = Notification.builder()
+                    .setTitle(waitingTitle)
+                    .setBody(waitingBody)
+                    .build();
+            Message message = Message.builder()
+                    .setToken(fcmToken)
+                    .setNotification(notification)
+                    .putData("waiting_id", String.valueOf(waitingInfo.getWaitingId()))
+                    .putData("booth_id", String.valueOf(waitingInfo.getBoothId()))
+                    .putData("booth_name", waitingInfo.getBoothName())
+                    .build();
+            try{
+                FirebaseMessaging.getInstance().send(message);
+            } catch (FirebaseMessagingException e) {
+                throw new FcmFailException(e.getMessage());
+            }
+            return waitingInfo;
+        }
         return waitingInfo;
     }
 

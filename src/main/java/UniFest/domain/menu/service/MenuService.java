@@ -53,6 +53,8 @@ public class MenuService {
                 .ifPresent(price -> findMenu.updatePrice(price));
         Optional.ofNullable(menuPatchRequest.getImgUrl())
                 .ifPresent(imgUrl -> findMenu.updateImgUrl(imgUrl));
+        Optional.ofNullable(menuPatchRequest.getMenuStatus())
+                .ifPresent(menuStatus -> findMenu.updateMenuStatus(menuStatus));
 
         cacheManager.getCache("BoothInfo").evict(findBooth.getId());
         checkBoothAuth(findBooth, memberDetails);
