@@ -210,6 +210,7 @@ public class WaitingController {
         Message message = Message.builder()
                 .setTopic("test")
                 .setNotification(notification)
+                .putData("boothId", "196")
                 .build();
         try{
             FirebaseMessaging.getInstance().send(message);
