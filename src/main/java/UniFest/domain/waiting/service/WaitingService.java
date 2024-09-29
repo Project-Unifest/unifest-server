@@ -52,8 +52,13 @@ public class WaitingService {
                 .flatMap(entry -> {
                     AtomicInteger order = new AtomicInteger(1);
                     return entry.getValue().stream()
-                            .filter(waiting -> "RESERVED".equals(waiting.getWaitingStatus()))
-                            .map(waiting -> createWaitingInfo(waiting, order.getAndIncrement()));
+                            .map(waiting -> {
+                                // "RESERVED" 상태인 경우에만 order를 부여
+                                Integer waitingOrder = "RESERVED".equals(waiting.getWaitingStatus())
+                                        ? order.getAndIncrement()
+                                        : null;
+                                return createWaitingInfo(waiting, waitingOrder);
+                            });
                 })
                 .collect(Collectors.toList());
     }
