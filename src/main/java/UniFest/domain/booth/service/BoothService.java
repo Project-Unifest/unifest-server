@@ -92,9 +92,9 @@ public class BoothService {
                     .name(menuCreateRequest.getName())
                     .price(menuCreateRequest.getPrice())
                     .imgUrl(menuCreateRequest.getImgUrl())
+                    .menuStatus(menuCreateRequest.getMenuStatus())
                     .build();
             menu.setBooth(booth);
-            menu.updateMenuStatus(MenuStatus.ENOUGH);   //메뉴 상태 기본값
             menuRepository.save(menu).getId();
         }
 
