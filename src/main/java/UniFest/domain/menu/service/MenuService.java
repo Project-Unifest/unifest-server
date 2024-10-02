@@ -34,7 +34,7 @@ public class MenuService {
                 .name(menuCreateRequest.getName())
                 .price(menuCreateRequest.getPrice())
                 .imgUrl(menuCreateRequest.getImgUrl())
-                .menuStatus(MenuStatus.ENOUGH)
+                .menuStatus(menuCreateRequest.getMenuStatus())
                 .build();
         createdMenu.setBooth(findBooth);
         cacheManager.getCache("BoothInfo").evict(boothId);
