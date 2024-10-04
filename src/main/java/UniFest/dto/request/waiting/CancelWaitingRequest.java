@@ -7,11 +7,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-public class PostWaitingRequest {
-    private Long boothId;
-    private String tel;
+public class CancelWaitingRequest {
+    private Long waitingId;
     private String deviceId;
-    private int partySize;
-    private String pinNumber;
-    private String fcmToken;
 }

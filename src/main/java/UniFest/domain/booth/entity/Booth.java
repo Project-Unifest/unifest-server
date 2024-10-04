@@ -3,6 +3,7 @@ package UniFest.domain.booth.entity;
 import UniFest.domain.audit.BaseEntity;
 import UniFest.domain.festival.entity.Festival;
 import UniFest.domain.likes.entity.Likes;
+import UniFest.domain.megaphone.entity.Megaphone;
 import UniFest.domain.member.entity.Member;
 import UniFest.domain.menu.entity.Menu;
 import UniFest.domain.stamp.entity.Stamp;
@@ -74,6 +75,9 @@ public class Booth extends BaseEntity {
 
     @OneToMany(mappedBy = "booth", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<BoothSchedule> scheduleList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "booth", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Megaphone> megaphoneList = new ArrayList<>();
 
     @OneToMany(mappedBy = "booth", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Stamp> stampList = new ArrayList<>();

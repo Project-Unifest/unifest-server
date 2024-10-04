@@ -81,11 +81,12 @@ public class SecurityConfig{
         //경로별 인가작업
         http
                 .authorizeHttpRequests((auth) -> auth
+                        .requestMatchers("/admin/").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/festival/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/festival").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/school").hasRole("ADMIN")
                         .requestMatchers("/megaphone/subscribe").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/megaphone").hasRole("VERIFIED")
+                        .requestMatchers(HttpMethod.POST, "/megaphone").hasRole("ADMIN") // 확성기 메세지 등록은 ADMIN 만
                         .requestMatchers(HttpMethod.PATCH,"/members/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/members").hasRole("ADMIN") // 전체 멤버 조회는 ADMIN만
                         .requestMatchers(HttpMethod.GET, "/api/booths").permitAll()

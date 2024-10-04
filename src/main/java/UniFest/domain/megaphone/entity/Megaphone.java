@@ -1,4 +1,4 @@
-package UniFest.domain.announcement.entity;
+package UniFest.domain.megaphone.entity;
 
 import UniFest.domain.audit.BaseEntity;
 import UniFest.domain.booth.entity.Booth;

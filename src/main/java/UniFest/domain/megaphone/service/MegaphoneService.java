@@ -1,7 +1,7 @@
-package UniFest.domain.announcement.service;
+package UniFest.domain.megaphone.service;
 
-import UniFest.domain.announcement.entity.Megaphone;
-import UniFest.domain.announcement.repository.MegaphoneRepository;
+import UniFest.domain.megaphone.entity.Megaphone;
+import UniFest.domain.megaphone.repository.MegaphoneRepository;
 import UniFest.domain.booth.entity.Booth;
 import UniFest.domain.booth.repository.BoothRepository;
 import UniFest.domain.festival.repository.FestivalRepository;
@@ -10,10 +10,7 @@ import UniFest.dto.request.megaphone.SubscribeMegaphoneRequest;
 import UniFest.exception.announcement.FcmFailException;
 import UniFest.exception.booth.BoothNotFoundException;
 import UniFest.exception.festival.FestivalNotFoundException;
-import com.google.firebase.messaging.FirebaseMessaging;
-import com.google.firebase.messaging.FirebaseMessagingException;
-import com.google.firebase.messaging.Message;
-import com.google.firebase.messaging.TopicManagementResponse;
+import com.google.firebase.messaging.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -74,11 +71,15 @@ public class MegaphoneService {
                 .orElseThrow(() -> new BoothNotFoundException());
         String topic = String.valueOf(booth.getFestival().getId());
 
+        Notification notification = Notification.builder()
+                .setTitle(booth.getName())
+                .setBody(addMegaphoneRequest.getMsgBody())
+                .build();
+
         Message message = Message.builder()
-                .putData("boothId", String.valueOf(boothId))
-                .putData("boothName", booth.getName())
-                .putData("msgBody", addMegaphoneRequest.getMsgBody())
                 .setTopic(topic)
+                .setNotification(notification)
+                .putData("boothId", String.valueOf(boothId))
                 .build();
 
         Megaphone megaphone = Megaphone.builder()

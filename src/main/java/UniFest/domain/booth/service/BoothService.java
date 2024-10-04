@@ -69,19 +69,21 @@ public class BoothService {
         //영업 시간
         LocalTime openTime = boothCreateRequest.getOpenTime();
         LocalTime closeTime = boothCreateRequest.getCloseTime();
-        setBoothOpeningHour(booth, openTime, closeTime);
+        if(openTime != null || closeTime != null) {
+            setBoothOpeningHour(booth, openTime, closeTime);
+        }
         //오픈날짜
         LocalDate beginDate = festival.getBeginDate();
         LocalDate endDate = festival.getEndDate();
-        for(Long turn : boothCreateRequest.getOpenDates()){
-            LocalDate opendate = beginDate.plusDays(turn-1);
-            if(opendate.isAfter(endDate) || opendate.isBefore(beginDate)) throw new RuntimeException("부스 운영날짜는 축제날짜에 포함되어야 합니다.");
-            BoothSchedule schedule = BoothSchedule.builder()
-                    .openDate(opendate)
-                    .build();
-            schedule.setBooth(booth);
-            boothScheduleRepository.save(schedule);
-        }
+//        for(Long turn : boothCreateRequest.getOpenDates()){
+//            LocalDate opendate = beginDate.plusDays(turn-1);
+//            if(opendate.isAfter(endDate) || opendate.isBefore(beginDate)) throw new RuntimeException("부스 운영날짜는 축제날짜에 포함되어야 합니다.");
+//            BoothSchedule schedule = BoothSchedule.builder()
+//                    .openDate(opendate)
+//                    .build();
+//            schedule.setBooth(booth);
+//            boothScheduleRepository.save(schedule);
+//        }
         //핀 생성
         booth.createPin();
         //부스 메뉴
@@ -90,9 +92,9 @@ public class BoothService {
                     .name(menuCreateRequest.getName())
                     .price(menuCreateRequest.getPrice())
                     .imgUrl(menuCreateRequest.getImgUrl())
+                    .menuStatus(menuCreateRequest.getMenuStatus())
                     .build();
             menu.setBooth(booth);
-            menu.updateMenuStatus(MenuStatus.ENOUGH);   //메뉴 상태 기본값
             menuRepository.save(menu).getId();
         }
 
@@ -195,17 +197,9 @@ public class BoothService {
         return findBooth;
     }
 
-//    public String getPin(MemberDetails memberDetails,Long boothId){
     public String getPin(Long boothId){
         Booth findBooth = boothRepository.findByBoothId(boothId)
                 .orElseThrow(BoothNotFoundException::new);
-        Member boothMember = findBooth.getMember();
-
-        //부스 운영자만 조회 가능하게
-//        if(boothMember.getId() != memberDetails.getMemberId()){
-//            throw new NotAuthorizedException();
-//        }
-
         //pin이 발급되지 않았을 경우 에러
         String boothPin = findBooth.getPin();
         if(boothPin == null){
@@ -216,16 +210,9 @@ public class BoothService {
     }
 
     @Transactional
-//    public String createPin(MemberDetails memberDetails, Long boothId){
     public String createPin(Long boothId){
         Booth findBooth = boothRepository.findByBoothId(boothId)
                 .orElseThrow(BoothNotFoundException::new);
-        Member boothMember = findBooth.getMember();
-
-        //부스 운영자만 생성 가능하게
-//        if(boothMember.getId() != memberDetails.getMemberId()){
-//            throw new NotAuthorizedException();
-//        }
 
         String newPin = findBooth.createPin();
 
@@ -242,9 +229,9 @@ public class BoothService {
     }
 
     public void setBoothOpeningHour(Booth booth, LocalTime openTime, LocalTime closeTime) {
-        if(closeTime.isBefore(openTime)){
-            throw new OpeningTimeNotCorrectException();
-        }
+//        if(closeTime.isBefore(openTime)){
+//            throw new OpeningTimeNotCorrectException();
+//        }
         booth.setOpeningHour(openTime, closeTime);
     }
 
