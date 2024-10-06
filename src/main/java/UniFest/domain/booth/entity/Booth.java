@@ -6,6 +6,7 @@ import UniFest.domain.likes.entity.Likes;
 import UniFest.domain.megaphone.entity.Megaphone;
 import UniFest.domain.member.entity.Member;
 import UniFest.domain.menu.entity.Menu;
+import UniFest.domain.stamp.entity.Stamp;
 import UniFest.domain.waiting.entity.Waiting;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -78,6 +79,9 @@ public class Booth extends BaseEntity {
     @OneToMany(mappedBy = "booth", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Megaphone> megaphoneList = new ArrayList<>();
 
+    @OneToMany(mappedBy = "booth", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Stamp> stampList = new ArrayList<>();
+
     private String location;
 
     private double latitude;
@@ -94,10 +98,12 @@ public class Booth extends BaseEntity {
     private LocalTime openTime;
     private LocalTime closeTime;
 
+    private boolean stampEnabled;
+
     @Builder
     public Booth(String name, BoothCategory category, String description, String detail, String thumbnail,
                  String warning, boolean enabled, String location, double latitude, double longitude, Festival festival, boolean waitingEnabled,
-                 LocalTime openTime, LocalTime closeTime) {
+                 LocalTime openTime, LocalTime closeTime, boolean stampEnabled) {
         this.name = name;
         this.category = category;
         this.description = description;
@@ -112,6 +118,7 @@ public class Booth extends BaseEntity {
         this.waitingEnabled = waitingEnabled;
         this.openTime = openTime;
         this.closeTime = closeTime;
+        this.stampEnabled = stampEnabled;
     }
     public int getLikesCount(){
         return this.likesList.size();
@@ -180,4 +187,15 @@ public class Booth extends BaseEntity {
         this.closeTime = closeTime;
     }
 
+    public void stampEnabled(boolean enabled){
+        this.stampEnabled = enabled;
+    }
+
+    public void addStampList(Stamp stamp){
+        this.stampList.add(stamp);
+    }
+
+    public void updateStampEnabled(Boolean stampEnabled) {
+        this.stampEnabled = stampEnabled;
+    }
 }

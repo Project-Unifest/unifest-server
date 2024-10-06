@@ -45,6 +45,8 @@ public class BoothDetailResponse {
     @JsonFormat(shape = JsonFormat.Shape.STRING,pattern = "HH:mm:ss")
     private LocalTime closeTime;
 
+    private boolean stampEnabled;
+
     public BoothDetailResponse(Booth booth){
         this.id = booth.getId();
         this.name = booth.getName();
@@ -60,6 +62,7 @@ public class BoothDetailResponse {
         this.waitingEnabled = booth.isWaitingEnabled();
         this.openTime = booth.getOpenTime();
         this.closeTime = booth.getCloseTime();
+        this.stampEnabled = booth.isStampEnabled();
     }
 
 }
