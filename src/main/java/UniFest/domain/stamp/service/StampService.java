@@ -6,6 +6,7 @@ import UniFest.domain.stamp.entity.Stamp;
 import UniFest.domain.stamp.repository.StampRepository;
 import UniFest.exception.stamp.StampAlreadyAddedException;
 import UniFest.exception.stamp.StampLimitException;
+import UniFest.exception.stamp.StampNotEnabledException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,6 +26,10 @@ public class StampService {
     @Transactional
     public int addStamp(Long boothId, String token){
         Booth booth = boothRepository.getReferenceById(boothId);
+
+        if(!booth.isStampEnabled()){ //스탬프 못찍는 부스일 시
+            throw new StampNotEnabledException();
+        }
 
         Stamp stampResult = stampRepository.findByTokenAndBoothId(token, boothId).orElse(null);
 
