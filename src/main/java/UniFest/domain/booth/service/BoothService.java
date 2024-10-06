@@ -158,6 +158,8 @@ public class BoothService {
                 .ifPresent(lng -> findBooth.updateLongitude(lng));
         Optional.ofNullable(boothPatchRequest.getWaitingEnabled())
                 .ifPresent(waiting -> findBooth.updateWaitingEnabled(waiting));
+        Optional.ofNullable(boothPatchRequest.getStampEnabled())
+                .ifPresent(stamp -> findBooth.updateStampEnabled(stamp));
 
         LocalTime openTime = Optional.ofNullable(boothPatchRequest.getOpenTime()).orElse(findBooth.getOpenTime());
         LocalTime closeTime = Optional.ofNullable(boothPatchRequest.getCloseTime()).orElse(findBooth.getCloseTime());
@@ -229,10 +231,24 @@ public class BoothService {
     }
 
     public void setBoothOpeningHour(Booth booth, LocalTime openTime, LocalTime closeTime) {
-//        if(closeTime.isBefore(openTime)){
-//            throw new OpeningTimeNotCorrectException();
-//        }
         booth.setOpeningHour(openTime, closeTime);
+    }
+
+    public List<BoothResponse> getStampEnabledBooths(Long festivalId){
+        Festival findFestival = festivalRepository.findById(festivalId).orElseThrow(FestivalNotFoundException::new);
+        List<BoothResponse> stampEnabledBooths = boothRepository.findBoothsByFestivalAndStampEnabled(findFestival, true)
+                .stream().filter(b -> b.isEnabled())
+                .map(BoothResponse::new).toList();
+        return stampEnabledBooths;
+    }
+
+    @Transactional
+    @CacheEvict(value = "BoothInfo", key = "#boothId")
+    public boolean updateStampEnabled(Long boothId){
+        Booth findBooth = boothRepository.findByBoothId(boothId).orElseThrow(BoothNotFoundException::new);
+
+        findBooth.updateStampEnabled(!findBooth.isStampEnabled());  //toggle 형식으로 작동
+        return findBooth.isStampEnabled();
     }
 
 }

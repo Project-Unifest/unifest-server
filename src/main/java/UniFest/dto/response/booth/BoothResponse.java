@@ -36,6 +36,8 @@ public class BoothResponse {
     @DateTimeFormat(pattern = "HH:mm:ss")
     private LocalTime closeTime;
 
+    private boolean stampEnabled;
+
     public BoothResponse(Booth booth){
         this.id = booth.getId();
         this.name = booth.getName();
@@ -47,5 +49,6 @@ public class BoothResponse {
         this.longitude = booth.getLongitude();
         this.enabled = booth.isEnabled();
         this.waitingEnabled = booth.isWaitingEnabled();
+        this.stampEnabled = booth.isStampEnabled();
     }
 }

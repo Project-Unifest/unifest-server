@@ -24,6 +24,7 @@ public interface BoothRepository extends JpaRepository<Booth,Long> {
     Optional<Booth> findByBoothId(@Param("boothId") Long boothId);
     List<Booth> findAllByFestivalAndEnabled(Festival festival, boolean enabled);
     List<Booth> findBoothsByIdIn(List<Long> boothIds);
+    List<Booth> findBoothsByFestivalAndStampEnabled(Festival festival, boolean stampEnabled);
 
     @Modifying(clearAutomatically = true)
     @Query("UPDATE Booth b SET b.enabled = :isEnabled WHERE EXISTS (SELECT s FROM b.scheduleList s WHERE FUNCTION('date', s.openDate) = :today)")
