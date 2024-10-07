@@ -98,12 +98,13 @@ public class Booth extends BaseEntity {
     private LocalTime openTime;
     private LocalTime closeTime;
 
+    @ColumnDefault("0")
     private boolean stampEnabled;
 
     @Builder
     public Booth(String name, BoothCategory category, String description, String detail, String thumbnail,
                  String warning, boolean enabled, String location, double latitude, double longitude, Festival festival, boolean waitingEnabled,
-                 LocalTime openTime, LocalTime closeTime, boolean stampEnabled) {
+                 LocalTime openTime, LocalTime closeTime) {
         this.name = name;
         this.category = category;
         this.description = description;
@@ -118,7 +119,6 @@ public class Booth extends BaseEntity {
         this.waitingEnabled = waitingEnabled;
         this.openTime = openTime;
         this.closeTime = closeTime;
-        this.stampEnabled = stampEnabled;
     }
     public int getLikesCount(){
         return this.likesList.size();
