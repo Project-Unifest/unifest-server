@@ -47,6 +47,4 @@ public class BoothCreateRequest {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss")
     private LocalTime closeTime;
 
-    private Boolean stampEnabled;
-
 }

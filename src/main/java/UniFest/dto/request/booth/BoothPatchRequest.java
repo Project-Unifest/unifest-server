@@ -26,6 +26,4 @@ public class BoothPatchRequest {
     private LocalTime openTime;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss")
     private LocalTime closeTime;
-
-    private Boolean stampEnabled;
 }
