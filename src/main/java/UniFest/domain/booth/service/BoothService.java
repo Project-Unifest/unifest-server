@@ -158,8 +158,6 @@ public class BoothService {
                 .ifPresent(lng -> findBooth.updateLongitude(lng));
         Optional.ofNullable(boothPatchRequest.getWaitingEnabled())
                 .ifPresent(waiting -> findBooth.updateWaitingEnabled(waiting));
-        Optional.ofNullable(boothPatchRequest.getStampEnabled())
-                .ifPresent(stamp -> findBooth.updateStampEnabled(stamp));
 
         LocalTime openTime = Optional.ofNullable(boothPatchRequest.getOpenTime()).orElse(findBooth.getOpenTime());
         LocalTime closeTime = Optional.ofNullable(boothPatchRequest.getCloseTime()).orElse(findBooth.getCloseTime());
