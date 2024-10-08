@@ -4,6 +4,7 @@ import UniFest.domain.booth.entity.Booth;
 import UniFest.domain.booth.repository.BoothRepository;
 import UniFest.domain.stamp.entity.Stamp;
 import UniFest.domain.stamp.repository.StampRepository;
+import UniFest.exception.booth.BoothNotFoundException;
 import UniFest.exception.stamp.StampAlreadyAddedException;
 import UniFest.exception.stamp.StampLimitException;
 import UniFest.exception.stamp.StampNotEnabledException;
@@ -25,7 +26,7 @@ public class StampService {
 
     @Transactional
     public int addStamp(Long boothId, String token){
-        Booth booth = boothRepository.getReferenceById(boothId);
+        Booth booth = boothRepository.findByBoothId(boothId).orElseThrow(BoothNotFoundException::new);
 
         if(!booth.isStampEnabled()){ //스탬프 못찍는 부스일 시
             throw new StampNotEnabledException();
