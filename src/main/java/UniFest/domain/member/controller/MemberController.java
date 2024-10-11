@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -63,5 +64,13 @@ public class MemberController {
     public Response getMember(@PathVariable(value = "member-id") Long memberId) {
         MemberDetailResponse response = memberService.getMember(memberId);
         return Response.ofSuccess("OK", response);
+    }
+
+    @Operation(summary = "회원 탈퇴")
+    @DeleteMapping("{member-id}")
+    @PreAuthorize("#id == principal.id or hasRole('ADMIN')")
+    public Response withDrawMember(@PathVariable(value = "member-id") Long memberIdToWithDraw) {
+        memberService.withDrawMember(memberIdToWithDraw);
+        return Response.ofSuccess("OK", null);
     }
 }

@@ -10,10 +10,8 @@ import UniFest.dto.response.member.MemberDetailResponse;
 import UniFest.exception.SchoolNotFoundException;
 import UniFest.exception.member.MemberEmailExistException;
 import UniFest.exception.member.MemberNotFoundException;
-import UniFest.security.userdetails.MemberDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -80,5 +78,11 @@ public class MemberService {
     public List<MemberDetailResponse> getAllWithRole(MemberRole memberRole) {
         return memberRepository.findAllByMemberRole(memberRole).stream().map(member->new MemberDetailResponse(member))
                 .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public void withDrawMember(Long memberId) {
+        //TODO logout: jwt token 삭제
+        memberRepository.deleteById(memberId);
     }
 }
