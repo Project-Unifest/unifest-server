@@ -2,11 +2,16 @@ package UniFest.domain.stamp.controller;
 
 import UniFest.domain.booth.service.BoothService;
 import UniFest.domain.stamp.service.StampService;
+import UniFest.dto.request.stamp.StampEnabledRequest;
 import UniFest.dto.request.stamp.StampRequest;
 import UniFest.dto.response.Response;
+import UniFest.dto.response.TempResponse;
 import UniFest.dto.response.booth.BoothResponse;
+import UniFest.security.userdetails.MemberDetails;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -39,9 +44,11 @@ public class StampController {
         return Response.ofSuccess("OK", boothList);
     }
 
-    @Operation(summary = "Booth StampEnabled 바꾸기(toggle)")
-    @GetMapping("/{booth-id}/stampEnabled")
-    public Response<Boolean> switchStampEnabled(@PathVariable("booth-id") Long boothId){
-        return Response.ofSuccess("OK", boothService.updateStampEnabled(boothId));
+    @SecurityRequirement(name = "JWT")
+    @Operation(summary = "Booth StampEnabled 바꾸기")
+    @PatchMapping("/{booth-id}/stampEnabled")
+    public Response<Boolean> switchStampEnabled(@PathVariable("booth-id") Long boothId,
+                                                    @RequestBody StampEnabledRequest stampEnabledRequest){
+        return Response.ofSuccess("OK", boothService.updateStampEnabled(boothId, stampEnabledRequest));
     }
 }
