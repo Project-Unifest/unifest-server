@@ -94,6 +94,7 @@ public class SecurityConfig{
                         .requestMatchers(HttpMethod.POST, "/members").permitAll() // 회원가입은 아무나 가능
                         .requestMatchers(HttpMethod.GET, "/members/my").authenticated() // 본인 정보 조회는 인증된 사용자만
                         .requestMatchers(HttpMethod.GET, "/members/**").hasRole("ADMIN") // 회원 정보 조회는 ADMIN만
+                        .requestMatchers(HttpMethod.PATCH, "/stamps/*/stampEnabled").hasRole("ADMIN") //부스 스탬프 설정 변경은 ADMIN만
                         //h2 접속 설정
                         .requestMatchers("/h2-console/**", "/favicon.ico").permitAll()
                         .anyRequest().permitAll());
