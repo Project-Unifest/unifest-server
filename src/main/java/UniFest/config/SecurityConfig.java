@@ -96,6 +96,7 @@ public class SecurityConfig{
                         //.requestMatchers(HttpMethod.DELETE, "/members/my").authenticated() // 본인 탈퇴는 인증된 사용자만
                         .requestMatchers(HttpMethod.GET, "/members/**").hasRole("ADMIN") // 회원 정보 조회는 ADMIN만
                         .requestMatchers(HttpMethod.DELETE, "/members/**").hasRole("ADMIN") // 회원 정보 조회는 ADMIN만
+                        .requestMatchers(HttpMethod.PATCH, "/stamps/*/stampEnabled").hasRole("ADMIN") //부스 스탬프 설정 변경은 ADMIN만
                         //h2 접속 설정
                         .requestMatchers("/h2-console/**", "/favicon.ico").permitAll()
                         .anyRequest().permitAll());

@@ -12,6 +12,7 @@ import UniFest.domain.menu.repository.MenuRepository;
 import UniFest.dto.request.booth.BoothCreateRequest;
 import UniFest.dto.request.booth.BoothPatchRequest;
 import UniFest.dto.request.menu.MenuCreateRequest;
+import UniFest.dto.request.stamp.StampEnabledRequest;
 import UniFest.dto.response.booth.BoothDetailResponse;
 import UniFest.dto.response.booth.BoothResponse;
 import UniFest.exception.auth.NotAuthorizedException;
@@ -244,10 +245,10 @@ public class BoothService {
 
     @Transactional
     @CacheEvict(value = "BoothInfo", key = "#boothId")
-    public boolean updateStampEnabled(Long boothId){
+    public boolean updateStampEnabled(Long boothId, StampEnabledRequest stampEnabledRequest){
         Booth findBooth = boothRepository.findByBoothId(boothId).orElseThrow(BoothNotFoundException::new);
 
-        findBooth.updateStampEnabled(!findBooth.isStampEnabled());  //toggle 형식으로 작동
+        findBooth.updateStampEnabled(stampEnabledRequest.getStampEnabled()  );
         return findBooth.isStampEnabled();
     }
 
