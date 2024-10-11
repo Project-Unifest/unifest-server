@@ -68,7 +68,7 @@ public class MemberController {
 
     @Operation(summary = "회원 탈퇴")
     @DeleteMapping("{member-id}")
-    @PreAuthorize("#id == principal.id or hasRole('ADMIN')")
+    @PreAuthorize("#memberIdToWithDraw == principal.id or hasRole('ADMIN')")
     public Response withDrawMember(@PathVariable(value = "member-id") Long memberIdToWithDraw) {
         memberService.withDrawMember(memberIdToWithDraw);
         return Response.ofSuccess("OK", null);
