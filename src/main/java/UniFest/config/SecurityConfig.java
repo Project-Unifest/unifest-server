@@ -93,7 +93,9 @@ public class SecurityConfig{
                         .requestMatchers("/api/booths").hasAnyRole("ADMIN","VERIFIED")
                         .requestMatchers(HttpMethod.POST, "/members").permitAll() // 회원가입은 아무나 가능
                         .requestMatchers(HttpMethod.GET, "/members/my").authenticated() // 본인 정보 조회는 인증된 사용자만
+                        .requestMatchers(HttpMethod.DELETE, "/members/my").authenticated() // 본인 탈퇴는 인증된 사용자만
                         .requestMatchers(HttpMethod.GET, "/members/**").hasRole("ADMIN") // 회원 정보 조회는 ADMIN만
+                        .requestMatchers(HttpMethod.DELETE, "/members/**").hasRole("ADMIN") // 회원 정보 조회는 ADMIN만
                         //h2 접속 설정
                         .requestMatchers("/h2-console/**", "/favicon.ico").permitAll()
                         .anyRequest().permitAll());

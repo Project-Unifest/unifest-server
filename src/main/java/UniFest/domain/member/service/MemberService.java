@@ -83,6 +83,8 @@ public class MemberService {
     @Transactional
     public void withDrawMember(Long memberId) {
         //TODO logout: jwt token 삭제
+        memberRepository.findById(memberId)
+                .orElseThrow(MemberNotFoundException::new);
         memberRepository.deleteById(memberId);
     }
 }
