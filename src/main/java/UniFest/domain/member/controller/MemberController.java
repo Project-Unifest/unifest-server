@@ -10,7 +10,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -66,11 +65,19 @@ public class MemberController {
         return Response.ofSuccess("OK", response);
     }
 
-    @Operation(summary = "회원 탈퇴")
+    @SecurityRequirement(name = "JWT")
+    @Operation(summary = "관리자가 회원 삭제")
     @DeleteMapping("{member-id}")
-    @PreAuthorize("#memberIdToWithDraw == principal.id or hasRole('ADMIN')")
-    public Response withDrawMember(@PathVariable(value = "member-id") Long memberIdToWithDraw) {
+    public Response<Long> withDrawMember(@PathVariable(value = "member-id") Long memberIdToWithDraw) {
         memberService.withDrawMember(memberIdToWithDraw);
-        return Response.ofSuccess("OK", null);
+        return Response.ofSuccess("deleted", memberIdToWithDraw);
+    }
+
+    @SecurityRequirement(name = "JWT")
+    @Operation(summary = "회원 탈퇴")
+    @DeleteMapping("my")
+    public Response<Long> withDrawMe(@AuthenticationPrincipal MemberDetails memberDetails) {
+        memberService.withDrawMember(memberDetails.getMemberId());
+        return Response.ofSuccess("deleted", memberDetails.getMemberId());
     }
 }
