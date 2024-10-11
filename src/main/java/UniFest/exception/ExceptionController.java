@@ -28,14 +28,6 @@ public class ExceptionController {
                 .body(new ErrorResponse(e.getCode(),e.getMessage(),e.getData()));
     }
 
-    @ExceptionHandler(TempUnifestCustomException.class)
-    public ResponseEntity<TempErrorResponse> handleUnifestException(TempUnifestCustomException e) {
-        log.warn("Unifest Exception {} {} {}\n", e.getHttpStatus(), e.getMessage(), e.getClass().getSimpleName());
-        //return ResponseEntity.status(e.getHttpStatus()).body(new ErrorResponse(e.getCode(),e.getMessage(),e.getData()));
-        return ResponseEntity.badRequest()
-                .body(new TempErrorResponse(e.getCode() ,e.getMessage(),e.getData()));
-    }
-
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleInputFieldException(MethodArgumentNotValidException e) {
         FieldError mainError = e.getFieldErrors().get(0);

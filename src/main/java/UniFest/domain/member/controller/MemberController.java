@@ -64,4 +64,20 @@ public class MemberController {
         MemberDetailResponse response = memberService.getMember(memberId);
         return Response.ofSuccess("OK", response);
     }
+
+    @SecurityRequirement(name = "JWT")
+    @Operation(summary = "관리자가 회원 삭제")
+    @DeleteMapping("{member-id}")
+    public Response<Long> withDrawMember(@PathVariable(value = "member-id") Long memberIdToWithDraw) {
+        memberService.withDrawMember(memberIdToWithDraw);
+        return Response.ofSuccess("deleted", memberIdToWithDraw);
+    }
+
+/*    @SecurityRequirement(name = "JWT")
+    @Operation(summary = "회원 탈퇴")
+    @DeleteMapping("my")
+    public Response<Long> withDrawMe(@AuthenticationPrincipal MemberDetails memberDetails) {
+        memberService.withDrawMember(memberDetails.getMemberId());
+        return Response.ofSuccess("deleted", memberDetails.getMemberId());
+    }*/
 }
