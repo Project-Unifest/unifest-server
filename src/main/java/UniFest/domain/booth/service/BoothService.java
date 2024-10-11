@@ -1,7 +1,6 @@
 package UniFest.domain.booth.service;
 
 import UniFest.domain.booth.entity.Booth;
-import UniFest.domain.booth.entity.BoothSchedule;
 import UniFest.domain.booth.repository.BoothRepository;
 import UniFest.domain.booth.repository.BoothScheduleRepository;
 import UniFest.domain.festival.entity.Festival;
@@ -9,7 +8,6 @@ import UniFest.domain.festival.repository.FestivalRepository;
 import UniFest.domain.member.entity.Member;
 import UniFest.domain.member.repository.MemberRepository;
 import UniFest.domain.menu.entity.Menu;
-import UniFest.domain.menu.entity.MenuStatus;
 import UniFest.domain.menu.repository.MenuRepository;
 import UniFest.dto.request.booth.BoothCreateRequest;
 import UniFest.dto.request.booth.BoothPatchRequest;
@@ -19,7 +17,6 @@ import UniFest.dto.response.booth.BoothDetailResponse;
 import UniFest.dto.response.booth.BoothResponse;
 import UniFest.exception.auth.NotAuthorizedException;
 import UniFest.exception.booth.BoothNotFoundException;
-import UniFest.exception.booth.OpeningTimeNotCorrectException;
 import UniFest.exception.booth.PinNotCreatedException;
 import UniFest.exception.festival.FestivalNotFoundException;
 import UniFest.exception.member.MemberNotFoundException;
@@ -166,11 +163,16 @@ public class BoothService {
 
         return findBooth.getId();
     }
+
+    public void deleteBoothWithAuth(MemberDetails memberDetails, Long boothId) {
+        verifyAuth(memberDetails.getMemberId(), boothId);
+        deleteBooth(boothId);
+    }
+
     @Transactional
     @CacheEvict(value = "BoothInfo", key = "#boothId")
-    public void deleteBooth(MemberDetails memberDetails, Long boothId) {
-        Booth findBooth = verifyAuth(memberDetails.getMemberId(), boothId);
-        boothRepository.delete(findBooth);
+    public void deleteBooth(Long boothId) {
+        boothRepository.deleteById(boothId);
     }
 
     @Transactional
@@ -191,7 +193,7 @@ public class BoothService {
         boothScheduleRepository.deleteBoothSchedule(now);
     }
 
-    public Booth verifyAuth(Long memberId, Long boothId){
+    private Booth verifyAuth(Long memberId, Long boothId){
         Booth findBooth = boothRepository.findByBoothId(boothId)
                 .orElseThrow(BoothNotFoundException::new);
         if(findBooth.getMember().getId() != memberId) throw new NotAuthorizedException();
