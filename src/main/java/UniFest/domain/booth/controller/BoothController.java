@@ -50,7 +50,7 @@ public class BoothController {
     @DeleteMapping("/{booth-id}")
     public Response deleteBooth(@AuthenticationPrincipal MemberDetails memberDetails,
                                 @PathVariable("booth-id") Long boothId) {
-        boothService.deleteBooth(memberDetails, boothId);
+        boothService.deleteBoothWithAuth(memberDetails, boothId);
         return Response.ofSuccess("OK",null);
     }
 

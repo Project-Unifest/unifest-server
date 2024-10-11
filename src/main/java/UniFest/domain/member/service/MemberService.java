@@ -1,5 +1,7 @@
 package UniFest.domain.member.service;
 
+import UniFest.domain.booth.entity.Booth;
+import UniFest.domain.booth.service.BoothService;
 import UniFest.domain.member.entity.Member;
 import UniFest.domain.member.entity.MemberRole;
 import UniFest.domain.member.repository.MemberRepository;
@@ -26,6 +28,7 @@ public class MemberService {
     private final SchoolRepository schoolRepository;
     private final MemberRepository memberRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final BoothService boothService;
 
     @Transactional
     public Long createMember(MemberSignUpRequest request) {
@@ -83,8 +86,12 @@ public class MemberService {
     @Transactional
     public void withDrawMember(Long memberId) {
         //TODO logout: jwt token 삭제
-        memberRepository.findById(memberId)
+        Member member = memberRepository.findById(memberId)
                 .orElseThrow(MemberNotFoundException::new);
+        member.getBoothList().forEach(
+                (Booth booth) -> {
+                    boothService.deleteBooth(booth.getId()); //for cache evict
+        });
         memberRepository.deleteById(memberId);
     }
 }
