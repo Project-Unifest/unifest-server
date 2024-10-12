@@ -112,8 +112,7 @@ public class BoothService {
     public List<BoothResponse> getBooths(Long festivalId) {
         Festival festival = festivalRepository.findById(festivalId).orElseThrow(FestivalNotFoundException::new);
         List<BoothResponse> responses = boothRepository.findAllByFestivalAndEnabled(festival,true)
-                .stream().filter(b -> b.isEnabled())
-                .map(BoothResponse::new).toList();
+                .stream().map(BoothResponse::new).toList();
         return responses;
     }
 
@@ -164,6 +163,7 @@ public class BoothService {
         return findBooth.getId();
     }
 
+    @Transactional
     public void deleteBoothWithAuth(MemberDetails memberDetails, Long boothId) {
         verifyAuth(memberDetails.getMemberId(), boothId);
         deleteBooth(boothId);
