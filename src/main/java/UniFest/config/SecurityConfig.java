@@ -82,6 +82,7 @@ public class SecurityConfig{
         http
                 .authorizeHttpRequests((auth) -> auth
                         .requestMatchers("/admin/").hasRole("ADMIN")
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/festival/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/festival").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/school").hasRole("ADMIN")
