@@ -43,7 +43,7 @@ public class AdminService {
 
     public List<BoothResponse> getBoothsIncludingDisabled(Long festivalId) {
         Festival festival = festivalRepository.findById(festivalId).orElseThrow(FestivalNotFoundException::new);
-        return boothRepository.findAllByFestivalAndEnabled(festival,true)
+        return boothRepository.findAllByFestival(festival)
                 .stream().map(BoothResponse::new).toList();
     }
 
