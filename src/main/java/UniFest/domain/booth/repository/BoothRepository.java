@@ -23,6 +23,7 @@ public interface BoothRepository extends JpaRepository<Booth,Long> {
             "where b.id = :boothId")
     Optional<Booth> findByBoothId(@Param("boothId") Long boothId);
     List<Booth> findAllByFestivalAndEnabled(Festival festival, boolean enabled);
+    List<Booth> findAllByFestival(Festival festival);
     List<Booth> findBoothsByIdIn(List<Long> boothIds);
     List<Booth> findBoothsByFestivalAndStampEnabled(Festival festival, boolean stampEnabled);
 
