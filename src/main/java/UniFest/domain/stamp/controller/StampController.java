@@ -12,18 +12,21 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 @RequestMapping("/stamps")
 public class StampController {
 
     private final StampService stampService;
     private final BoothService boothService;
 
+    @Transactional
     @Operation(summary = "Stamp 추가")
     @PostMapping()
     public Response<Integer> addStamp(@RequestBody StampRequest stampRequest){
@@ -44,6 +47,14 @@ public class StampController {
         return Response.ofSuccess("OK", boothList);
     }
 
+    @Operation(summary = "스탬프 기능 활성화 된 부스 확인 (Enabled 되어있지 않은 것도 포함)")
+    @GetMapping("/{festival-id}/All")
+    public Response<List<BoothResponse>> getAllStampBooths(@PathVariable("festival-id") Long festivalId){
+        List<BoothResponse> boothList = boothService.getAllStampEnabledBooths(festivalId);
+        return Response.ofSuccess("OK", boothList);
+    }
+
+    @Transactional
     @SecurityRequirement(name = "JWT")
     @Operation(summary = "Booth StampEnabled 바꾸기")
     @PatchMapping("/{booth-id}/stampEnabled")

@@ -252,4 +252,12 @@ public class BoothService {
         return findBooth.isStampEnabled();
     }
 
+    public List<BoothResponse> getAllStampEnabledBooths(Long festivalId){
+        Festival findFestival = festivalRepository.findById(festivalId).orElseThrow(FestivalNotFoundException::new);
+        List<BoothResponse> stampEnabledBooths = boothRepository.findBoothsByFestivalAndStampEnabled(findFestival, true)
+                .stream()
+                .map(BoothResponse::new).toList();
+        return stampEnabledBooths;
+    }
+
 }
