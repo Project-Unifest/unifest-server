@@ -125,7 +125,7 @@ public class WaitingController {
     }
 
     @GetMapping("/me/{deviceId}")
-    @Operation(summary = "내 RESERVED 웨이팅 조회(device ID 기준으로!)")
+    @Operation(summary = "내 RESERVED, CALLED, NOSHOW, COMPLETED 웨이팅 조회(device ID 기준으로!)")
     public Response<List<WaitingInfo>> getMyWaitingList(@PathVariable String deviceId) {
         List<WaitingInfo> ret = waitingService.getMyWaitingList(deviceId);
         if (ret.isEmpty()) {
