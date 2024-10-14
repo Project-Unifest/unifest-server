@@ -65,7 +65,7 @@ public class WaitingService {
 
     @Transactional
     public List<WaitingInfo> getMyWaitingList(String deviceId) {
-        List<String> statuses = Arrays.asList("RESERVED", "CALLED");
+        List<String> statuses = Arrays.asList("RESERVED", "CALLED", "NOSHOW","COMPLETED");
         List<Waiting> myWaitings = waitingRepository.findAllByDeviceIdAndWaitingStatusIn(deviceId, statuses);
         List<Long> boothIds = myWaitings.stream()
                 .map(waiting -> {
@@ -150,8 +150,8 @@ public class WaitingService {
     public WaitingInfo callWaiting(Long id) {
         WaitingInfo waitingInfo = setWaitingById(id, "CALLED");
         String fcmToken = waitingRepository.findById(id).get().getFcmToken();
-        String waitingTitle = "대기열 호출 -> "+waitingInfo.getBoothName();
-        String waitingBody = String.valueOf(waitingInfo.getWaitingId())+ "번 대기열이 호출되었습니다";
+        String waitingTitle = waitingInfo.getBoothName();
+        String waitingBody = "부스에 입장하실 차례에요!";
         if(fcmToken!=null){
             Notification notification = Notification.builder()
                     .setTitle(waitingTitle)
