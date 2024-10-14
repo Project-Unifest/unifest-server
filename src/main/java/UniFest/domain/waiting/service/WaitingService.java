@@ -65,7 +65,7 @@ public class WaitingService {
 
     @Transactional
     public List<WaitingInfo> getMyWaitingList(String deviceId) {
-        List<String> statuses = Arrays.asList("RESERVED", "CALLED", "NOSHOW","COMPLETED");
+        List<String> statuses = Arrays.asList("RESERVED", "CALLED", "NOSHOW");
         List<Waiting> myWaitings = waitingRepository.findAllByDeviceIdAndWaitingStatusIn(deviceId, statuses);
         List<Long> boothIds = myWaitings.stream()
                 .map(waiting -> {
