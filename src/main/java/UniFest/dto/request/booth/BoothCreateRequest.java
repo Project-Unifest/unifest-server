@@ -17,7 +17,7 @@ import java.util.List;
 public class BoothCreateRequest {
 
     @NotBlank(message = "공백일 수 없습니다.")
-    @Length(min=2, max=50)
+    @Length(min=2, max=30)
     private String name;
     @NotNull(message = "공백일 수 없습니다.")
     private BoothCategory category;
