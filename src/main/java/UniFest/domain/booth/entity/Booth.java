@@ -39,7 +39,7 @@ public class Booth extends BaseEntity {
     @JoinColumn(name="member_id")
     private Member member;
 
-    @Column(name = "name", length = 50)
+    @Column(name = "name", length = 30)
     private String name;
 
     @Enumerated(value = EnumType.STRING)
