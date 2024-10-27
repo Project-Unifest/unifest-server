@@ -47,18 +47,13 @@ public class WaitingService {
 
     private List<WaitingInfo> addWaitingOrderByBooth(List<Waiting> waitingList) {
         return waitingList.stream()
-                .collect(Collectors.groupingBy(Waiting::getBooth)) // Booth별로 그룹화
+                .filter(waiting -> "RESERVED".equals(waiting.getWaitingStatus()))  // RESERVED 상태만 필터링
+                .collect(Collectors.groupingBy(Waiting::getBooth))  // Booth별로 그룹화
                 .entrySet().stream()
                 .flatMap(entry -> {
                     AtomicInteger order = new AtomicInteger(1);
                     return entry.getValue().stream()
-                            .map(waiting -> {
-                                // "RESERVED" 상태인 경우에만 order를 부여
-                                Integer waitingOrder = "RESERVED".equals(waiting.getWaitingStatus())
-                                        ? order.getAndIncrement()
-                                        : null;
-                                return createWaitingInfo(waiting, waitingOrder);
-                            });
+                            .map(waiting -> createWaitingInfo(waiting, order.getAndIncrement()));
                 })
                 .collect(Collectors.toList());
     }
