@@ -13,6 +13,9 @@ import UniFest.dto.response.star.StarInfo;
 import UniFest.exception.SchoolNotFoundException;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
@@ -62,22 +65,21 @@ public class FestivalService {
         return festivalRepository.findAfterFestival(PageRequest.of(0,5));
     }
 
-    //오늘의 축제일정
-    public List<TodayFestivalInfo> getFestivalByDate(LocalDate date) {
-        log.debug("[FestivalService.getFestivalByDate]");
-
-        //축제명, 학교명, 축제id, 당일날짜
+    public List<TodayFestivalInfo> getFesitvalByDateRevision(LocalDate date){
+        // TODO: map, groupingBy 써서 in-memory 줄임 -> 애초에 쿼리는 2번 발생에서 변하지 않음 (개선 필요)
         List<TodayFestivalInfo> festivalInfo = festivalRepository.findFestivalByDate(date);
-        //축제id, 연예인id, 연예인이름, 사진
         List<EnrollInfo> starList = enrollRepository.findByDate(date);
-
-        //TODO 성능개선
-        for(TodayFestivalInfo todayFestivalInfo : festivalInfo) {
+        Map<Long, List<EnrollInfo>> enrollMap = starList.stream()
+                .collect(Collectors.groupingBy(EnrollInfo::getFestivalId));
+        for (TodayFestivalInfo todayFestivalInfo : festivalInfo) {
             Long festivalId = todayFestivalInfo.getFestivalId();
-            for (EnrollInfo enrollInfo : starList) {
-                if (enrollInfo.getFestivalId().equals(festivalId)) {
-                    todayFestivalInfo.getStarList().add(new StarInfo(enrollInfo.getStarId(), enrollInfo.getStarName(), enrollInfo.getImgUrl()));
-                }
+            List<EnrollInfo> enrollInfos = enrollMap.getOrDefault(festivalId, List.of());
+            for (EnrollInfo enrollInfo : enrollInfos) {
+                todayFestivalInfo.getStarList().add(
+                        new StarInfo(enrollInfo.getStarId(),
+                                enrollInfo.getStarName(),
+                                enrollInfo.getImgUrl())
+                );
             }
         }
 

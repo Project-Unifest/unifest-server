@@ -63,7 +63,8 @@ public class FestivalController {
     public Response<List<TodayFestivalInfo>> getFestivalByDate(@RequestParam("date") LocalDate date) {
         log.debug("[FestivalController.getFestivalByDate]");
 
-        return Response.ofSuccess("OK", festivalService.getFestivalByDate(date));
+
+        return Response.ofSuccess("OK", festivalService.getFesitvalByDateRevision(date));
     }
 
     @Operation(summary = "축제 등록")
