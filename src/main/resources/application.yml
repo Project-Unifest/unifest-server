@@ -1,31 +1,27 @@
+server:
+  port: 8080
+
 spring:
   application:
     name: UniFest
+  profiles:
+    default: prod
+
   firebase:
     project-id: unifest-konkuk
     key: ${FIREBASE_KEY}
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: ${DATASOURCE_URL}
-    username: ${DATASOURCE_USERNAME}
-    password: ${DATASOURCE_PASSWORD}
+
   servlet:
     multipart:
       max-file-size: 3MB
+
   jpa:
-    hibernate:
-      ddl-auto: update
     properties:
       hibernate:
-        #        show_sql: true
-        #        format_sql: true
+        show_sql: true
+        format_sql: true
         default_batch_fetch_size: 1000
-        dialect: org.hibernate.dialect.MySQLDialect
-  data:
-    redis:
-      host: unifest-redis
-      port: 6379
-      password: ${REDIS_PASSWORD}
+
 springdoc:
   default-consumes-media-type: application/json
   default-produces-media-type: application/json
@@ -35,12 +31,7 @@ springdoc:
     display-request-duration: true
     operations-sorter: alpha
     tags-sorter: alpha
-jwt:
-  secret: ${JWT_SECRETKEY}
-  access-token-expiration-minutes: 3000000
-  refresh-token-expiration-minutes: 6000000
-server:
-  port: 8080
+
 # S3
 cloud:
   aws:
@@ -48,7 +39,7 @@ cloud:
       accessKey: ${S3_ACCESS}
       secretKey: ${S3_SECRET}
     s3:
-      bucket: ${UNIFEST_BUCKET}
+      bucket: unifest-prod-bucket
     region:
       static: ap-northeast-2
     stack:
