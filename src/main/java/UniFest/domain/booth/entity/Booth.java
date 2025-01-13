@@ -2,7 +2,6 @@ package UniFest.domain.booth.entity;
 
 import UniFest.domain.audit.BaseEntity;
 import UniFest.domain.festival.entity.Festival;
-import UniFest.domain.likes.entity.Likes;
 import UniFest.domain.megaphone.entity.Megaphone;
 import UniFest.domain.member.entity.Member;
 import UniFest.domain.menu.entity.Menu;

@@ -1,7 +1,7 @@
 package UniFest.dto.response.likes;
 
 import UniFest.domain.booth.entity.Booth;
-import UniFest.domain.likes.entity.Likes;
+import UniFest.domain.booth.entity.Likes;
 import lombok.Data;
 
 @Data

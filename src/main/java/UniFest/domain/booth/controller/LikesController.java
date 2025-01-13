@@ -1,6 +1,6 @@
-package UniFest.domain.likes.controller;
+package UniFest.domain.booth.controller;
 
-import UniFest.domain.likes.service.LikesService;
+import UniFest.domain.booth.service.LikesService;
 import UniFest.dto.request.likes.PostLikesRequest;
 import UniFest.dto.response.Response;
 import UniFest.dto.response.booth.LikedBoothResponse;
