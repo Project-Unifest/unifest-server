@@ -1,4 +1,4 @@
-package UniFest.dto.request.megaphone;
+package UniFest.dto.request.festival;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class SubscribeMegaphoneRequest {
+public class InterestRequest {
+    private String deviceId;
     private Long festivalId;
-    private String fcmToken;
 }

@@ -3,8 +3,12 @@ package UniFest.domain;
 public class Device {
     private String deviceId;
 
-    public Device(String deviceId) {
+    private Device(String deviceId) {
         this.deviceId = validate(deviceId);
+    }
+
+    public static Device of(String deviceId) {
+        return new Device(deviceId);
     }
 
     public String getDeviceId() {
