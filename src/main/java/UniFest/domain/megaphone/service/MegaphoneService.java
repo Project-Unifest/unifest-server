@@ -4,7 +4,6 @@ import UniFest.domain.megaphone.entity.Megaphone;
 import UniFest.domain.megaphone.repository.MegaphoneRepository;
 import UniFest.domain.booth.entity.Booth;
 import UniFest.domain.booth.repository.BoothRepository;
-import UniFest.domain.festival.repository.FestivalRepository;
 import UniFest.dto.request.megaphone.AddMegaphoneRequest;
 import UniFest.exception.announcement.FcmFailException;
 import UniFest.exception.booth.BoothNotFoundException;
@@ -15,49 +14,8 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class MegaphoneService {
-    private final FestivalRepository festivalRepository;
     private final BoothRepository boothRepository;
     private final MegaphoneRepository megaphoneRepository;
-
-/*    private List<String> wrapAsRegistrationTokens(SubscribeMegaphoneRequest subscribeMegaphoneRequest) {
-        return Arrays.asList(subscribeMegaphoneRequest.getFcmToken());
-    }
-
-    private void checkIsValidFestivalId(Long festivalId) {
-        if (!festivalRepository.existsById(festivalId)) {
-            throw new FestivalNotFoundException();
-        }
-    }
-
-    public void addFestivalInterest(SubscribeMegaphoneRequest subscribeMegaphoneRequest) {
-        Long festivalId = subscribeMegaphoneRequest.getFestivalId();
-        checkIsValidFestivalId(festivalId);
-        List<String> registrationTokens = wrapAsRegistrationTokens(subscribeMegaphoneRequest);
-        try {
-            TopicManagementResponse response = FirebaseMessaging.getInstance()
-                    .subscribeToTopic(registrationTokens, String.valueOf(festivalId));
-            if (response.getSuccessCount() != 1) {
-                throw new FcmFailException(response.getErrors().get(0).getReason().toString());
-            }
-        } catch (FirebaseMessagingException e) {
-            throw new FcmFailException(e.getMessage());
-        }
-    }
-
-    public void deleteFestivalInterest(SubscribeMegaphoneRequest subscribeMegaphoneRequest) {
-        Long festivalId = subscribeMegaphoneRequest.getFestivalId();
-        checkIsValidFestivalId(festivalId);
-        List<String> registrationTokens = wrapAsRegistrationTokens(subscribeMegaphoneRequest);
-        try {
-            TopicManagementResponse response = FirebaseMessaging.getInstance()
-                    .unsubscribeFromTopic(registrationTokens, String.valueOf(festivalId));
-            if (response.getSuccessCount() != 1) {
-                throw new FcmFailException(response.getErrors().get(0).getReason().toString());
-            }
-        } catch (FirebaseMessagingException e) {
-            throw new FcmFailException(e.getMessage());
-        }
-    }*/
 
     public Long addMegaphone(AddMegaphoneRequest addMegaphoneRequest) {
         Long boothId = addMegaphoneRequest.getBoothId();
