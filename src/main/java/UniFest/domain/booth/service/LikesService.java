@@ -1,9 +1,9 @@
-package UniFest.domain.likes.service;
+package UniFest.domain.booth.service;
 
 import UniFest.domain.booth.entity.Booth;
 import UniFest.domain.booth.repository.BoothRepository;
-import UniFest.domain.likes.entity.Likes;
-import UniFest.domain.likes.repository.LikesRepository;
+import UniFest.domain.booth.entity.Likes;
+import UniFest.domain.booth.repository.LikesRepository;
 import UniFest.dto.response.booth.LikedBoothResponse;
 import UniFest.exception.booth.BoothNotFoundException;
 import lombok.RequiredArgsConstructor;

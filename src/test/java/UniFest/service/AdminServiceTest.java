@@ -12,7 +12,7 @@ import UniFest.domain.school.entity.School;
 import UniFest.domain.school.repository.SchoolRepository;
 import UniFest.dto.request.festival.PostFestivalRequest;
 import UniFest.dto.request.member.MemberSignUpRequest;
-import UniFest.exception.FestivalNotFoundException;
+import UniFest.exception.festival.FestivalNotFoundException;
 import UniFest.exception.member.MemberNotFoundException;
 import org.junit.Test;
 import org.junit.jupiter.api.DisplayName;

@@ -1,6 +1,6 @@
-package UniFest.domain.likes.repository;
+package UniFest.domain.booth.repository;
 
-import UniFest.domain.likes.entity.Likes;
+import UniFest.domain.booth.entity.Likes;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

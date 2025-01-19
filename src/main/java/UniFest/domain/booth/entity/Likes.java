@@ -1,7 +1,6 @@
-package UniFest.domain.likes.entity;
+package UniFest.domain.booth.entity;
 
 import UniFest.domain.audit.BaseEntity;
-import UniFest.domain.booth.entity.Booth;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
