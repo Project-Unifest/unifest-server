@@ -73,11 +73,11 @@ public class MemberController {
         return Response.ofSuccess("deleted", memberIdToWithDraw);
     }
 
-/*    @SecurityRequirement(name = "JWT")
+    @SecurityRequirement(name = "JWT")
     @Operation(summary = "회원 탈퇴")
     @DeleteMapping("my")
     public Response<Long> withDrawMe(@AuthenticationPrincipal MemberDetails memberDetails) {
         memberService.withDrawMember(memberDetails.getMemberId());
         return Response.ofSuccess("deleted", memberDetails.getMemberId());
-    }*/
+    }
 }
