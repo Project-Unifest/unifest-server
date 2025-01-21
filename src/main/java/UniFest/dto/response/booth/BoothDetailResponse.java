@@ -2,7 +2,6 @@ package UniFest.dto.response.booth;
 
 import UniFest.domain.booth.entity.Booth;
 import UniFest.domain.booth.entity.BoothCategory;
-import UniFest.domain.booth.entity.BoothSchedule;
 import UniFest.dto.response.menu.MenuResponse;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AccessLevel;
@@ -41,11 +40,10 @@ public class BoothDetailResponse {
 
     private boolean waitingEnabled;
 
-//    @JsonFormat(shape = JsonFormat.Shape.STRING,pattern = "HH:mm:ss")
-//    private LocalTime openTime;
-//    @JsonFormat(shape = JsonFormat.Shape.STRING,pattern = "HH:mm:ss")
-//    private LocalTime closeTime;
-    private List<BoothScheduleResponse> scheduleList;
+    @JsonFormat(shape = JsonFormat.Shape.STRING,pattern = "HH:mm:ss")
+    private LocalTime openTime;
+    @JsonFormat(shape = JsonFormat.Shape.STRING,pattern = "HH:mm:ss")
+    private LocalTime closeTime;
 
     private boolean stampEnabled;
 
@@ -62,7 +60,8 @@ public class BoothDetailResponse {
         this.enabled = booth.isEnabled();
         this.menus = booth.getMenuList().stream().map(MenuResponse::new).collect(Collectors.toList());
         this.waitingEnabled = booth.isWaitingEnabled();
-        this.scheduleList = booth.getScheduleList().stream().map(BoothScheduleResponse::new).collect(Collectors.toList());
+        this.openTime = booth.getOpenTime();
+        this.closeTime = booth.getCloseTime();
         this.stampEnabled = booth.isStampEnabled();
     }
 

@@ -1,12 +1,10 @@
 package UniFest.dto.request.booth;
 
 import UniFest.domain.booth.entity.BoothCategory;
-import UniFest.domain.booth.entity.BoothSchedule;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.time.LocalTime;
-import java.util.List;
 
 
 @Data
@@ -24,4 +22,8 @@ public class BoothPatchRequest {
     private Double longitude;
 
     private Boolean waitingEnabled;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss")
+    private LocalTime openTime;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss")
+    private LocalTime closeTime;
 }
