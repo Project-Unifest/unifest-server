@@ -94,8 +94,8 @@ public class Booth extends BaseEntity {
     //Waiting을 위한 Booth별 pin
     private String pin;
 
-//    private LocalTime openTime;
-//    private LocalTime closeTime;
+    private LocalTime openTime;
+    private LocalTime closeTime;
 
     @ColumnDefault("0")
     private boolean stampEnabled;
@@ -116,8 +116,8 @@ public class Booth extends BaseEntity {
         this.longitude = longitude;
         this.festival = festival;
         this.waitingEnabled = waitingEnabled;
-//        this.openTime = openTime;
-//        this.closeTime = closeTime;
+        this.openTime = openTime;
+        this.closeTime = closeTime;
     }
     public int getLikesCount(){
         return this.likesList.size();
@@ -181,8 +181,9 @@ public class Booth extends BaseEntity {
         return this.pin;
     }
 
-    public void addSchedule(BoothSchedule boothSchedule){
-        scheduleList.add(boothSchedule);
+    public void setOpeningHour(LocalTime openTime, LocalTime closeTime){
+        this.openTime = openTime;
+        this.closeTime = closeTime;
     }
 
     public void stampEnabled(boolean enabled){

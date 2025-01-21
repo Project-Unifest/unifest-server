@@ -1,7 +1,6 @@
 package UniFest.domain.booth.service;
 
 import UniFest.domain.booth.entity.Booth;
-import UniFest.domain.booth.entity.BoothSchedule;
 import UniFest.domain.booth.repository.BoothRepository;
 import UniFest.domain.booth.repository.BoothScheduleRepository;
 import UniFest.domain.festival.entity.Festival;
@@ -10,7 +9,8 @@ import UniFest.domain.member.entity.Member;
 import UniFest.domain.member.repository.MemberRepository;
 import UniFest.domain.menu.entity.Menu;
 import UniFest.domain.menu.repository.MenuRepository;
-import UniFest.dto.request.booth.*;
+import UniFest.dto.request.booth.BoothCreateRequest;
+import UniFest.dto.request.booth.BoothPatchRequest;
 import UniFest.dto.request.menu.MenuCreateRequest;
 import UniFest.dto.request.stamp.StampEnabledRequest;
 import UniFest.dto.response.booth.BoothDetailResponse;
@@ -33,7 +33,6 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -66,17 +65,11 @@ public class BoothService {
                 .build();
         booth.setMember(member);
         //영업 시간
-        for(BoothScheduleCreateRequest time : boothCreateRequest.getBoothSchedules()){
-            BoothSchedule newSchedule = new BoothSchedule(time.getDate(), time.getOpenTime(), time.getCloseTime());
-            newSchedule.setBooth(booth);
-            booth.addSchedule(newSchedule);
+        LocalTime openTime = boothCreateRequest.getOpenTime();
+        LocalTime closeTime = boothCreateRequest.getCloseTime();
+        if(openTime != null || closeTime != null) {
+            setBoothOpeningHour(booth, openTime, closeTime);
         }
-
-//        LocalTime openTime = boothCreateRequest.getOpenTime();
-//        LocalTime closeTime = boothCreateRequest.getCloseTime();
-//        if(openTime != null || closeTime != null) {
-//            setBoothOpeningHour(booth, openTime, closeTime);
-//        }
         //오픈날짜
         LocalDate beginDate = festival.getBeginDate();
         LocalDate endDate = festival.getEndDate();
@@ -163,7 +156,9 @@ public class BoothService {
         Optional.ofNullable(boothPatchRequest.getWaitingEnabled())
                 .ifPresent(waiting -> findBooth.updateWaitingEnabled(waiting));
 
-
+        LocalTime openTime = Optional.ofNullable(boothPatchRequest.getOpenTime()).orElse(findBooth.getOpenTime());
+        LocalTime closeTime = Optional.ofNullable(boothPatchRequest.getCloseTime()).orElse(findBooth.getCloseTime());
+        setBoothOpeningHour(findBooth, openTime, closeTime);
 
         return findBooth.getId();
     }
@@ -193,33 +188,9 @@ public class BoothService {
     }
 
     @Transactional
-    @CacheEvict(value = "BoothInfo", key = "#boothId")
-    public void deleteBoothSchedule(Long boothId, Long scheduleId) {
-        Booth findBooth = boothRepository.findByBoothId(boothId)
-                .orElseThrow(BoothNotFoundException::new);
-        List<BoothSchedule> scheduleList = findBooth.getScheduleList();
-        scheduleList.stream()
-                .filter(boothSchedule -> boothSchedule.getId().equals(scheduleId))
-                .collect(Collectors.toList())
-                .forEach(boothSchedule -> {
-                    scheduleList.remove(boothSchedule);
-                });
-    }
-
-    @Transactional
-    @CacheEvict(value = "BoothInfo", key = "#boothId")
-    public Long updateBoothSchedule(Long boothId, BoothSchedulePatchRequest boothSchedulePatchRequest) {
-        Booth findBooth = boothRepository.findByBoothId(boothId)
-                .orElseThrow(BoothNotFoundException::new);
-        List<BoothSchedule> scheduleList = findBooth.getScheduleList();
-        scheduleList.clear();
-        boothSchedulePatchRequest.getScheduleList()
-                .forEach(boothScheduleForm -> {
-                    BoothSchedule boothSchedule = new BoothSchedule(boothScheduleForm.getDate(), boothScheduleForm.getOpenTime(), boothScheduleForm.getCloseTime());
-                    boothSchedule.setBooth(findBooth);
-                    scheduleList.add(boothSchedule);
-                });
-        return boothId;
+    public void deleteBoothSchedule() {
+        LocalDate now = LocalDate.now();
+        boothScheduleRepository.deleteBoothSchedule(now);
     }
 
     private Booth verifyAuth(Long memberId, Long boothId){
@@ -261,7 +232,7 @@ public class BoothService {
     }
 
     public void setBoothOpeningHour(Booth booth, LocalTime openTime, LocalTime closeTime) {
-//        booth.setOpeningHour(openTime, closeTime);
+        booth.setOpeningHour(openTime, closeTime);
     }
 
     public List<BoothResponse> getStampEnabledBooths(Long festivalId){

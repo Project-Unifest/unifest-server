@@ -3,7 +3,6 @@ package UniFest.domain.booth.controller;
 import UniFest.domain.booth.service.BoothService;
 import UniFest.dto.request.booth.BoothCreateRequest;
 import UniFest.dto.request.booth.BoothPatchRequest;
-import UniFest.dto.request.booth.BoothSchedulePatchRequest;
 import UniFest.dto.response.Response;
 import UniFest.dto.response.booth.BoothDetailResponse;
 import UniFest.dto.response.booth.BoothResponse;
@@ -43,16 +42,6 @@ public class BoothController {
                                @AuthenticationPrincipal MemberDetails memberDetails,
                                @PathVariable("booth-id") Long boothId) {
         Long updatedId = boothService.updateBooth(boothPatchRequest, memberDetails, boothId);
-        return Response.ofSuccess("OK",updatedId);
-    }
-
-    @SecurityRequirement(name = "JWT")
-    @Operation(summary = "부스 스케쥴 수정")
-    @PatchMapping("/{booth-id}/schedule")
-    public Response patchBoothSchedule(@RequestBody BoothSchedulePatchRequest boothSchedulePatchRequest,
-                               @AuthenticationPrincipal MemberDetails memberDetails,
-                               @PathVariable("booth-id") Long boothId) {
-        Long updatedId = boothService.updateBoothSchedule(boothId, boothSchedulePatchRequest);
         return Response.ofSuccess("OK",updatedId);
     }
 
