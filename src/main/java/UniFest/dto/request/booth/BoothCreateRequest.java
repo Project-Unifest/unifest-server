@@ -1,6 +1,7 @@
 package UniFest.dto.request.booth;
 
 import UniFest.domain.booth.entity.BoothCategory;
+import UniFest.domain.booth.entity.BoothSchedule;
 import UniFest.dto.request.menu.MenuCreateRequest;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -39,12 +40,5 @@ public class BoothCreateRequest {
     @NotNull(message = "공백일 수 없습니다.")
     private double longitude;
 
-    @Schema(example = "HH:mm:ss / null 가능")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss")
-    private LocalTime openTime;
-
-    @Schema(example = "HH:mm:ss / null 가능")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss")
-    private LocalTime closeTime;
-
+    private List<BoothScheduleCreateRequest> boothSchedules;
 }
