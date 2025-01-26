@@ -6,7 +6,6 @@ import UniFest.domain.booth.entity.Booth;
 import UniFest.domain.booth.repository.BoothRepository;
 import UniFest.domain.festival.repository.FestivalRepository;
 import UniFest.dto.request.megaphone.AddMegaphoneRequest;
-import UniFest.dto.request.megaphone.SubscribeMegaphoneRequest;
 import UniFest.exception.announcement.FcmFailException;
 import UniFest.exception.booth.BoothNotFoundException;
 import UniFest.exception.festival.FestivalNotFoundException;
@@ -24,7 +23,7 @@ public class MegaphoneService {
     private final FestivalRepository festivalRepository;
     private final BoothRepository boothRepository;
     private final MegaphoneRepository megaphoneRepository;
-
+/*
     private List<String> wrapAsRegistrationTokens(SubscribeMegaphoneRequest subscribeMegaphoneRequest) {
         return Arrays.asList(subscribeMegaphoneRequest.getFcmToken());
     }
@@ -63,7 +62,7 @@ public class MegaphoneService {
         } catch (FirebaseMessagingException e) {
             throw new FcmFailException(e.getMessage());
         }
-    }
+    }*/
 
     public Long addMegaphone(AddMegaphoneRequest addMegaphoneRequest) {
         Long boothId = addMegaphoneRequest.getBoothId();
