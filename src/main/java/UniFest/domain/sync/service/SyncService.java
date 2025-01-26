@@ -16,10 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class SyncService {
     private final SyncRepository syncRepository;
 
-    public SyncService(SyncRepository syncRepository) {
-        this.syncRepository = syncRepository;
-    }
-
     public void saveOrUpdateFcmToken(PostSyncRequest request) {
         Device device = Device.of(request.getDeviceId());
         syncRepository.saveSyncToken(device.getDeviceId(), request.getFcmToken());
