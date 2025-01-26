@@ -10,7 +10,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: update
   data:
     redis:
       host: localhost
@@ -35,8 +35,3 @@ jwt:
   secret: testesjthsejtkhesjkthskthejthskjthsekjthskjtheskjthskj
   access-token-expiration-minutes: 2100000000
   refresh-token-expiration-minutes: 10080
-
-cloud:
-  aws:
-    s3:
-      bucket: unifest-dev-bucket

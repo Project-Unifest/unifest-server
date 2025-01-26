@@ -39,7 +39,7 @@ cloud:
       accessKey: ${S3_ACCESS}
       secretKey: ${S3_SECRET}
     s3:
-      bucket: unifest-prod-bucket
+      bucket: ${UNIFEST_BUCKET}
     region:
       static: ap-northeast-2
     stack:
