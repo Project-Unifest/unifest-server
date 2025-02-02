@@ -2,6 +2,7 @@ package UniFest.domain.waiting.service;
 
 import UniFest.domain.booth.entity.Booth;
 import UniFest.domain.booth.repository.BoothRepository;
+import UniFest.domain.fcm.service.FcmService;
 import UniFest.domain.waiting.entity.Waiting;
 import UniFest.domain.waiting.repository.WaitingRepository;
 import UniFest.dto.request.waiting.PostWaitingRequest;
@@ -24,6 +25,7 @@ public class WaitingService {
     private final WaitingRepository waitingRepository;
     private final BoothRepository boothRepository;
 
+    private final FcmService fcmService;
     private WaitingInfo createWaitingInfo(Waiting waiting, Integer waitingOrder) {
         return new WaitingInfo(
                 waiting.getBooth().getId(),
@@ -147,7 +149,7 @@ public class WaitingService {
     @Transactional
     public WaitingInfo callWaiting(Long id) {
         WaitingInfo waitingInfo = setWaitingById(id, "CALLED");
-        String fcmToken = waitingRepository.findById(id).get().getFcmToken();
+        String fcmToken = fcmService.getFcmToken(waitingInfo.getDeviceId());
         String waitingTitle = waitingInfo.getBoothName();
         String waitingBody = "부스에 입장하실 차례에요!";
         if(fcmToken!=null){
@@ -163,7 +165,7 @@ public class WaitingService {
                     .putData("booth_name", waitingInfo.getBoothName())
                     .build();
             try{
-                FirebaseMessaging.getInstance().send(message);
+                fcmService.send(message);
             } catch (FirebaseMessagingException e) {
                 throw new FcmFailException(e.getMessage());
             }
