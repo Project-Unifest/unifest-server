@@ -10,9 +10,10 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
-@RequestMapping("/sync")
+@RequestMapping("/fcm-token")
 public class SyncController {
     private final SyncService syncService;
+
     @PostMapping
     public Response<String> saveOrUpdateSyncToken(@RequestBody PostSyncRequest request) {
         syncService.saveOrUpdateFcmToken(request);
@@ -20,7 +21,7 @@ public class SyncController {
         return Response.ofSuccess("Created/Updated for device", request.getDeviceId());
     }
 
-    @GetMapping("/{deviceId}/token")
+    @GetMapping("/{deviceId}")
     public Response<String> getSyncToken(@PathVariable String deviceId) {
         String fcmToken = syncService.getFcmToken(deviceId);
         // TODO: Exception handling
