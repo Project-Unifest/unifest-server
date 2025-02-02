@@ -9,5 +9,4 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class InterestRequest {
     private String deviceId;
-    private Long festivalId;
 }

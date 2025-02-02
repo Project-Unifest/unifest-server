@@ -11,6 +11,8 @@ import UniFest.exception.festival.InterestNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 @Service
 public class InterestService {
@@ -33,5 +35,12 @@ public class InterestService {
                 .orElseThrow(InterestNotFoundException::new);
         fcmService.unsubscribe(deviceId, String.valueOf(festivalId));
         interestRepository.delete(interest);
+    }
+
+    public List<Long> getInterestedFestivalIds(String deviceId) {
+        return interestRepository.findByDeviceId(deviceId)
+                .stream()
+                .map(interest -> interest.getFestival().getId())
+                .toList();
     }
 }
