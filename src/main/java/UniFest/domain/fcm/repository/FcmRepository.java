@@ -15,13 +15,13 @@ public class FcmRepository {
         this.redisTemplate = redisTemplate;
     }
 
-    public void saveSyncToken(String deviceId, String fcmToken) {
+    public void saveFcmToken(String deviceId, String fcmToken) {
         String key = "sync:" + deviceId;
         ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
         valueOperations.set(key, fcmToken, 14, TimeUnit.DAYS); // TTL to 14 days
     }
 
-    public String getSyncToken(String deviceId) {
+    public String getFcmToken(String deviceId) {
         String key = "sync:" + deviceId;
         return redisTemplate.opsForValue().get(key);
     }
