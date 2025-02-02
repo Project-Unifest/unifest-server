@@ -165,7 +165,7 @@ public class WaitingService {
                     .putData("booth_name", waitingInfo.getBoothName())
                     .build();
             try{
-                FirebaseMessaging.getInstance().send(message);
+                fcmService.send(message);
             } catch (FirebaseMessagingException e) {
                 throw new FcmFailException(e.getMessage());
             }

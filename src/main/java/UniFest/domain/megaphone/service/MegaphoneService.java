@@ -1,5 +1,6 @@
 package UniFest.domain.megaphone.service;
 
+import UniFest.domain.fcm.service.FcmService;
 import UniFest.domain.megaphone.entity.Megaphone;
 import UniFest.domain.megaphone.repository.MegaphoneRepository;
 import UniFest.domain.booth.entity.Booth;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 public class MegaphoneService {
     private final BoothRepository boothRepository;
     private final MegaphoneRepository megaphoneRepository;
+    private final FcmService fcmService;
 
     public Long addMegaphone(AddMegaphoneRequest addMegaphoneRequest) {
         Long boothId = addMegaphoneRequest.getBoothId();
@@ -40,7 +42,7 @@ public class MegaphoneService {
                 .build();
 
         try {
-            FirebaseMessaging.getInstance().send(message);
+            fcmService.send(message);
             megaphone.setIsSent(true);
         } catch (FirebaseMessagingException e) {
             megaphone.setIsSent(false);
