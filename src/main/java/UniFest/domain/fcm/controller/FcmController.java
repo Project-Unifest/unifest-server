@@ -14,17 +14,17 @@ import org.springframework.web.bind.annotation.*;
 public class FcmController {
     private final FcmService syncService;
 
-    @PostMapping
+    @PutMapping
     public Response<String> saveOrUpdateFcmToken(@RequestBody PostFcmRequest request) {
         syncService.saveOrUpdateFcmToken(request);
         // TODO: Exception handling
         return Response.ofSuccess("Created/Updated for device", request.getDeviceId());
     }
 
-    @GetMapping("/{deviceId}")
-    public Response<String> getFcmToken(@PathVariable String deviceId) {
-        String fcmToken = syncService.getFcmToken(deviceId);
-        // TODO: Exception handling
-        return Response.ofSuccess("fcm token 획득", fcmToken);
-    }
+//    @GetMapping("/{deviceId}")
+//    public Response<String> getFcmToken(@PathVariable String deviceId) {
+//        String fcmToken = syncService.getFcmToken(deviceId);
+//        // TODO: Exception handling
+//        return Response.ofSuccess("fcm token 획득", fcmToken);
+//    }
 }
