@@ -1,4 +1,4 @@
-package UniFest.domain.sync.repository;
+package UniFest.domain.fcm.repository;
 
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
@@ -8,10 +8,10 @@ import java.util.concurrent.TimeUnit;
 
 
 @Repository
-public class SyncRepository {
+public class FcmRepository {
     private final RedisTemplate<String, String> redisTemplate;
 
-    public SyncRepository(RedisTemplate<String, String> redisTemplate) {
+    public FcmRepository(RedisTemplate<String, String> redisTemplate) {
         this.redisTemplate = redisTemplate;
     }
 

@@ -1,6 +1,6 @@
-package UniFest.domain.sync.controller;
+package UniFest.domain.fcm.controller;
 
-import UniFest.domain.sync.service.SyncService;
+import UniFest.domain.fcm.service.FcmService;
 import UniFest.dto.request.sync.PostSyncRequest;
 import UniFest.dto.response.Response;
 import lombok.RequiredArgsConstructor;
@@ -11,18 +11,18 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @Slf4j
 @RequestMapping("/fcm-token")
-public class SyncController {
-    private final SyncService syncService;
+public class FcmController {
+    private final FcmService syncService;
 
     @PostMapping
-    public Response<String> saveOrUpdateSyncToken(@RequestBody PostSyncRequest request) {
+    public Response<String> saveOrUpdateFcmToken(@RequestBody PostSyncRequest request) {
         syncService.saveOrUpdateFcmToken(request);
         // TODO: Exception handling
         return Response.ofSuccess("Created/Updated for device", request.getDeviceId());
     }
 
     @GetMapping("/{deviceId}")
-    public Response<String> getSyncToken(@PathVariable String deviceId) {
+    public Response<String> getFcmToken(@PathVariable String deviceId) {
         String fcmToken = syncService.getFcmToken(deviceId);
         // TODO: Exception handling
         return Response.ofSuccess("fcm token 획득", fcmToken);
