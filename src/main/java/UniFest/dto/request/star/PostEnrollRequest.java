@@ -1,4 +1,4 @@
-package UniFest.dto.request;
+package UniFest.dto.request.star;
 
 import java.time.LocalDate;
 
