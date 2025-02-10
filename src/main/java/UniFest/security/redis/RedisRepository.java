@@ -24,4 +24,13 @@ public class RedisRepository {
     public void expireRefreshToken(String refreshToken) {
         redisTemplate.delete(refreshToken);
     }
+
+    public boolean findRefreshToken(String refreshToken) {
+        return redisTemplate.hasKey(refreshToken);
+    }
+
+    public String getEmail(String refreshToken) {
+        ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
+        return valueOperations.get(refreshToken);
+    }
 }
