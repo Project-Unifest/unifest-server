@@ -10,6 +10,7 @@ import UniFest.dto.response.waiting.WaitingInfo;
 import UniFest.exception.announcement.FcmFailException;
 import com.google.firebase.messaging.*;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.Hibernate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -46,42 +47,43 @@ public class WaitingService {
     }
 
     private List<WaitingInfo> addWaitingOrderByBooth(List<Waiting> waitingList) {
-        Map<Long, List<Waiting>> groupedByBooth = new LinkedHashMap<>(); // {boothId: List<Waiting>}
-        List<WaitingInfo> result = new ArrayList<>();
-
-        // booth id 기준 그룹화 (이미 정렬됨)
-        for (Waiting waiting : waitingList) {
-            groupedByBooth.computeIfAbsent(waiting.getBooth().getId(), k -> new ArrayList<>()).add(waiting);
-        }
-
-        for (Map.Entry<Long, List<Waiting>> entry : groupedByBooth.entrySet()) {
-            List<Waiting> boothWaitings = entry.getValue();
-
-            // ✅ 기존 RESERVED 웨이팅 개수 확인하여 order 초기값 설정
-            int order = (int) boothWaitings.stream()
-                    .filter(w -> "RESERVED".equals(w.getWaitingStatus()))
-                    .count() - boothWaitings.size() + 1;
-
-            for (Waiting waiting : boothWaitings) {
-                Integer waitingOrder = "RESERVED".equals(waiting.getWaitingStatus()) ? order++ : null;
-                result.add(createWaitingInfo(waiting, waitingOrder));
-            }
-        }
-
-        return result;
+        return waitingList.stream()
+                .collect(Collectors.groupingBy(Waiting::getBooth))  // Booth별로 그룹화
+                .entrySet().stream()
+                .flatMap(entry -> {
+                    AtomicInteger order = new AtomicInteger(1);
+                    return entry.getValue().stream()
+                            .map(waiting -> {
+                                Integer waitingOrder = "RESERVED".equals(waiting.getWaitingStatus())
+                                        ? order.getAndIncrement()
+                                        : null;
+                                return createWaitingInfo(waiting, waitingOrder);
+                            });
+                })
+                .collect(Collectors.toList());
     }
     @Transactional
     public List<WaitingInfo> getMyWaitingList(String deviceId) {
         List<String> statuses = Arrays.asList("RESERVED", "CALLED", "NOSHOW");
-        List<Waiting> myWaitings = waitingRepository.findAllWithBoothByDeviceIdAndWaitingStatusIn(deviceId, statuses);
+        List<Waiting> myWaitings = waitingRepository.findAllByDeviceIdAndWaitingStatusIn(deviceId, statuses);
+        List<Long> boothIds = myWaitings.stream()
+                .map(waiting -> {
+                    Booth booth = waiting.getBooth();
+                    if (booth == null) {
+                        throw new IllegalStateException("Booth entity is null for Waiting ID: " + waiting.getId());
+                    }
+                    Hibernate.initialize(booth);
+                    return booth.getId();
+                })
+                .collect(Collectors.toList());
 
-        Set<Long> boothIds = myWaitings.stream()
-                .map(waiting->waiting.getBooth().getId())
-                .collect(Collectors.toSet());
+        boothIds = boothIds.stream().distinct().collect(Collectors.toList());
+        List<Waiting> allRelatedWaitings = waitingRepository.findAllByBoothIdInAndWaitingStatusIn(boothIds, statuses);
+        List<WaitingInfo> allOrderList = addWaitingOrderByBooth(allRelatedWaitings);
 
-
-        List<Waiting> allRelatedWaitings = waitingRepository.findAllByBoothIdInAndWaitingStatusInOrderByBoothIdAscCreatedAtAsc(new ArrayList<>(boothIds), statuses);
-        return addWaitingOrderByBooth(allRelatedWaitings);
+        return allOrderList.stream()
+                .filter(waitingInfo -> waitingInfo.getDeviceId().equals(deviceId))
+                .collect(Collectors.toList());
     }
 
     @Transactional
