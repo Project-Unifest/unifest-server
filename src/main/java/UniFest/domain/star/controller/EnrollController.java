@@ -6,6 +6,7 @@ import UniFest.dto.request.star.PostEnrollRequest;
 import UniFest.dto.response.Response;
 import UniFest.dto.response.star.EnrollInfo;
 import UniFest.exception.festival.FestivalNotFoundException;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -22,12 +23,14 @@ public class EnrollController {
     private final FestivalRepository festivalRepository;
 
     @PostMapping("")
+    @Operation(summary="festival:star enroll 정보 생성")
     public Response<Long> createEnroll(@RequestBody PostEnrollRequest request) {
         log.debug("[EnrollController.createEnroll]");
         return Response.ofCreated("Created", enrollService.createEnroll(request));
     }
 
     @GetMapping("/festival/{festivalId}")
+    @Operation(summary = "festival 기준 festival:star 등록정보 조회")
     public Response<List<EnrollInfo>> getEnrollmentsByFestival(@PathVariable Long festivalId) {
         log.debug("[EnrollController.getEnrollmentsByFestival] festivalId={}", festivalId);
         festivalRepository.findById(festivalId)
@@ -37,6 +40,7 @@ public class EnrollController {
         return Response.ofSuccess("OK", enrollments);
     }
     @DeleteMapping("/{enrollId}")
+    @Operation(summary = "축제에 등록된 enroll 제거")
     public Response<Void> removeEnroll(@PathVariable Long enrollId) {
         log.debug("[EnrollController.removeEnroll] enrollId={}", enrollId);
 
