@@ -87,7 +87,7 @@ public class StampService {
     }
 
     @Transactional
-    @CacheEvict(value = "BoothInfo", key = "#boothId")
+//    @CacheEvict(value = "BoothInfo", key = "#boothId")
     public Long createStampInfo(StampInfoCreateRequest stampInfoCreateRequest){
         Booth booth = boothRepository.findByBoothId(stampInfoCreateRequest.getBoothId()).orElseThrow(BoothNotFoundException::new);
         Festival festival = festivalRepository.findById(stampInfoCreateRequest.getFestivalId()).orElseThrow(FestivalNotFoundException::new);
@@ -104,7 +104,7 @@ public class StampService {
     }
 
     @Transactional
-    @CacheEvict(value = "BoothInfo", key = "#boothId")
+//    @CacheEvict(value = "BoothInfo", key = "#boothId")
     public Long deleteStampInfo(Long boothId){
         Booth booth = boothRepository.findByBoothId(boothId).orElseThrow(BoothNotFoundException::new);
         StampInfo stampInfo = booth.getStampInfo();
