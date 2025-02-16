@@ -10,12 +10,10 @@ import UniFest.dto.response.waiting.WaitingInfo;
 import UniFest.exception.announcement.FcmFailException;
 import com.google.firebase.messaging.*;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.Hibernate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -48,43 +46,36 @@ public class WaitingService {
     }
 
     private List<WaitingInfo> addWaitingOrderByBooth(List<Waiting> waitingList) {
-        return waitingList.stream()
-                .collect(Collectors.groupingBy(Waiting::getBooth))  // Booth별로 그룹화
-                .entrySet().stream()
-                .flatMap(entry -> {
-                    AtomicInteger order = new AtomicInteger(1);
-                    return entry.getValue().stream()
-                            .map(waiting -> {
-                                Integer waitingOrder = "RESERVED".equals(waiting.getWaitingStatus())
-                                        ? order.getAndIncrement()
-                                        : null;
-                                return createWaitingInfo(waiting, waitingOrder);
-                            });
-                })
-                .collect(Collectors.toList());
+        Map<Long, List<Waiting>> groupedByBooth = new LinkedHashMap<>(); // {boothId: List<Waiting>}
+        List<WaitingInfo> result = new ArrayList<>();
+
+        // booth id 기준 그룹화 (이미 정렬됨)
+        for (Waiting waiting : waitingList) {
+            groupedByBooth.computeIfAbsent(waiting.getBooth().getId(), k -> new ArrayList<>()).add(waiting);
+        }
+
+        for (List<Waiting> boothWaitings : groupedByBooth.values()) {
+            int order = 1;  // 부스별로 새로운 order 변수 쓰기 CAS 안씀
+            for (Waiting waiting : boothWaitings) {
+                Integer waitingOrder = "RESERVED".equals(waiting.getWaitingStatus()) ? order++ : null;
+                result.add(createWaitingInfo(waiting, waitingOrder));
+            }
+        }
+
+        return result;
     }
     @Transactional
     public List<WaitingInfo> getMyWaitingList(String deviceId) {
         List<String> statuses = Arrays.asList("RESERVED", "CALLED", "NOSHOW");
-        List<Waiting> myWaitings = waitingRepository.findAllByDeviceIdAndWaitingStatusIn(deviceId, statuses);
-        List<Long> boothIds = myWaitings.stream()
-                .map(waiting -> {
-                    Booth booth = waiting.getBooth();
-                    if (booth == null) {
-                        throw new IllegalStateException("Booth entity is null for Waiting ID: " + waiting.getId());
-                    }
-                    Hibernate.initialize(booth);
-                    return booth.getId();
-                })
-                .collect(Collectors.toList());
+        List<Waiting> myWaitings = waitingRepository.findAllWithBoothByDeviceIdAndWaitingStatusIn(deviceId, statuses);
 
-        boothIds = boothIds.stream().distinct().collect(Collectors.toList());
-        List<Waiting> allRelatedWaitings = waitingRepository.findAllByBoothIdInAndWaitingStatusIn(boothIds, statuses);
-        List<WaitingInfo> allOrderList = addWaitingOrderByBooth(allRelatedWaitings);
+        Set<Long> boothIds = myWaitings.stream()
+                .map(waiting->waiting.getBooth().getId())
+                .collect(Collectors.toSet());
 
-        return allOrderList.stream()
-                .filter(waitingInfo -> waitingInfo.getDeviceId().equals(deviceId))
-                .collect(Collectors.toList());
+
+        List<Waiting> allRelatedWaitings = waitingRepository.findAllByBoothIdInAndWaitingStatusInOrderByBoothIdAscCreatedAtAsc(new ArrayList<>(boothIds), statuses);
+        return addWaitingOrderByBooth(allRelatedWaitings);
     }
 
     @Transactional
@@ -131,8 +122,7 @@ public class WaitingService {
                     waitingRequest.getPartySize(),
                     fcmToken
             );
-            WaitingInfo ret = addWaiting(newWaiting);
-            return ret;
+            return addWaiting(newWaiting);
         }
         return null;
     }

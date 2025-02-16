@@ -15,7 +15,13 @@ import java.time.LocalDateTime;
 @Getter
 @Entity
 @Setter
-@Table(name = "waiting")
+@Table(
+        name = "waiting",
+        indexes = {
+                @Index(name = "idx_device_id", columnList = "deviceId"),
+                @Index(name = "idx_booth_id", columnList = "booth_id")
+        }
+)
 @EntityListeners(AuditingEntityListener.class)
 public class Waiting extends BaseEntity {
     @Id
@@ -23,7 +29,7 @@ public class Waiting extends BaseEntity {
     @Column(name = "waiting_id")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER) // EAGER 필요한 경우는 따로 명시
     @JoinColumn(name = "booth_id")
     private Booth booth;
 
