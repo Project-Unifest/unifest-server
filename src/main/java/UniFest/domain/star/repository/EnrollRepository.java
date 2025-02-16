@@ -14,4 +14,8 @@ public interface EnrollRepository extends JpaRepository<Enroll, Long> {
             + " join Star s on e.star.id=s.id"
             + " where e.visitDate=:date")
     List<EnrollInfo> findByDate(@Param("date") LocalDate date);
+
+
+    @Query("SELECT e FROM Enroll e WHERE e.festival.id = :festivalId")
+    List<Enroll> findByFestivalId(@Param("festivalId") Long festivalId);
 }
