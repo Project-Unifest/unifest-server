@@ -48,13 +48,15 @@ public class WaitingService {
 
     private List<WaitingInfo> addWaitingOrderByBooth(List<Waiting> waitingList) {
         return waitingList.stream()
-                .collect(Collectors.groupingBy(Waiting::getBooth))
+                .collect(Collectors.groupingBy(Waiting::getBooth))  // Booth별로 그룹화
                 .entrySet().stream()
                 .flatMap(entry -> {
                     AtomicInteger order = new AtomicInteger(1);
                     return entry.getValue().stream()
                             .map(waiting -> {
-                                Integer waitingOrder = "RESERVED".equals(waiting.getWaitingStatus()) ? order.getAndIncrement() : null;
+                                Integer waitingOrder = "RESERVED".equals(waiting.getWaitingStatus())
+                                        ? order.getAndIncrement()
+                                        : null;
                                 return createWaitingInfo(waiting, waitingOrder);
                             });
                 })
@@ -63,24 +65,25 @@ public class WaitingService {
     @Transactional
     public List<WaitingInfo> getMyWaitingList(String deviceId) {
         List<String> statuses = Arrays.asList("RESERVED", "CALLED", "NOSHOW");
-
         List<Waiting> myWaitings = waitingRepository.findAllByDeviceIdAndWaitingStatusIn(deviceId, statuses);
-
         List<Long> boothIds = myWaitings.stream()
                 .map(waiting -> {
                     Booth booth = waiting.getBooth();
                     if (booth == null) {
                         throw new IllegalStateException("Booth entity is null for Waiting ID: " + waiting.getId());
                     }
+                    Hibernate.initialize(booth);
                     return booth.getId();
                 })
                 .collect(Collectors.toList());
 
         boothIds = boothIds.stream().distinct().collect(Collectors.toList());
-
         List<Waiting> allRelatedWaitings = waitingRepository.findAllByBoothIdInAndWaitingStatusIn(boothIds, statuses);
+        List<WaitingInfo> allOrderList = addWaitingOrderByBooth(allRelatedWaitings);
 
-        return addWaitingOrderByBooth(allRelatedWaitings);
+        return allOrderList.stream()
+                .filter(waitingInfo -> waitingInfo.getDeviceId().equals(deviceId))
+                .collect(Collectors.toList());
     }
 
     @Transactional
