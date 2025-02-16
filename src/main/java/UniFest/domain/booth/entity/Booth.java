@@ -5,8 +5,7 @@ import UniFest.domain.festival.entity.Festival;
 import UniFest.domain.megaphone.entity.Megaphone;
 import UniFest.domain.member.entity.Member;
 import UniFest.domain.menu.entity.Menu;
-import UniFest.domain.stamp.entity.StampInfo;
-import UniFest.domain.stamp.entity.StampRecord;
+import UniFest.domain.stamp.entity.Stamp;
 import UniFest.domain.waiting.entity.Waiting;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -79,8 +78,8 @@ public class Booth extends BaseEntity {
     @OneToMany(mappedBy = "booth", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Megaphone> megaphoneList = new ArrayList<>();
 
-    @OneToOne(mappedBy = "booth", fetch = FetchType.LAZY)
-    private StampInfo stampInfo;
+    @OneToMany(mappedBy = "booth", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Stamp> stampList = new ArrayList<>();
 
     private String location;
 
@@ -190,11 +189,11 @@ public class Booth extends BaseEntity {
         this.stampEnabled = enabled;
     }
 
-    public void updateStampEnabled(Boolean stampEnabled) {
-        this.stampEnabled = stampEnabled;
+    public void addStampList(Stamp stamp){
+        this.stampList.add(stamp);
     }
 
-    public void setStampInfo(StampInfo stampInfo){
-        this.stampInfo = stampInfo;
+    public void updateStampEnabled(Boolean stampEnabled) {
+        this.stampEnabled = stampEnabled;
     }
 }
