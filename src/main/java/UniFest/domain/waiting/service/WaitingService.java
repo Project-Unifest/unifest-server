@@ -48,7 +48,7 @@ public class WaitingService {
 
     private List<WaitingInfo> addWaitingOrderByBooth(List<Waiting> waitingList) {
         return waitingList.stream()
-                .collect(Collectors.groupingBy(Waiting::getBooth, LinkedHashMap::new, Collectors.toList()))
+                .collect(Collectors.groupingBy(Waiting::getBooth)) // 기본 HashMap 사용
                 .entrySet().stream()
                 .flatMap(entry -> {
                     AtomicInteger order = new AtomicInteger(1);
@@ -67,7 +67,7 @@ public class WaitingService {
 
         List<Waiting> myWaitings = waitingRepository.findAllByDeviceIdAndWaitingStatusIn(deviceId, statuses);
 
-        Set<Long> boothIds = myWaitings.stream()
+        Set<Long> boothIds = myWaitings.stream() //
                 .map(waiting -> {
                     Booth booth = waiting.getBooth();
                     if (booth == null) {
@@ -77,7 +77,7 @@ public class WaitingService {
                 })
                 .collect(Collectors.toSet());
 
-        List<Waiting> allRelatedWaitings = waitingRepository.findAllByBoothIdInAndWaitingStatusInOrderByBoothIdAscCreatedAtAsc(new ArrayList<>(boothIds), statuses);
+        List<Waiting> allRelatedWaitings = waitingRepository.findAllByBoothIdInAndWaitingStatusIn(new ArrayList<>(boothIds), statuses);
 
         return addWaitingOrderByBooth(allRelatedWaitings);
     }
