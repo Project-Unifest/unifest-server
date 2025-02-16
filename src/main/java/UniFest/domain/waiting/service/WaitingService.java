@@ -51,10 +51,10 @@ public class WaitingService {
                 .collect(Collectors.groupingBy(Waiting::getBooth, LinkedHashMap::new, Collectors.toList()))
                 .entrySet().stream()
                 .flatMap(entry -> {
-                    int[] order = {1};
+                    AtomicInteger order = new AtomicInteger(1);
                     return entry.getValue().stream()
                             .map(waiting -> {
-                                Integer waitingOrder = "RESERVED".equals(waiting.getWaitingStatus()) ? order[0]++ : null;
+                                Integer waitingOrder = "RESERVED".equals(waiting.getWaitingStatus()) ? order.getAndIncrement() : null;
                                 return createWaitingInfo(waiting, waitingOrder);
                             });
                 })
