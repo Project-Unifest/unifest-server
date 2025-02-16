@@ -54,8 +54,14 @@ public class WaitingService {
             groupedByBooth.computeIfAbsent(waiting.getBooth().getId(), k -> new ArrayList<>()).add(waiting);
         }
 
-        for (List<Waiting> boothWaitings : groupedByBooth.values()) {
-            int order = 1;  // 부스별로 새로운 order 변수 쓰기 CAS 안씀
+        for (Map.Entry<Long, List<Waiting>> entry : groupedByBooth.entrySet()) {
+            List<Waiting> boothWaitings = entry.getValue();
+
+            // ✅ 기존 RESERVED 웨이팅 개수 확인하여 order 초기값 설정
+            int order = (int) boothWaitings.stream()
+                    .filter(w -> "RESERVED".equals(w.getWaitingStatus()))
+                    .count() - boothWaitings.size() + 1;
+
             for (Waiting waiting : boothWaitings) {
                 Integer waitingOrder = "RESERVED".equals(waiting.getWaitingStatus()) ? order++ : null;
                 result.add(createWaitingInfo(waiting, waitingOrder));
