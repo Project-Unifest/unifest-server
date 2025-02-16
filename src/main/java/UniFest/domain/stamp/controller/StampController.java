@@ -1,12 +1,17 @@
 package UniFest.domain.stamp.controller;
 
 import UniFest.domain.booth.service.BoothService;
+import UniFest.domain.stamp.entity.StampInfo;
+import UniFest.domain.stamp.entity.StampRecord;
 import UniFest.domain.stamp.service.StampService;
 import UniFest.dto.request.stamp.StampEnabledRequest;
+import UniFest.dto.request.stamp.StampInfoCreateRequest;
 import UniFest.dto.request.stamp.StampRequest;
 import UniFest.dto.response.Response;
 import UniFest.dto.response.TempResponse;
 import UniFest.dto.response.booth.BoothResponse;
+import UniFest.dto.response.stamp.StampInfoResponse;
+import UniFest.dto.response.stamp.StampRecordResponse;
 import UniFest.security.userdetails.MemberDetails;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -26,22 +31,45 @@ public class StampController {
 
     @Operation(summary = "Stamp 추가")
     @PostMapping()
-    public Response<Integer> addStamp(@RequestBody StampRequest stampRequest){
-        int totalStamp = stampService.addStamp(stampRequest.getBoothId(), stampRequest.getToken());
-        return Response.ofSuccess("OK", Integer.valueOf(totalStamp));
+    public Response<Long> addStamp(@RequestBody StampRequest stampRequest){
+        Long stampRecordId = stampService.addStamp(stampRequest.getBoothId(), stampRequest.getDeviceId());
+        return Response.ofSuccess("OK", stampRecordId);
     }
 
-    @Operation(summary = "Stamp 조회 (token별)")
+    @Operation(summary = "Stamp 조회 (deviceId별)")
     @GetMapping()
-    public Response<Integer> getStamp(@RequestParam String token){
-        return Response.ofSuccess("OK", Integer.valueOf(stampService.getStamp(token)));
+    public Response<List<StampRecordResponse>> getStamp(@RequestParam String deviceId){
+        return Response.ofSuccess("OK", stampService.getStamp(deviceId));
+    }
+
+    @Operation(summary = "Stamp 기능이 있는 부스 조회 (festivalId별)")
+    @GetMapping("/festival")
+    public Response<List<StampInfoResponse>> getStampByFestival(@RequestParam Long festivalId){
+        return Response.ofSuccess("OK", stampService.getStampInfo(festivalId));
     }
 
     @Operation(summary = "스탬프 기능 활성화 된 부스 확인")
     @GetMapping("/{festival-id}")
-    public Response<List<BoothResponse>> getStampBooths(@PathVariable("festival-id") Long festivalId){
-        List<BoothResponse> boothList = boothService.getStampEnabledBooths(festivalId);
-        return Response.ofSuccess("OK", boothList);
+    public Response<List<StampInfoResponse>> getStampBooths(@PathVariable("festival-id") Long festivalId){
+//        List<BoothResponse> boothList = boothService.getStampEnabledBooths(festivalId);
+        List<StampInfoResponse> stampInfoList = stampService.getStampInfo(festivalId);
+        return Response.ofSuccess("OK", stampInfoList);
+    }
+
+    @SecurityRequirement(name = "JWT")
+    @Operation(summary = "부스 스탬프 정보 생성")
+    @PostMapping("/booth")
+    public Response<Long> createStampInfo(@RequestBody StampInfoCreateRequest stampInfoCreateRequest){
+        Long stampInfoId = stampService.createStampInfo(stampInfoCreateRequest);
+        return Response.ofSuccess("OK", stampInfoId);
+    }
+
+    @SecurityRequirement(name = "JWT")
+    @Operation(summary = "부스 스탬프 정보 삭제")
+    @DeleteMapping("/booth/{booth-id}")
+    public Response<Long> deleteStampInfo(@PathVariable("booth-id")Long boothId){
+        Long stampInfoId = stampService.deleteStampInfo(boothId);
+        return Response.ofSuccess("OK", stampInfoId);
     }
 
     @SecurityRequirement(name = "JWT")
