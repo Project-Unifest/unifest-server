@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 public class StampRequest {
 
     @NotNull
-    private String token;
+    private String deviceId;
 
     @NotNull
     private Long boothId;
