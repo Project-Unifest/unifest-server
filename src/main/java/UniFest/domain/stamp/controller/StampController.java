@@ -42,13 +42,13 @@ public class StampController {
         return Response.ofSuccess("OK", stampService.getStamp(deviceId));
     }
 
-    @Operation(summary = "Stamp 기능이 있는 부스 조회 (festivalId별)")
-    @GetMapping("/festival")
-    public Response<List<StampInfoResponse>> getStampByFestival(@RequestParam Long festivalId){
-        return Response.ofSuccess("OK", stampService.getStampInfo(festivalId));
-    }
+//    @Operation(summary = "Stamp 기능이 있는 부스 조회 (festivalId별)")
+//    @GetMapping("/festival")
+//    public Response<List<StampInfoResponse>> getStampByFestival(@PathVariable Long festivalId){
+//        return Response.ofSuccess("OK", stampService.getStampInfo(festivalId));
+//    }
 
-    @Operation(summary = "스탬프 기능 활성화 된 부스 확인")
+    @Operation(summary = "Stamp 기능이 있는 부스 조회 (festivalId별)")
     @GetMapping("/{festival-id}")
     public Response<List<StampInfoResponse>> getStampBooths(@PathVariable("festival-id") Long festivalId){
 //        List<BoothResponse> boothList = boothService.getStampEnabledBooths(festivalId);
