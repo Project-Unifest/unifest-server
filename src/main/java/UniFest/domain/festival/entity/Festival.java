@@ -2,6 +2,7 @@ package UniFest.domain.festival.entity;
 
 import UniFest.domain.audit.BaseEntity;
 import UniFest.domain.school.entity.School;
+import UniFest.domain.stamp.entity.StampInfo;
 import UniFest.domain.star.entity.Enroll;
 import jakarta.persistence.*;
 import java.time.LocalDate;
@@ -40,6 +41,9 @@ public class Festival extends BaseEntity {
     private LocalDate beginDate;
 
     private LocalDate endDate;
+
+    @OneToMany(mappedBy = "festival")
+    private List<StampInfo> stampInfoList = new ArrayList<>();
 
     public void setSchool(School school){
         this.school = school;
