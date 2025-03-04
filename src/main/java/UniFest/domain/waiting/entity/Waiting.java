@@ -1,6 +1,6 @@
 package UniFest.domain.waiting.entity;
 
-import UniFest.domain.audit.BaseEntity;
+import UniFest.global.common.BaseEntity;
 import UniFest.domain.booth.entity.Booth;
 import jakarta.persistence.*;
 import lombok.Builder;

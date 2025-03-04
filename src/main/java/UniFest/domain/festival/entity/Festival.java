@@ -1,6 +1,6 @@
 package UniFest.domain.festival.entity;
 
-import UniFest.domain.audit.BaseEntity;
+import UniFest.global.common.BaseEntity;
 import UniFest.domain.school.entity.School;
 import UniFest.domain.stamp.entity.StampInfo;
 import UniFest.domain.star.entity.Enroll;

@@ -1,9 +1,9 @@
 package UniFest.domain.booth.controller;
 
 import UniFest.domain.booth.service.LikesService;
-import UniFest.dto.request.likes.PostLikesRequest;
-import UniFest.dto.response.Response;
-import UniFest.dto.response.booth.LikedBoothResponse;
+import UniFest.domain.booth.dto.request.PostLikesRequest;
+import UniFest.global.common.response.Response;
+import UniFest.domain.booth.dto.response.LikedBoothResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -2,9 +2,9 @@ package UniFest.domain.star.controller;
 
 import UniFest.domain.star.entity.Star;
 import UniFest.domain.star.repository.StarRepository;
-import UniFest.dto.request.star.PostStarRequest;
-import UniFest.dto.response.Response;
-import UniFest.dto.response.star.StarInfo;
+import UniFest.domain.star.dto.request.PostStarRequest;
+import UniFest.global.common.response.Response;
+import UniFest.domain.star.dto.response.StarInfo;
 import java.util.List;
 import java.util.Optional;
 

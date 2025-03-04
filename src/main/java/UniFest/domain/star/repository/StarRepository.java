@@ -1,7 +1,7 @@
 package UniFest.domain.star.repository;
 
 import UniFest.domain.star.entity.Star;
-import UniFest.dto.response.star.StarInfo;
+import UniFest.domain.star.dto.response.StarInfo;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

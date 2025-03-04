@@ -2,10 +2,10 @@ package UniFest.domain.member.controller;
 
 import UniFest.domain.member.entity.MemberRole;
 import UniFest.domain.member.service.MemberService;
-import UniFest.dto.request.member.MemberSignUpRequest;
-import UniFest.dto.response.Response;
-import UniFest.dto.response.member.MemberDetailResponse;
-import UniFest.security.userdetails.MemberDetails;
+import UniFest.domain.member.dto.request.MemberSignUpRequest;
+import UniFest.global.common.response.Response;
+import UniFest.domain.member.dto.response.MemberDetailResponse;
+import UniFest.global.infra.security.userdetails.MemberDetails;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;

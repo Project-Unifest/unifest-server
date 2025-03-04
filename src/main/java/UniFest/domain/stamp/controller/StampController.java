@@ -1,22 +1,16 @@
 package UniFest.domain.stamp.controller;
 
 import UniFest.domain.booth.service.BoothService;
-import UniFest.domain.stamp.entity.StampInfo;
-import UniFest.domain.stamp.entity.StampRecord;
 import UniFest.domain.stamp.service.StampService;
-import UniFest.dto.request.stamp.StampEnabledRequest;
-import UniFest.dto.request.stamp.StampInfoCreateRequest;
-import UniFest.dto.request.stamp.StampRequest;
-import UniFest.dto.response.Response;
-import UniFest.dto.response.TempResponse;
-import UniFest.dto.response.booth.BoothResponse;
-import UniFest.dto.response.stamp.StampInfoResponse;
-import UniFest.dto.response.stamp.StampRecordResponse;
-import UniFest.security.userdetails.MemberDetails;
+import UniFest.domain.stamp.dto.request.StampEnabledRequest;
+import UniFest.domain.stamp.dto.request.StampInfoCreateRequest;
+import UniFest.domain.stamp.dto.request.StampRequest;
+import UniFest.global.common.response.Response;
+import UniFest.domain.stamp.dto.response.StampInfoResponse;
+import UniFest.domain.stamp.dto.response.StampRecordResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

@@ -1,6 +1,6 @@
 package UniFest.domain.star.entity;
 
-import UniFest.domain.audit.BaseEntity;
+import UniFest.global.common.BaseEntity;
 import UniFest.domain.festival.entity.Festival;
 import jakarta.persistence.*;
 import java.time.LocalDate;

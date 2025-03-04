@@ -2,12 +2,12 @@ package UniFest.domain.waiting.service;
 
 import UniFest.domain.booth.entity.Booth;
 import UniFest.domain.booth.repository.BoothRepository;
-import UniFest.domain.fcm.service.FcmService;
+import UniFest.global.infra.fcm.service.FcmService;
 import UniFest.domain.waiting.entity.Waiting;
 import UniFest.domain.waiting.repository.WaitingRepository;
-import UniFest.dto.request.waiting.PostWaitingRequest;
-import UniFest.dto.response.waiting.WaitingInfo;
-import UniFest.exception.announcement.FcmFailException;
+import UniFest.domain.waiting.dto.request.PostWaitingRequest;
+import UniFest.domain.waiting.dto.response.WaitingInfo;
+import UniFest.global.infra.fcm.exception.FcmFailException;
 import com.google.firebase.messaging.*;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.Hibernate;

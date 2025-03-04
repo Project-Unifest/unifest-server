@@ -2,11 +2,11 @@ package UniFest.domain.menu.controller;
 
 import UniFest.domain.menu.entity.MenuStatus;
 import UniFest.domain.menu.service.MenuService;
-import UniFest.dto.request.menu.MenuCreateRequest;
-import UniFest.dto.request.menu.MenuPatchRequest;
-import UniFest.dto.request.menu.MenuStatusChangeRequest;
-import UniFest.dto.response.Response;
-import UniFest.security.userdetails.MemberDetails;
+import UniFest.domain.menu.dto.request.MenuCreateRequest;
+import UniFest.domain.menu.dto.request.MenuPatchRequest;
+import UniFest.domain.menu.dto.request.MenuStatusChangeRequest;
+import UniFest.global.common.response.Response;
+import UniFest.global.infra.security.userdetails.MemberDetails;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;

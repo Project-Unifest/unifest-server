@@ -1,7 +1,7 @@
 package UniFest.domain.star.repository;
 
 import UniFest.domain.star.entity.Enroll;
-import UniFest.dto.response.star.EnrollInfo;
+import UniFest.domain.star.dto.response.EnrollInfo;
 import java.time.LocalDate;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;

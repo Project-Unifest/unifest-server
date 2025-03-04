@@ -1,8 +1,8 @@
 package UniFest.domain.festival.repository;
 
 import UniFest.domain.festival.entity.Festival;
-import UniFest.dto.response.festival.FestivalSearchResponse;
-import UniFest.dto.response.festival.TodayFestivalInfo;
+import UniFest.domain.festival.dto.response.FestivalSearchResponse;
+import UniFest.domain.festival.dto.response.TodayFestivalInfo;
 import java.time.LocalDate;
 import java.util.List;
 import org.springframework.data.domain.Pageable;
