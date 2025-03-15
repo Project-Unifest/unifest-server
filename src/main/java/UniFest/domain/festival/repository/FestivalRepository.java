@@ -46,4 +46,5 @@ public interface FestivalRepository extends JpaRepository<Festival, Long> {
             + " where :date between f.beginDate and f.endDate "
             + " order by s.name")
     List<TodayFestivalInfo> findFestivalByDate(@Param("date") LocalDate date);
+
 }

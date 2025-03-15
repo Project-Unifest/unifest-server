@@ -79,8 +79,8 @@ public class Booth extends BaseEntity {
     @OneToMany(mappedBy = "booth", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Megaphone> megaphoneList = new ArrayList<>();
 
-    @OneToOne(mappedBy = "booth", fetch = FetchType.LAZY)
-    private StampInfo stampInfo;
+//    @OneToOne(mappedBy = "booth", fetch = FetchType.LAZY)
+//    private StampInfo stampInfo;
 
     private String location;
 
@@ -100,6 +100,9 @@ public class Booth extends BaseEntity {
 
     @ColumnDefault("0")
     private boolean stampEnabled;
+
+    @OneToMany(mappedBy = "booth", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<StampRecord> stampRecordList = new ArrayList<>();
 
     @Builder
     public Booth(String name, BoothCategory category, String description, String detail, String thumbnail,
@@ -194,7 +197,5 @@ public class Booth extends BaseEntity {
         this.stampEnabled = stampEnabled;
     }
 
-    public void setStampInfo(StampInfo stampInfo){
-        this.stampInfo = stampInfo;
-    }
+
 }

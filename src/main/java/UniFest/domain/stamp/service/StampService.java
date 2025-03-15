@@ -9,17 +9,12 @@ import UniFest.domain.stamp.entity.StampRecord;
 import UniFest.domain.stamp.repository.StampRecordRepository;
 import UniFest.domain.stamp.repository.StampInfoRepository;
 import UniFest.dto.request.stamp.StampInfoCreateRequest;
-import UniFest.dto.request.stamp.StampInfoUpdateRequest;
+import UniFest.dto.response.booth.BoothResponse;
 import UniFest.dto.response.stamp.StampInfoResponse;
 import UniFest.dto.response.stamp.StampRecordResponse;
-import UniFest.exception.booth.BoothNotFoundException;
 import UniFest.exception.festival.FestivalNotFoundException;
-import UniFest.exception.stamp.BoothNotFoundForStampException;
-import UniFest.exception.stamp.StampAlreadyAddedException;
-import UniFest.exception.stamp.StampLimitException;
-import UniFest.exception.stamp.StampNotEnabledException;
+import UniFest.exception.stamp.*;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,14 +35,13 @@ public class StampService {
 
     @Transactional
     public Long addStamp(Long boothId, String deviceId){
-        Booth booth = boothRepository.findByBoothId(boothId).orElseThrow(BoothNotFoundForStampException::new);
+        Booth booth = boothRepository.findByBoothId(boothId).orElseThrow(FestivalNotFoundForStampException::new);
 
         if(!booth.isStampEnabled()){ //스탬프 못찍는 부스일 시
             throw new StampNotEnabledException();
         }
-        StampInfo stampInfo = booth.getStampInfo();
 
-        StampRecord stampRecord = stampRecordRepository.findByDeviceIdAndStampInfo(deviceId, stampInfo).orElse(null);
+        StampRecord stampRecord = stampRecordRepository.findByDeviceIdAndBooth(deviceId, booth).orElse(null);
 
         if (stampRecord != null) {
             throw new StampAlreadyAddedException();
@@ -55,7 +49,7 @@ public class StampService {
         if (isMaxStamp(deviceId)){
             throw new StampLimitException();
         }
-        stampRecord = new StampRecord(stampInfo, deviceId);
+        stampRecord = new StampRecord(booth, deviceId);
         stampRecordRepository.save(stampRecord);
 
         List<StampRecord> tokenStampListInfo = stampRecordRepository.findByDeviceId(deviceId);
@@ -76,48 +70,62 @@ public class StampService {
         return stampRecords;
     }
 
-    public List<StampInfoResponse> getStampInfo(Long festivalId) {
+    public StampInfoResponse getStampInfo(Long festivalId) {
         Festival festival = festivalRepository.findById(festivalId).orElseThrow(FestivalNotFoundException::new);
-        List<StampInfoResponse> stampInfoResponseList = stampInfoRepository.findByFestival(festival)
+        StampInfoResponse stampInfoResponse = new StampInfoResponse(stampInfoRepository.findByFestival(festival));
+
+        return stampInfoResponse;
+    }
+
+    public List<BoothResponse> getStampBooth(Long festivalId) {
+        Festival festival = festivalRepository.findById(festivalId).orElseThrow(FestivalNotFoundException::new);
+        List<BoothResponse> boothResponseList = boothRepository.findBoothsByFestivalAndStampEnabled(festival, true)
                 .stream()
-                .map(StampInfoResponse::new)
+                .map(BoothResponse::new)
                 .collect(Collectors.toList());
 
-        return stampInfoResponseList;
+        return boothResponseList;
+    }
+
+    public List<Festival> getStampEnabledFestival() {
+        List<Festival> festivalList = festivalRepository.findAll();
+        List<Festival> filteredFestival = festivalList.stream().filter(f -> f.getStampInfo() != null)
+                .collect(Collectors.toList());
+
+        return filteredFestival;
     }
 
     @Transactional
 //    @CacheEvict(value = "BoothInfo", key = "#boothId")
     public Long createStampInfo(StampInfoCreateRequest stampInfoCreateRequest){
-        Booth booth = boothRepository.findByBoothId(stampInfoCreateRequest.getBoothId()).orElseThrow(BoothNotFoundException::new);
+//        Booth booth = boothRepository.findByBoothId(stampInfoCreateRequest.getBoothId()).orElseThrow(BoothNotFoundException::new);
         Festival festival = festivalRepository.findById(stampInfoCreateRequest.getFestivalId()).orElseThrow(FestivalNotFoundException::new);
 
-        String defaultImgUrl = stampInfoCreateRequest.getDefaultImgUrl();
-        String usedImgUrl = stampInfoCreateRequest.getUsedImgUrl();
-
-        StampInfo stampInfo = new StampInfo(festival, booth, defaultImgUrl, usedImgUrl);
-        stampInfoRepository.save(stampInfo);
-        booth.setStampInfo(stampInfo);
-        booth.updateStampEnabled(true);
+        if(festival.getStampInfo() != null){
+            throw new StampInfoAlreadyAdded();
+        }
+        StampInfo stampInfo = new StampInfo(festival
+                , stampInfoCreateRequest.getDefaultImgUrl()
+                , stampInfoCreateRequest.getUsedImgUrl());
+        festival.setStampInfo(stampInfo);
 
         return stampInfo.getId();
     }
 
     @Transactional
 //    @CacheEvict(value = "BoothInfo", key = "#boothId")
-    public Long deleteStampInfo(Long boothId){
-        Booth booth = boothRepository.findByBoothId(boothId).orElseThrow(BoothNotFoundException::new);
-        StampInfo stampInfo = booth.getStampInfo();
+    public Long deleteStampInfo(Long festivalId){
+        Festival festival = festivalRepository.findById(festivalId).orElseThrow(FestivalNotFoundForStampException::new);
+        StampInfo stampInfo = festival.getStampInfo();
 
         if(stampInfo == null){
             throw new StampNotEnabledException();
         }
 
-        booth.setStampInfo(null);
+        festival.setStampInfo(null);
         stampInfoRepository.delete(stampInfo);
-        booth.updateStampEnabled(false);
 
-        return booth.getId();
+        return festival.getId();
     }
 
     private boolean isMaxStamp(String deviceId){
