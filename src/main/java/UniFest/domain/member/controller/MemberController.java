@@ -1,5 +1,6 @@
 package UniFest.domain.member.controller;
 
+import UniFest.domain.member.dto.request.PasswordChangeRequest;
 import UniFest.domain.member.entity.MemberRole;
 import UniFest.domain.member.service.MemberService;
 import UniFest.domain.member.dto.request.MemberSignUpRequest;
@@ -55,6 +56,15 @@ public class MemberController {
     public Response<MemberDetailResponse> getMyMember(@AuthenticationPrincipal MemberDetails memberDetails){
         MemberDetailResponse response = memberService.getMember(memberDetails.getMemberId());
         return Response.ofSuccess("OK", response);
+    }
+
+    @SecurityRequirement(name = "JWT")
+    @Operation(summary = "본인 비밀번호 수정")
+    @PatchMapping("my/password")
+    public Response<Void> changePassword(@AuthenticationPrincipal MemberDetails memberDetails,
+                                                         @RequestBody PasswordChangeRequest request){
+        memberService.changePassword(memberDetails.getMemberId(), request.getCurrentPassword(), request.getNewPassword());
+        return Response.ofSuccess("OK");
     }
 
     @SecurityRequirement(name = "JWT")
