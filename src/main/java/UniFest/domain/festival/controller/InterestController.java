@@ -1,8 +1,8 @@
 package UniFest.domain.festival.controller;
 
 import UniFest.domain.festival.service.InterestService;
-import UniFest.dto.request.festival.InterestRequest;
-import UniFest.dto.response.Response;
+import UniFest.domain.festival.dto.request.InterestRequest;
+import UniFest.global.common.response.Response;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

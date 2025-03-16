@@ -2,10 +2,10 @@ package UniFest.domain.star.controller;
 
 import UniFest.domain.festival.repository.FestivalRepository;
 import UniFest.domain.star.service.EnrollService;
-import UniFest.dto.request.star.PostEnrollRequest;
-import UniFest.dto.response.Response;
-import UniFest.dto.response.star.EnrollInfo;
-import UniFest.exception.festival.FestivalNotFoundException;
+import UniFest.domain.star.dto.request.PostEnrollRequest;
+import UniFest.global.common.response.Response;
+import UniFest.domain.star.dto.response.EnrollInfo;
+import UniFest.domain.festival.exception.FestivalNotFoundException;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -1,6 +1,6 @@
 package UniFest.domain.stamp.entity;
 
-import UniFest.domain.audit.BaseEntity;
+import UniFest.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;

@@ -6,11 +6,11 @@ import UniFest.domain.star.entity.Enroll;
 import UniFest.domain.star.entity.Star;
 import UniFest.domain.star.repository.EnrollRepository;
 import UniFest.domain.star.repository.StarRepository;
-import UniFest.dto.request.star.PostEnrollRequest;
-import UniFest.dto.response.star.EnrollInfo;
-import UniFest.exception.festival.FestivalNotFoundException;
-import UniFest.exception.OutOfPeriodException;
-import UniFest.exception.StarNotFoundException;
+import UniFest.domain.star.dto.request.PostEnrollRequest;
+import UniFest.domain.star.dto.response.EnrollInfo;
+import UniFest.domain.festival.exception.FestivalNotFoundException;
+import UniFest.domain.star.exception.OutOfPeriodException;
+import UniFest.domain.star.exception.StarNotFoundException;
 import java.time.LocalDate;
 import java.util.List;
 

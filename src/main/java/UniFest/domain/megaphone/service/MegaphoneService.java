@@ -1,13 +1,13 @@
 package UniFest.domain.megaphone.service;
 
-import UniFest.domain.fcm.service.FcmService;
+import UniFest.global.infra.fcm.service.FcmService;
 import UniFest.domain.megaphone.entity.Megaphone;
 import UniFest.domain.megaphone.repository.MegaphoneRepository;
 import UniFest.domain.booth.entity.Booth;
 import UniFest.domain.booth.repository.BoothRepository;
-import UniFest.dto.request.megaphone.AddMegaphoneRequest;
-import UniFest.exception.announcement.FcmFailException;
-import UniFest.exception.booth.BoothNotFoundException;
+import UniFest.domain.megaphone.dto.request.AddMegaphoneRequest;
+import UniFest.global.infra.fcm.exception.FcmFailException;
+import UniFest.domain.booth.exception.BoothNotFoundException;
 import com.google.firebase.messaging.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

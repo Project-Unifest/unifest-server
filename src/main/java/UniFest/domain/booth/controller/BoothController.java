@@ -1,13 +1,13 @@
 package UniFest.domain.booth.controller;
 
 import UniFest.domain.booth.service.BoothService;
-import UniFest.dto.request.booth.BoothCreateRequest;
-import UniFest.dto.request.booth.BoothPatchRequest;
-import UniFest.dto.request.booth.BoothSchedulePatchRequest;
-import UniFest.dto.response.Response;
-import UniFest.dto.response.booth.BoothDetailResponse;
-import UniFest.dto.response.booth.BoothResponse;
-import UniFest.security.userdetails.MemberDetails;
+import UniFest.domain.booth.dto.request.BoothCreateRequest;
+import UniFest.domain.booth.dto.request.BoothPatchRequest;
+import UniFest.domain.booth.dto.request.BoothSchedulePatchRequest;
+import UniFest.global.common.response.Response;
+import UniFest.domain.booth.dto.response.BoothDetailResponse;
+import UniFest.domain.booth.dto.response.BoothResponse;
+import UniFest.global.infra.security.userdetails.MemberDetails;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
