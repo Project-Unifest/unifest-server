@@ -8,12 +8,15 @@ import UniFest.domain.menu.entity.Menu;
 import UniFest.domain.stamp.entity.StampInfo;
 import UniFest.domain.waiting.entity.Waiting;
 import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.*;
 
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +26,9 @@ import java.util.Random;
 @Entity
 @Table(name = "booth")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@SQLDelete(sql = "UPDATE booth SET deleted = true," +
+        "deleted_at = NOW() WHERE booth_id = ?")
+@SQLRestriction("deleted = false")
 public class Booth extends BaseEntity {
 
     @Id
@@ -35,6 +41,7 @@ public class Booth extends BaseEntity {
     private Festival festival;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    //@OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name="member_id")
     private Member member;
 
@@ -99,6 +106,12 @@ public class Booth extends BaseEntity {
 
     @ColumnDefault("0")
     private boolean stampEnabled;
+
+    @Column(name = "deleted", columnDefinition = "BOOLEAN DEFAULT false")
+    private Boolean deleted = false;
+
+    @Column(name = "deleted_at")
+    private LocalDateTime deletedAt;
 
     @Builder
     public Booth(String name, BoothCategory category, String description, String detail, String thumbnail,
