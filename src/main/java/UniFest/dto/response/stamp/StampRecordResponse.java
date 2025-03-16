@@ -17,8 +17,8 @@ public class StampRecordResponse {
     private String deviceId;
 
     public StampRecordResponse(StampRecord stampRecord) {
-        this.stampRecordId = getStampRecordId();
+        this.stampRecordId = stampRecord.getId();
         this.boothId = stampRecord.getBooth().getId();
-        this.deviceId = getDeviceId();
+        this.deviceId = stampRecord.getDeviceId();
     }
 }

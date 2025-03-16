@@ -8,6 +8,7 @@ import UniFest.dto.request.stamp.StampInfoCreateRequest;
 import UniFest.dto.request.stamp.StampRequest;
 import UniFest.dto.response.Response;
 import UniFest.dto.response.booth.BoothResponse;
+import UniFest.dto.response.stamp.StampEnabledFestival;
 import UniFest.dto.response.stamp.StampInfoResponse;
 import UniFest.dto.response.stamp.StampRecordResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -52,11 +53,11 @@ public class StampController {
         return Response.ofSuccess("OK", stampBoothList);
     }
 
-    @Operation(summary = "Stamp 기능이 있는 페스티벌 조회")
+    @Operation(summary = "Stamp 기능이 있는 페스티벌 조회 (드롭다운용)")
     @GetMapping("/festivals")
-    public Response<List<Festival>> getStampFestivals(){    //나중에 Response로 교체하기 TODO
+    public Response<List<StampEnabledFestival>> getStampFestivals(){    //나중에 Response로 교체하기 TODO
 //        List<BoothResponse> boothList = boothService.getStampEnabledBooths(festivalId);
-        List<Festival> stampEnabledFestival = stampService.getStampEnabledFestival();
+        List<StampEnabledFestival> stampEnabledFestival = stampService.getStampEnabledFestival();
         return Response.ofSuccess("OK", stampEnabledFestival);
     }
 

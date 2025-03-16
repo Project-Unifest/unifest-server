@@ -10,6 +10,7 @@ import UniFest.domain.stamp.repository.StampRecordRepository;
 import UniFest.domain.stamp.repository.StampInfoRepository;
 import UniFest.dto.request.stamp.StampInfoCreateRequest;
 import UniFest.dto.response.booth.BoothResponse;
+import UniFest.dto.response.stamp.StampEnabledFestival;
 import UniFest.dto.response.stamp.StampInfoResponse;
 import UniFest.dto.response.stamp.StampRecordResponse;
 import UniFest.exception.festival.FestivalNotFoundException;
@@ -62,10 +63,11 @@ public class StampService {
                 .map(StampRecordResponse::new)
                 .collect(Collectors.toList());
 
-        for (StampRecordResponse stampRecord : stampRecords) {
-            stampRecord.getStampRecordId();
-            stampRecord.getDeviceId();
-        }
+//        //TODO 연관관계 개선 필
+//        for (StampRecordResponse stampRecord : stampRecords) {
+//            Long stampRecordId = stampRecord.getStampRecordId()
+//            String deviceId1 = stampRecord.getDeviceId();
+//        }
 
         return stampRecords;
     }
@@ -87,12 +89,15 @@ public class StampService {
         return boothResponseList;
     }
 
-    public List<Festival> getStampEnabledFestival() {
+    public List<StampEnabledFestival> getStampEnabledFestival() {
         List<Festival> festivalList = festivalRepository.findAll();
         List<Festival> filteredFestival = festivalList.stream().filter(f -> f.getStampInfo() != null)
-                .collect(Collectors.toList());
+                .toList();
+        List<StampEnabledFestival> dtoFestivalList = filteredFestival.stream()
+                .map(StampEnabledFestival::new)
+                .toList();
 
-        return filteredFestival;
+        return dtoFestivalList;
     }
 
     @Transactional
@@ -107,6 +112,7 @@ public class StampService {
         StampInfo stampInfo = new StampInfo(festival
                 , stampInfoCreateRequest.getDefaultImgUrl()
                 , stampInfoCreateRequest.getUsedImgUrl());
+        stampInfoRepository.save(stampInfo);
         festival.setStampInfo(stampInfo);
 
         return stampInfo.getId();
