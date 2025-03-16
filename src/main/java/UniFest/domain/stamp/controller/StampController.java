@@ -7,6 +7,7 @@ import UniFest.domain.stamp.dto.request.StampInfoCreateRequest;
 import UniFest.domain.stamp.dto.request.StampRequest;
 import UniFest.domain.stamp.dto.response.StampRecordResponse;
 import UniFest.domain.stamp.service.StampService;
+import UniFest.dto.response.stamp.StampEnabledFestival;
 import UniFest.global.common.response.Response;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
