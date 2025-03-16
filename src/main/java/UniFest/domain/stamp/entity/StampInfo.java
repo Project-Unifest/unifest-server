@@ -1,11 +1,10 @@
 package UniFest.domain.stamp.entity;
 
-import UniFest.domain.audit.BaseEntity;
+import UniFest.global.common.BaseEntity;
 import UniFest.domain.booth.entity.Booth;
 import UniFest.domain.festival.entity.Festival;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

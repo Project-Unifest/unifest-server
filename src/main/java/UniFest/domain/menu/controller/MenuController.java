@@ -2,11 +2,11 @@ package UniFest.domain.menu.controller;
 
 import UniFest.domain.menu.entity.MenuStatus;
 import UniFest.domain.menu.service.MenuService;
-import UniFest.dto.request.menu.MenuCreateRequest;
-import UniFest.dto.request.menu.MenuPatchRequest;
-import UniFest.dto.request.menu.MenuStatusChangeRequest;
-import UniFest.dto.response.Response;
-import UniFest.security.userdetails.MemberDetails;
+import UniFest.domain.menu.dto.request.MenuCreateRequest;
+import UniFest.domain.menu.dto.request.MenuPatchRequest;
+import UniFest.domain.menu.dto.request.MenuStatusChangeRequest;
+import UniFest.global.common.response.Response;
+import UniFest.global.infra.security.userdetails.MemberDetails;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
@@ -24,10 +24,10 @@ public class MenuController {
     @SecurityRequirement(name = "JWT")
     @Operation(summary = "메뉴 삭제")
     @DeleteMapping("{menu-id}")
-    public Response deleteMenu(@PathVariable("menu-id") Long menuId,
+    public Response<Void> deleteMenu(@PathVariable("menu-id") Long menuId,
                              @AuthenticationPrincipal MemberDetails memberDetails) {
         menuService.deleteMenu(menuId, memberDetails);
-        return Response.ofSuccess("OK",null);
+        return Response.ofSuccess("OK");
     }
 
     @SecurityRequirement(name = "JWT")
@@ -44,7 +44,7 @@ public class MenuController {
     @SecurityRequirement(name = "JWT")
     @Operation(summary = "메뉴 수정")
     @PatchMapping("{menu-id}")
-    public Response patchMenu(@Valid @RequestBody MenuPatchRequest menuPatchRequest,
+    public Response<Long> patchMenu(@Valid @RequestBody MenuPatchRequest menuPatchRequest,
                                      @AuthenticationPrincipal MemberDetails memberDetails,
                               @PathVariable("menu-id") Long menuId) {
         menuService.patchMenu(menuId, memberDetails, menuPatchRequest);
@@ -55,12 +55,12 @@ public class MenuController {
     @SecurityRequirement(name = "JWT")
     @Operation(summary = "메뉴 재고 상태 변경")
     @PutMapping("{menu-id}/status")
-    public Response changeMenuStatus(@Valid @RequestBody MenuStatusChangeRequest menuStatusChangeRequest,
+    public Response<Void> changeMenuStatus(@Valid @RequestBody MenuStatusChangeRequest menuStatusChangeRequest,
                                      @PathVariable("menu-id") Long menuId,
                                      @AuthenticationPrincipal MemberDetails memberDetails) {
         MenuStatus menuStatus = menuStatusChangeRequest.getMenuStatus();
         menuService.changeMenuStatus(memberDetails ,menuId, menuStatus);
 
-        return Response.ofSuccess("OK",null);
+        return Response.ofSuccess("OK");
     }
 }

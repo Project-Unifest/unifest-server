@@ -2,10 +2,6 @@ package UniFest.service;
 
 import UniFest.domain.booth.repository.BoothRepository;
 import UniFest.domain.booth.service.BoothService;
-import UniFest.dto.request.booth.BoothCreateRequest;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

@@ -1,16 +1,14 @@
 package UniFest.domain.stamp.controller;
 
+import UniFest.domain.booth.dto.response.BoothResponse;
 import UniFest.domain.booth.service.BoothService;
-import UniFest.domain.festival.entity.Festival;
+import UniFest.domain.stamp.dto.request.StampEnabledRequest;
+import UniFest.domain.stamp.dto.request.StampInfoCreateRequest;
+import UniFest.domain.stamp.dto.request.StampRequest;
+import UniFest.domain.stamp.dto.response.StampRecordResponse;
 import UniFest.domain.stamp.service.StampService;
-import UniFest.dto.request.stamp.StampEnabledRequest;
-import UniFest.dto.request.stamp.StampInfoCreateRequest;
-import UniFest.dto.request.stamp.StampRequest;
-import UniFest.dto.response.Response;
-import UniFest.dto.response.booth.BoothResponse;
 import UniFest.dto.response.stamp.StampEnabledFestival;
-import UniFest.dto.response.stamp.StampInfoResponse;
-import UniFest.dto.response.stamp.StampRecordResponse;
+import UniFest.global.common.response.Response;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;

@@ -3,9 +3,9 @@ package UniFest.service;
 import UniFest.domain.festival.service.FestivalService;
 import UniFest.domain.festival.repository.FestivalRepository;
 import UniFest.domain.star.repository.EnrollRepository;
-import UniFest.dto.response.festival.TodayFestivalInfo;
-import UniFest.dto.response.star.EnrollInfo;
-import UniFest.dto.response.star.StarInfo;
+import UniFest.domain.festival.dto.response.TodayFestivalInfo;
+import UniFest.domain.star.dto.response.EnrollInfo;
+import UniFest.domain.star.dto.response.StarInfo;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

@@ -1,12 +1,12 @@
 package UniFest.domain.booth.entity;
 
-import UniFest.domain.audit.BaseEntity;
+import UniFest.domain.stamp.entity.StampRecord;
+import UniFest.global.common.BaseEntity;
 import UniFest.domain.festival.entity.Festival;
 import UniFest.domain.megaphone.entity.Megaphone;
 import UniFest.domain.member.entity.Member;
 import UniFest.domain.menu.entity.Menu;
 import UniFest.domain.stamp.entity.StampInfo;
-import UniFest.domain.stamp.entity.StampRecord;
 import UniFest.domain.waiting.entity.Waiting;
 import jakarta.persistence.*;
 import lombok.AccessLevel;

@@ -1,13 +1,13 @@
 package UniFest.domain.festival.service;
 
 import UniFest.domain.Device;
-import UniFest.domain.fcm.service.FcmService;
+import UniFest.global.infra.fcm.service.FcmService;
 import UniFest.domain.festival.entity.Festival;
 import UniFest.domain.festival.entity.Interest;
 import UniFest.domain.festival.repository.FestivalRepository;
 import UniFest.domain.festival.repository.InterestRepository;
-import UniFest.exception.festival.FestivalNotFoundException;
-import UniFest.exception.festival.InterestNotFoundException;
+import UniFest.domain.festival.exception.FestivalNotFoundException;
+import UniFest.domain.festival.exception.InterestNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
