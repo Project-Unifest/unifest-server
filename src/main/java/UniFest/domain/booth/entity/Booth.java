@@ -1,20 +1,22 @@
 package UniFest.domain.booth.entity;
 
-import UniFest.domain.audit.BaseEntity;
+import UniFest.global.common.BaseEntity;
 import UniFest.domain.festival.entity.Festival;
-import UniFest.domain.likes.entity.Likes;
 import UniFest.domain.megaphone.entity.Megaphone;
 import UniFest.domain.member.entity.Member;
 import UniFest.domain.menu.entity.Menu;
-import UniFest.domain.stamp.entity.Stamp;
+import UniFest.domain.stamp.entity.StampInfo;
 import UniFest.domain.waiting.entity.Waiting;
 import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.*;
 
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +26,9 @@ import java.util.Random;
 @Entity
 @Table(name = "booth")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@SQLDelete(sql = "UPDATE booth SET deleted = true," +
+        "deleted_at = NOW() WHERE booth_id = ?")
+@SQLRestriction("deleted = false")
 public class Booth extends BaseEntity {
 
     @Id
@@ -36,6 +41,7 @@ public class Booth extends BaseEntity {
     private Festival festival;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    //@OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name="member_id")
     private Member member;
 
@@ -79,8 +85,8 @@ public class Booth extends BaseEntity {
     @OneToMany(mappedBy = "booth", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Megaphone> megaphoneList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "booth", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Stamp> stampList = new ArrayList<>();
+    @OneToOne(mappedBy = "booth", fetch = FetchType.LAZY)
+    private StampInfo stampInfo;
 
     private String location;
 
@@ -95,11 +101,17 @@ public class Booth extends BaseEntity {
     //Waiting을 위한 Booth별 pin
     private String pin;
 
-    private LocalTime openTime;
-    private LocalTime closeTime;
+//    private LocalTime openTime;
+//    private LocalTime closeTime;
 
     @ColumnDefault("0")
     private boolean stampEnabled;
+
+    @Column(name = "deleted", columnDefinition = "BOOLEAN DEFAULT false")
+    private Boolean deleted = false;
+
+    @Column(name = "deleted_at")
+    private LocalDateTime deletedAt;
 
     @Builder
     public Booth(String name, BoothCategory category, String description, String detail, String thumbnail,
@@ -117,8 +129,8 @@ public class Booth extends BaseEntity {
         this.longitude = longitude;
         this.festival = festival;
         this.waitingEnabled = waitingEnabled;
-        this.openTime = openTime;
-        this.closeTime = closeTime;
+//        this.openTime = openTime;
+//        this.closeTime = closeTime;
     }
     public int getLikesCount(){
         return this.likesList.size();
@@ -182,20 +194,19 @@ public class Booth extends BaseEntity {
         return this.pin;
     }
 
-    public void setOpeningHour(LocalTime openTime, LocalTime closeTime){
-        this.openTime = openTime;
-        this.closeTime = closeTime;
+    public void addSchedule(BoothSchedule boothSchedule){
+        scheduleList.add(boothSchedule);
     }
 
     public void stampEnabled(boolean enabled){
         this.stampEnabled = enabled;
     }
 
-    public void addStampList(Stamp stamp){
-        this.stampList.add(stamp);
-    }
-
     public void updateStampEnabled(Boolean stampEnabled) {
         this.stampEnabled = stampEnabled;
+    }
+
+    public void setStampInfo(StampInfo stampInfo){
+        this.stampInfo = stampInfo;
     }
 }

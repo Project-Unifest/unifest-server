@@ -2,19 +2,19 @@ package UniFest.domain.waiting.service;
 
 import UniFest.domain.booth.entity.Booth;
 import UniFest.domain.booth.repository.BoothRepository;
+import UniFest.global.infra.fcm.service.FcmService;
 import UniFest.domain.waiting.entity.Waiting;
 import UniFest.domain.waiting.repository.WaitingRepository;
-import UniFest.dto.request.waiting.PostWaitingRequest;
-import UniFest.dto.response.waiting.WaitingInfo;
-import UniFest.exception.announcement.FcmFailException;
+import UniFest.domain.waiting.dto.request.PostWaitingRequest;
+import UniFest.domain.waiting.dto.response.WaitingInfo;
+import UniFest.global.infra.fcm.exception.FcmFailException;
 import com.google.firebase.messaging.*;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.Hibernate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -24,6 +24,7 @@ public class WaitingService {
     private final WaitingRepository waitingRepository;
     private final BoothRepository boothRepository;
 
+    private final FcmService fcmService;
     private WaitingInfo createWaitingInfo(Waiting waiting, Integer waitingOrder) {
         return new WaitingInfo(
                 waiting.getBooth().getId(),
@@ -129,8 +130,7 @@ public class WaitingService {
                     waitingRequest.getPartySize(),
                     fcmToken
             );
-            WaitingInfo ret = addWaiting(newWaiting);
-            return ret;
+            return addWaiting(newWaiting);
         }
         return null;
     }
@@ -147,7 +147,7 @@ public class WaitingService {
     @Transactional
     public WaitingInfo callWaiting(Long id) {
         WaitingInfo waitingInfo = setWaitingById(id, "CALLED");
-        String fcmToken = waitingRepository.findById(id).get().getFcmToken();
+        String fcmToken = fcmService.getFcmToken(waitingInfo.getDeviceId());
         String waitingTitle = waitingInfo.getBoothName();
         String waitingBody = "부스에 입장하실 차례에요!";
         if(fcmToken!=null){
@@ -163,7 +163,7 @@ public class WaitingService {
                     .putData("booth_name", waitingInfo.getBoothName())
                     .build();
             try{
-                FirebaseMessaging.getInstance().send(message);
+                fcmService.send(message);
             } catch (FirebaseMessagingException e) {
                 throw new FcmFailException(e.getMessage());
             }

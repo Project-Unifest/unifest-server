@@ -7,11 +7,11 @@ import UniFest.domain.member.entity.MemberRole;
 import UniFest.domain.member.repository.MemberRepository;
 import UniFest.domain.school.entity.School;
 import UniFest.domain.school.repository.SchoolRepository;
-import UniFest.dto.request.member.MemberSignUpRequest;
-import UniFest.dto.response.member.MemberDetailResponse;
-import UniFest.exception.SchoolNotFoundException;
-import UniFest.exception.member.MemberEmailExistException;
-import UniFest.exception.member.MemberNotFoundException;
+import UniFest.domain.member.dto.request.MemberSignUpRequest;
+import UniFest.domain.member.dto.response.MemberDetailResponse;
+import UniFest.domain.school.exception.SchoolNotFoundException;
+import UniFest.domain.member.exception.MemberEmailExistException;
+import UniFest.domain.member.exception.MemberNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -29,6 +29,20 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final BoothService boothService;
+
+    @Transactional
+    public void changePassword(Long memberId, String currentPassword, String newPassword) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(MemberNotFoundException::new);
+        // 현재 비밀번호가 맞는지 확인
+        if (!bCryptPasswordEncoder.matches(currentPassword, member.getPassword())) {
+            throw new RuntimeException("Current password is incorrect");
+        }
+
+        // 새 비밀번호 암호화 후 저장
+        member.updatePassword(bCryptPasswordEncoder.encode(newPassword));
+        memberRepository.save(member);
+    }
 
     @Transactional
     public Long createMember(MemberSignUpRequest request) {

@@ -1,10 +1,10 @@
 package UniFest.domain.festival.controller;
 
 import UniFest.domain.festival.service.FestivalService;
-import UniFest.dto.response.Response;
-import UniFest.dto.response.festival.FestivalSearchResponse;
-import UniFest.dto.request.festival.PostFestivalRequest;
-import UniFest.dto.response.festival.TodayFestivalInfo;
+import UniFest.global.common.response.Response;
+import UniFest.domain.festival.dto.response.FestivalSearchResponse;
+import UniFest.domain.festival.dto.request.PostFestivalRequest;
+import UniFest.domain.festival.dto.response.TodayFestivalInfo;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -78,8 +78,8 @@ public class FestivalController {
     @SecurityRequirement(name = "JWT")
     @Operation(summary = "축제 삭제")
     @DeleteMapping("/{festival-id}")
-    public Response deleteBooth(@PathVariable("festival-id") Long festivalId) {
+    public Response<Void> deleteBooth(@PathVariable("festival-id") Long festivalId) {
         festivalService.deleteFestival(festivalId);
-        return Response.ofSuccess("OK",null);
+        return Response.ofSuccess("OK");
     }
 }

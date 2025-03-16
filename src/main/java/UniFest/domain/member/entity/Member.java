@@ -1,15 +1,17 @@
 package UniFest.domain.member.entity;
 
-import UniFest.domain.audit.BaseEntity;
+import UniFest.global.common.BaseEntity;
 import UniFest.domain.booth.entity.Booth;
 import UniFest.domain.school.entity.School;
-import UniFest.domain.waiting.entity.Waiting;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,6 +19,9 @@ import java.util.List;
 @Entity
 @Table(name = "member")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@SQLDelete(sql = "UPDATE member SET deleted = true," +
+        "deleted_at = NOW() WHERE member_id = ?")
+@SQLRestriction("deleted = false")
 public class Member extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -42,6 +47,12 @@ public class Member extends BaseEntity {
     @Column(name = "member_role",nullable = false)
     private MemberRole memberRole;
 
+    @Column(name = "deleted", columnDefinition = "BOOLEAN DEFAULT false")
+    private Boolean deleted = false;
+
+    @Column(name = "deleted_at")
+    private LocalDateTime deletedAt;
+
     @Builder
     public Member(String email, String password , School school, String phoneNum, MemberRole memberRole){
         this.email = email;
@@ -55,5 +66,7 @@ public class Member extends BaseEntity {
         this.memberRole = role;
     }
 
-
+    public void updatePassword(String password) {
+        this.password = password;
+    }
 }

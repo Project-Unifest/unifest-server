@@ -1,7 +1,7 @@
 package UniFest.domain.admin;
-import UniFest.dto.response.Response;
-import UniFest.dto.response.booth.BoothDetailResponse;
-import UniFest.dto.response.booth.BoothResponse;
+import UniFest.global.common.response.Response;
+import UniFest.domain.booth.dto.response.BoothDetailResponse;
+import UniFest.domain.booth.dto.response.BoothResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
@@ -20,9 +20,9 @@ public class AdminController {
     @SecurityRequirement(name = "JWT")
     @Operation(summary = "부스 주인 변경")
     @PostMapping("/booth/{booth_id}")
-    public Response changeBoothOwner(@PathVariable("booth_id") Long boothId, @RequestParam("new") Long memberId) {
+    public Response<Void> changeBoothOwner(@PathVariable("booth_id") Long boothId, @RequestParam("new") Long memberId) {
         adminService.changeBoothOwner(boothId, memberId);
-        return Response.ofSuccess("OK", null);
+        return Response.ofSuccess("OK");
     }
 
     @SecurityRequirement(name = "JWT")
