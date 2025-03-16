@@ -24,9 +24,7 @@ public class ExceptionController {
     @ExceptionHandler(UnifestCustomException.class)
     public ResponseEntity<ErrorResponse> handleUnifestException(UnifestCustomException e) {
         log.warn("Unifest Exception {} {} {}\n", e.getHttpStatus(), e.getMessage(), e.getClass().getSimpleName());
-        //return ResponseEntity.status(e.getHttpStatus()).body(new ErrorResponse(e.getCode(),e.getMessage(),e.getData()));
-        return ResponseEntity.badRequest()
-                .body(new ErrorResponse(e.getCode(),e.getMessage(),e.getData()));
+        return ResponseEntity.badRequest().body(new ErrorResponse(e.getCode(),e.getMessage()));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -37,7 +35,7 @@ public class ExceptionController {
         int code = Integer.parseInt(errorInfo[0]);
         String message = errorInfo[1];
 
-        return ResponseEntity.badRequest().body(new ErrorResponse(code, message, null));
+        return ResponseEntity.badRequest().body(new ErrorResponse(code, message));
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
@@ -45,7 +43,7 @@ public class ExceptionController {
         log.warn("Json Exception ErrMessage={}\n", e.getMessage());
 
         return ResponseEntity.badRequest()
-                .body(new ErrorResponse(9000, "Json 형식이 올바르지 않습니다.", null));
+                .body(new ErrorResponse(9000, "Json 형식이 올바르지 않습니다."));
     }
 
     @ExceptionHandler(HttpMediaTypeException.class)
@@ -53,7 +51,7 @@ public class ExceptionController {
         log.warn("ContentType Exception ErrMessage={}\n", e.getMessage());
 
         return ResponseEntity.badRequest()
-                .body(new ErrorResponse(9001, "ContentType 값이 올바르지 않습니다.", null));
+                .body(new ErrorResponse(9001, "ContentType 값이 올바르지 않습니다."));
     }
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
@@ -61,7 +59,7 @@ public class ExceptionController {
         log.warn("Http Method not supported Exception ErrMessage={}\n", e.getMessage());
 
         return ResponseEntity.badRequest()
-                .body(new ErrorResponse(9002, "해당 Http Method에 맞는 API가 존재하지 않습니다.", null));
+                .body(new ErrorResponse(9002, "해당 Http Method에 맞는 API가 존재하지 않습니다."));
     }
 
     @ExceptionHandler(MissingServletRequestParameterException.class)
@@ -69,7 +67,7 @@ public class ExceptionController {
         log.warn("Request Param is Missing! ErrMessage={}\n", e.getMessage());
 
         return ResponseEntity.badRequest()
-                .body(new ErrorResponse(9003, "요청 param 이름이 올바르지 않습니다.", null));
+                .body(new ErrorResponse(9003, "요청 param 이름이 올바르지 않습니다."));
     }
 
     @ExceptionHandler(Exception.class)
@@ -81,6 +79,6 @@ public class ExceptionController {
         );
         return ResponseEntity.internalServerError()
                 .body(new ErrorResponse(9999,
-                        "일시적으로 접속이 원활하지 않습니다. 서비스 팀에 문의 부탁드립니다.", null));
+                        "일시적으로 접속이 원활하지 않습니다. 서비스 팀에 문의 부탁드립니다."));
     }
 }

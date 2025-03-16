@@ -20,23 +20,23 @@ public class InterestController {
 
     @Operation(summary = "관심 축제 등록")
     @PostMapping("/{festival-id}/interest")
-    public Response postInterest(@PathVariable("festival-id") Long festivalId,
+    public Response<Void> postInterest(@PathVariable("festival-id") Long festivalId,
                                  @RequestBody InterestRequest interestRequest) {
         interestService.addFestivalInterest(interestRequest.getDeviceId(), festivalId);
-        return Response.ofSuccess("관심 축제 등록에 성공했습니다.", null);
+        return Response.ofSuccess("관심 축제 등록에 성공했습니다.");
     }
 
     @Operation(summary = "관심 축제 해제")
     @DeleteMapping("/{festival-id}/interest")
-    public Response deleteInterest(@PathVariable("festival-id") Long festivalId,
+    public Response<Void> deleteInterest(@PathVariable("festival-id") Long festivalId,
                                    @RequestBody InterestRequest interestRequest) {
         interestService.deleteFestivalInterest(interestRequest.getDeviceId(), festivalId);
-        return Response.ofSuccess("관심 축제 해제에 성공했습니다.", null);
+        return Response.ofSuccess("관심 축제 해제에 성공했습니다.");
     }
 
     @Operation(summary = "관심 축제 목록 조회")
     @GetMapping("/interest")
-    public Response getInterestList(@RequestParam("deviceId") String deviceId) {
+    public Response<List<Long>> getInterestList(@RequestParam("deviceId") String deviceId) {
         List<Long> interestedFestivalIds = interestService.getInterestedFestivalIds(deviceId);
         return Response.ofSuccess("관심 축제 목록 조회 성공", interestedFestivalIds);
     }

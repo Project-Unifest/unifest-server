@@ -78,8 +78,8 @@ public class FestivalController {
     @SecurityRequirement(name = "JWT")
     @Operation(summary = "축제 삭제")
     @DeleteMapping("/{festival-id}")
-    public Response deleteBooth(@PathVariable("festival-id") Long festivalId) {
+    public Response<Void> deleteBooth(@PathVariable("festival-id") Long festivalId) {
         festivalService.deleteFestival(festivalId);
-        return Response.ofSuccess("OK",null);
+        return Response.ofSuccess("OK");
     }
 }
