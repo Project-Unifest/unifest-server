@@ -7,6 +7,7 @@ import UniFest.domain.megaphone.entity.Megaphone;
 import UniFest.domain.member.entity.Member;
 import UniFest.domain.menu.entity.Menu;
 import UniFest.domain.stamp.entity.StampInfo;
+import UniFest.domain.stamp.entity.StampRecord;
 import UniFest.domain.waiting.entity.Waiting;
 import jakarta.persistence.*;
 import lombok.AccessLevel;

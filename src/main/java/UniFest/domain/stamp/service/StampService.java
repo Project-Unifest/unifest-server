@@ -13,7 +13,6 @@ import UniFest.domain.stamp.entity.StampRecord;
 import UniFest.domain.stamp.exception.*;
 import UniFest.domain.stamp.repository.StampRecordRepository;
 import UniFest.domain.stamp.repository.StampInfoRepository;
-import UniFest.dto.response.stamp.StampEnabledFestival;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
