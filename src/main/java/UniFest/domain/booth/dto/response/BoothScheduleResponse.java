@@ -2,6 +2,8 @@ package UniFest.domain.booth.dto.response;
 
 import UniFest.domain.booth.entity.BoothSchedule;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,8 +17,12 @@ public class BoothScheduleResponse {
     Long id;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
     LocalDate date;
+
+    @Schema(example = "HH:mm:ss")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss", timezone = "Asia/Seoul")
     LocalTime openTime;
+
+    @Schema(example = "HH:mm:ss")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss", timezone = "Asia/Seoul")
     LocalTime closeTime;
 
