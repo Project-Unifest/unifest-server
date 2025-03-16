@@ -22,20 +22,24 @@ public class StampInfo extends BaseEntity {
     @Column(name="stamp_info_id")
     private Long id;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "festival_id")
     private Festival festival;
 
-//    @OneToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "booth_id")
-//    private Booth booth;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "booth_id")
+    private Booth booth;
+
+    @OneToMany(mappedBy = "stampInfo", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<StampRecord> stampRecordList = new ArrayList<>();
 
     private String defaultImgUrl;
 
     private String usedImgUrl;
 
-    public StampInfo(Festival festival, String defaultImgUrl, String usedImgUrl) {
+    public StampInfo(Festival festival, Booth booth, String defaultImgUrl, String usedImgUrl) {
         this.festival = festival;
+        this.booth = booth;
         this.defaultImgUrl = defaultImgUrl;
         this.usedImgUrl = usedImgUrl;
     }

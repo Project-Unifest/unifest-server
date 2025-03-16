@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface StampInfoRepository extends JpaRepository<StampInfo, Long> {
 
-//    List<StampInfo> findByBooth(Booth booth);
+    List<StampInfo> findByBooth(Booth booth);
 
-    StampInfo findByFestival(Festival festival);
+    List<StampInfo> findByFestival(Festival festival);
 }
