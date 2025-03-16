@@ -31,6 +31,20 @@ public class MemberService {
     private final BoothService boothService;
 
     @Transactional
+    public void changePassword(Long memberId, String currentPassword, String newPassword) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(MemberNotFoundException::new);
+        // 현재 비밀번호가 맞는지 확인
+        if (!bCryptPasswordEncoder.matches(currentPassword, member.getPassword())) {
+            throw new RuntimeException("Current password is incorrect");
+        }
+
+        // 새 비밀번호 암호화 후 저장
+        member.updatePassword(bCryptPasswordEncoder.encode(newPassword));
+        memberRepository.save(member);
+    }
+
+    @Transactional
     public Long createMember(MemberSignUpRequest request) {
         verifyExistsEmail(request.getEmail());
         String encryptedPassword = bCryptPasswordEncoder.encode(request.getPassword());

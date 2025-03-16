@@ -1,5 +1,6 @@
 package UniFest.domain.member.controller;
 
+import UniFest.domain.member.dto.request.PasswordChangeRequest;
 import UniFest.domain.member.entity.MemberRole;
 import UniFest.domain.member.service.MemberService;
 import UniFest.domain.member.dto.request.MemberSignUpRequest;
@@ -58,6 +59,15 @@ public class MemberController {
     }
 
     @SecurityRequirement(name = "JWT")
+    @Operation(summary = "본인 비밀번호 수정")
+    @PatchMapping("my/password")
+    public Response<Void> changePassword(@AuthenticationPrincipal MemberDetails memberDetails,
+                                                         @RequestBody PasswordChangeRequest request){
+        memberService.changePassword(memberDetails.getMemberId(), request.getCurrentPassword(), request.getNewPassword());
+        return Response.ofSuccess("OK");
+    }
+
+    @SecurityRequirement(name = "JWT")
     @Operation(summary = "member id로 회원 정보 조회")
     @GetMapping("{member-id}")
     public Response<MemberDetailResponse> getMember(@PathVariable(value = "member-id") Long memberId) {
@@ -73,11 +83,11 @@ public class MemberController {
         return Response.ofSuccess("deleted", memberIdToWithDraw);
     }
 
-/*    @SecurityRequirement(name = "JWT")
+    @SecurityRequirement(name = "JWT")
     @Operation(summary = "회원 탈퇴")
     @DeleteMapping("my")
     public Response<Long> withDrawMe(@AuthenticationPrincipal MemberDetails memberDetails) {
         memberService.withDrawMember(memberDetails.getMemberId());
         return Response.ofSuccess("deleted", memberDetails.getMemberId());
-    }*/
+    }
 }
