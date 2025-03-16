@@ -2,8 +2,8 @@ package UniFest.domain.school.controller;
 
 import UniFest.domain.school.entity.School;
 import UniFest.domain.school.repository.SchoolRepository;
-import UniFest.dto.request.school.PostSchoolRequest;
-import UniFest.dto.response.Response;
+import UniFest.domain.school.dto.request.PostSchoolRequest;
+import UniFest.global.common.response.Response;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;

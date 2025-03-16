@@ -16,6 +16,8 @@ spring:
       max-file-size: 3MB
 
   jpa:
+    hibernate:
+      ddl-auto: update
     properties:
       hibernate:
         show_sql: true
@@ -39,7 +41,7 @@ cloud:
       accessKey: ${S3_ACCESS}
       secretKey: ${S3_SECRET}
     s3:
-      bucket: unifest-prod-bucket
+      bucket: ${UNIFEST_BUCKET}
     region:
       static: ap-northeast-2
     stack:
