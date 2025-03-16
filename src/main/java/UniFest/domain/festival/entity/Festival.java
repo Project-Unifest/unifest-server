@@ -42,19 +42,12 @@ public class Festival extends BaseEntity {
 
     private LocalDate endDate;
 
-//    @OneToMany(mappedBy = "festival")
-//    private List<StampInfo> stampInfoList = new ArrayList<>();
-
-    @OneToOne(mappedBy = "festival", fetch = FetchType.LAZY)
-    private StampInfo stampInfo;
+    @OneToMany(mappedBy = "festival")
+    private List<StampInfo> stampInfoList = new ArrayList<>();
 
     public void setSchool(School school){
         this.school = school;
         school.getFestivalList().add(this);
-    }
-
-    public void setStampInfo(StampInfo stampInfo){
-        this.stampInfo = stampInfo;
     }
 
     public Festival(String name, String description, String thumbnail, School school,

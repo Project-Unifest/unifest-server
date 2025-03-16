@@ -9,9 +9,9 @@ import java.util.List;
 import java.util.Optional;
 
 public interface StampRecordRepository extends JpaRepository<StampRecord, Long> {
-//    List<StampRecord> findByStampInfo(StampInfo stampInfo);
+    List<StampRecord> findByStampInfo(StampInfo stampInfo);
 
     List<StampRecord> findByDeviceId(String deviceID);
 
-    Optional<StampRecord> findByDeviceIdAndBooth(String deviceId, Booth booth);
+    Optional<StampRecord> findByDeviceIdAndStampInfo(String deviceId, StampInfo stampInfo);
 }
