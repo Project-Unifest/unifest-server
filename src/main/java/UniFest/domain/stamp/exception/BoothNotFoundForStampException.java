@@ -4,8 +4,7 @@ import UniFest.global.common.exception.UnifestCustomException;
 import org.springframework.http.HttpStatus;
 
 public class BoothNotFoundForStampException extends UnifestCustomException {
-
     public BoothNotFoundForStampException() {
-        super(HttpStatus.BAD_REQUEST, "존재하지 않는 부스 입니다.", 9003);
+        super(HttpStatus.BAD_REQUEST, "찾을 수 없는 Booth 입니다.", 9005);
     }
 }

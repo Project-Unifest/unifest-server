@@ -10,13 +10,13 @@ public class StampRecordResponse {
 
     private Long stampRecordId;
 
-    private Long stampInfoId;
+    private Long boothId;
 
     private String deviceId;
 
     public StampRecordResponse(StampRecord stampRecord) {
-        this.stampRecordId = getStampRecordId();
-        this.stampInfoId = stampRecord.getStampInfo().getId();
-        this.deviceId = getDeviceId();
+        this.stampRecordId = stampRecord.getId();
+        this.boothId = stampRecord.getBooth().getId();
+        this.deviceId = stampRecord.getDeviceId();
     }
 }
