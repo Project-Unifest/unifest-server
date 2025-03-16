@@ -24,7 +24,7 @@ public class MemberController {
 
     @Operation(summary = "회원가입")
     @PostMapping
-    public Response postMember(@Valid @RequestBody MemberSignUpRequest memberSignUpRequest) {
+    public Response<Long> postMember(@Valid @RequestBody MemberSignUpRequest memberSignUpRequest) {
         Long savedId = memberService.createMember(memberSignUpRequest);
         return Response.ofSuccess("OK", savedId);
     }
@@ -32,7 +32,7 @@ public class MemberController {
     @SecurityRequirement(name = "JWT")
     @Operation(summary = "회원역할 변경")
     @PatchMapping("{member-id}")
-    public Response patchMemberRole(@PathVariable("member-id") Long memberId,
+    public Response<Long> patchMemberRole(@PathVariable("member-id") Long memberId,
                                     @RequestParam("role")MemberRole memberRole) {
         Long updatedId = memberService.updateMemberRole(memberId,memberRole);
         return Response.ofSuccess("OK",updatedId);
@@ -52,7 +52,7 @@ public class MemberController {
     @SecurityRequirement(name = "JWT")
     @Operation(summary = "본인 정보 조회")
     @GetMapping("my")
-    public Response getMyMember(@AuthenticationPrincipal MemberDetails memberDetails){
+    public Response<MemberDetailResponse> getMyMember(@AuthenticationPrincipal MemberDetails memberDetails){
         MemberDetailResponse response = memberService.getMember(memberDetails.getMemberId());
         return Response.ofSuccess("OK", response);
     }
@@ -60,7 +60,7 @@ public class MemberController {
     @SecurityRequirement(name = "JWT")
     @Operation(summary = "member id로 회원 정보 조회")
     @GetMapping("{member-id}")
-    public Response getMember(@PathVariable(value = "member-id") Long memberId) {
+    public Response<MemberDetailResponse> getMember(@PathVariable(value = "member-id") Long memberId) {
         MemberDetailResponse response = memberService.getMember(memberId);
         return Response.ofSuccess("OK", response);
     }

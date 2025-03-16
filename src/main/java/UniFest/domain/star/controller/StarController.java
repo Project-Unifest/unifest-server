@@ -55,7 +55,7 @@ public class StarController {
     public Response<Void> deleteStar(@PathVariable Long starId){
         log.debug("[StarController.deleteStar] starId={}", starId);
         starRepository.deleteById(starId);
-        return Response.ofSuccess("Star Deleted", null);
+        return Response.ofSuccess("Star Deleted");
     }
 
     @GetMapping("/search/{name}")

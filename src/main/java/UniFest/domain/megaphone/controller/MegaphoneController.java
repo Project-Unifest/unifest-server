@@ -17,7 +17,7 @@ public class MegaphoneController {
 
     @Operation(summary = "확성기 공지 메세지 등록")
     @PostMapping
-    public Response postAnnouncement(@RequestBody AddMegaphoneRequest addMegaphoneRequest) {
+    public Response<Long> postAnnouncement(@RequestBody AddMegaphoneRequest addMegaphoneRequest) {
         Long announcementId = announcementService.addMegaphone(addMegaphoneRequest);
         return Response.ofCreated("확성기 공지 메세지 등록에 성공했습니다", announcementId);
     }
