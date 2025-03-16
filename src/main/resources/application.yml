@@ -33,6 +33,7 @@ springdoc:
     display-request-duration: true
     operations-sorter: alpha
     tags-sorter: alpha
+  show-login-endpoint: true
 
 # S3
 cloud:
