@@ -7,6 +7,6 @@ public class TokenNotValidateException extends UnifestCustomException {
 
     public TokenNotValidateException()
     {
-        super(HttpStatus.NOT_ACCEPTABLE, "유효하지 않은 토큰입니다.", 2001);
+        super(HttpStatus.UNAUTHORIZED, "유효하지 않은 토큰입니다.", 2001);
     }
 }

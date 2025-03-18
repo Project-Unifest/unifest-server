@@ -14,5 +14,4 @@ public class UnifestCustomException extends RuntimeException {
         this.message = message;
         this.code = code;
     }
-
 }
