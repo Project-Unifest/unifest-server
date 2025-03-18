@@ -30,7 +30,7 @@ public class JwtExceptionFilter extends OncePerRequestFilter {
 
     public void sendErrorResponse(HttpServletResponse response, UnifestCustomException exception) throws IOException {
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        response.setStatus(HttpStatus.FORBIDDEN.value());
+        response.setStatus(exception.getHttpStatus().value());
 
         Map<String, Object> body = new HashMap<>();
         body.put("code", exception.getCode());
