@@ -11,8 +11,6 @@ public class StampInfoResponse {
 
     private Long festivalId;
 
-    private Long boothId;
-
     private String defaultImgUrl;
 
     private String usedImgUrl;
@@ -21,7 +19,6 @@ public class StampInfoResponse {
     public StampInfoResponse(StampInfo stampInfo) {
         this.stampInfoId = stampInfo.getId();
         this.festivalId = stampInfo.getFestival().getId();
-        this.boothId = stampInfo.getBooth().getId();
         this.defaultImgUrl = stampInfo.getDefaultImgUrl();
         this.usedImgUrl = stampInfo.getUsedImgUrl();
     }

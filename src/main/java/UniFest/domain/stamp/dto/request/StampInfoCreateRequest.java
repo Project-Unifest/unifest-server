@@ -9,9 +9,6 @@ import lombok.Getter;
 public class StampInfoCreateRequest {
 
     @NotNull
-    private Long boothId;
-
-    @NotNull
     private Long festivalId;
 
     @NotNull
