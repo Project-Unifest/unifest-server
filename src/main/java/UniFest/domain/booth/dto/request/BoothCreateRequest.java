@@ -36,5 +36,5 @@ public class BoothCreateRequest {
     @NotNull(message = "공백일 수 없습니다.")
     private double longitude;
 
-    private List<BoothScheduleCreateRequest> boothSchedules;
+    private List<BoothScheduleCreateRequest> scheduleList;
 }

@@ -6,6 +6,7 @@ import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalTime;
+import java.util.List;
 
 
 @Data
@@ -30,11 +31,12 @@ public class BoothResponse {
 
     private boolean waitingEnabled;
 
-    @DateTimeFormat(pattern = "HH:mm:ss")
-    private LocalTime openTime;
-
-    @DateTimeFormat(pattern = "HH:mm:ss")
-    private LocalTime closeTime;
+//    @DateTimeFormat(pattern = "HH:mm:ss")
+//    private LocalTime openTime;
+//
+//    @DateTimeFormat(pattern = "HH:mm:ss")
+//    private LocalTime closeTime;
+    private List<BoothScheduleResponse> scheduleList;
 
     private boolean stampEnabled;
 
@@ -50,5 +52,9 @@ public class BoothResponse {
         this.enabled = booth.isEnabled();
         this.waitingEnabled = booth.isWaitingEnabled();
         this.stampEnabled = booth.isStampEnabled();
+        this.scheduleList = booth.getScheduleList()
+                .stream()
+                .map(BoothScheduleResponse::new)
+                .toList();
     }
 }

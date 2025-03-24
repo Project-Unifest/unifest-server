@@ -69,7 +69,7 @@ public class BoothService {
                 .build();
         booth.setMember(member);
         //영업 시간
-        for(BoothScheduleCreateRequest time : boothCreateRequest.getBoothSchedules()){
+        for(BoothScheduleCreateRequest time : boothCreateRequest.getScheduleList()){
             BoothSchedule newSchedule = new BoothSchedule(time.getDate(), time.getOpenTime(), time.getCloseTime());
             newSchedule.setBooth(booth);
             booth.addSchedule(newSchedule);
