@@ -1,5 +1,6 @@
 package UniFest.domain.festival.entity;
 
+import UniFest.domain.stamp.entity.StampRecord;
 import UniFest.global.common.BaseEntity;
 import UniFest.domain.school.entity.School;
 import UniFest.domain.stamp.entity.StampInfo;
@@ -42,8 +43,8 @@ public class Festival extends BaseEntity {
 
     private LocalDate endDate;
 
-//    @OneToMany(mappedBy = "festival")
-//    private List<StampInfo> stampInfoList = new ArrayList<>();
+    @OneToMany(mappedBy = "festival")
+    private List<StampRecord> stampRecordList = new ArrayList<>();
 
     @OneToOne(mappedBy = "festival", fetch = FetchType.LAZY)
     private StampInfo stampInfo;

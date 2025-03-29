@@ -1,6 +1,7 @@
 package UniFest.domain.stamp.entity;
 
 import UniFest.domain.booth.entity.Booth;
+import UniFest.domain.festival.entity.Festival;
 import UniFest.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -21,6 +22,10 @@ public class StampRecord extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "booth_id")
     private Booth booth;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "festival_id")
+    private Festival festival;
 
     private String deviceId;
 
