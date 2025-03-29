@@ -1,9 +1,9 @@
-package UniFest.global.infra.security.jwt.exceptoin;
+package UniFest.global.infra.security.jwt.exception;
 
 import UniFest.global.common.exception.UnifestCustomException;
 import org.springframework.http.HttpStatus;
 
-public class TokenSignatureException extends UnifestCustomException {
+public class TokenSignatureException extends FilterException {
     public TokenSignatureException()
     {
         super(HttpStatus.UNAUTHORIZED, "JWT 시그니처 정보가 잘못되었습니다.", 2002);

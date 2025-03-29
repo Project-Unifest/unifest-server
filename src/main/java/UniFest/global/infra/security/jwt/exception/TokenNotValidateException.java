@@ -1,9 +1,9 @@
-package UniFest.global.infra.security.jwt.exceptoin;
+package UniFest.global.infra.security.jwt.exception;
 
 import UniFest.global.common.exception.UnifestCustomException;
 import org.springframework.http.HttpStatus;
 
-public class TokenNotValidateException extends UnifestCustomException {
+public class TokenNotValidateException extends FilterException {
 
     public TokenNotValidateException()
     {
