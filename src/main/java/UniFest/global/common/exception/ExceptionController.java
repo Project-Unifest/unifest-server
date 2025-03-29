@@ -24,7 +24,7 @@ public class ExceptionController {
     @ExceptionHandler(UnifestCustomException.class)
     public ResponseEntity<ErrorResponse> handleUnifestException(UnifestCustomException e) {
         log.warn("Unifest Exception {} {} {}\n", e.getHttpStatus(), e.getMessage(), e.getClass().getSimpleName());
-        return ResponseEntity.badRequest().body(new ErrorResponse(e.getCode(),e.getMessage()));
+        return ResponseEntity.status(e.getHttpStatus()).body(new ErrorResponse(e.getCode(),e.getMessage()));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
