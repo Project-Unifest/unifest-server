@@ -1,6 +1,7 @@
 package UniFest.domain.festival.service;
 
 import UniFest.domain.Device;
+import UniFest.domain.festival.exception.InterestAlreadyExistsException;
 import UniFest.global.infra.fcm.service.FcmService;
 import UniFest.domain.festival.entity.Festival;
 import UniFest.domain.festival.entity.Interest;
@@ -10,6 +11,7 @@ import UniFest.domain.festival.exception.FestivalNotFoundException;
 import UniFest.domain.festival.exception.InterestNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -20,11 +22,12 @@ public class InterestService {
     private final InterestRepository interestRepository;
     private final FcmService fcmService;
 
+    @Transactional
     public void addFestivalInterest(String deviceId, Long festivalId) {
         Festival festival = festivalRepository.findById(festivalId)
                 .orElseThrow(FestivalNotFoundException::new);
         if (interestRepository.existsByDeviceIdAndFestivalId(deviceId, festivalId)) {
-            return;
+            throw new InterestAlreadyExistsException();
         }
         fcmService.subscribe(deviceId, String.valueOf(festivalId));
         interestRepository.save(new Interest(festival, Device.of(deviceId)));

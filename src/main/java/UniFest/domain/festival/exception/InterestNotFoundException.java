@@ -6,6 +6,6 @@ import org.springframework.http.HttpStatus;
 public class InterestNotFoundException extends UnifestCustomException {
 
     public InterestNotFoundException() {
-        super(HttpStatus.NOT_FOUND, "관심 등록한 적이 없습니다.", 4001);
+        super(HttpStatus.NOT_FOUND, "관심 등록한 적이 없습니다.", 4003);
     }
 }
