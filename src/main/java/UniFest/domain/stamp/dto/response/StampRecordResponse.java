@@ -12,6 +12,8 @@ public class StampRecordResponse {
 
     private Long boothId;
 
+    private Long festivalId;
+
     private String deviceId;
 
     public StampRecordResponse(StampRecord stampRecord) {

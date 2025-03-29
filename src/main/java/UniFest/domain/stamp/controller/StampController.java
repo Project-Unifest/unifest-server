@@ -27,14 +27,14 @@ public class StampController {
     @Operation(summary = "Stamp 추가")
     @PostMapping()
     public Response<Long> addStamp(@RequestBody StampRequest stampRequest){
-        Long stampRecordId = stampService.addStamp(stampRequest.getBoothId(), stampRequest.getDeviceId());
+        Long stampRecordId = stampService.addStamp(stampRequest);
         return Response.ofSuccess("OK", stampRecordId);
     }
 
     @Operation(summary = "Stamp 조회 (deviceId별)")
     @GetMapping()
-    public Response<List<StampRecordResponse>> getStamp(@RequestParam String deviceId){
-        return Response.ofSuccess("OK", stampService.getStamp(deviceId));
+    public Response<List<StampRecordResponse>> getStamp(@RequestParam String deviceId, @RequestParam Long festivalId){
+        return Response.ofSuccess("OK", stampService.getStamp(deviceId, festivalId));
     }
 
 //    @Operation(summary = "Stamp 기능이 있는 부스 조회 (festivalId별)")
@@ -51,7 +51,7 @@ public class StampController {
         return Response.ofSuccess("OK", stampBoothList);
     }
 
-    @Operation(summary = "Stamp 기능이 있는 페스티벌 조회 (드롭다운용)")
+    @Operation(summary = "Stamp 기능이 있는 festival 조회 (드롭다운용)")
     @GetMapping("/festivals")
     public Response<List<StampEnabledFestivalResponse>> getStampFestivals(){
 //        List<BoothResponse> boothList = boothService.getStampEnabledBooths(festivalId);

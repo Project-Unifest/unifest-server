@@ -13,4 +13,7 @@ public class StampRequest {
 
     @NotNull
     private Long boothId;
+
+    @NotNull
+    private Long festivalId;
 }
