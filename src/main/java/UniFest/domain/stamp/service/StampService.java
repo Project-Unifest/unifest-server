@@ -98,9 +98,12 @@ public class StampService {
 
     public List<StampEnabledFestivalResponse> getStampEnabledFestival() {
         List<Festival> festivalList = festivalRepository.findAll();
-        List<Festival> filteredFestival = festivalList.stream().filter(f -> f.getStampInfo() != null)
+        List<Festival> filteredFestival = festivalList.stream()
+                .filter(f -> f.getStampInfo() != null)
                 .toList();
+
         List<StampEnabledFestivalResponse> dtoFestivalList = filteredFestival.stream()
+                .map(Festival::getStampInfo)
                 .map(StampEnabledFestivalResponse::new)
                 .toList();
 
