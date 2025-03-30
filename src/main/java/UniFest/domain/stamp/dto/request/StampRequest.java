@@ -10,14 +10,14 @@ import lombok.NoArgsConstructor;
 public class StampRequest {
 
     @NotNull
-    @Schema(name = "stamp를 찍을 deviceId", nullable = false)
+    @Schema(description = "stamp를 찍을 deviceId", nullable = false)
     private String deviceId;
 
     @NotNull
-    @Schema(name = "stamp를 찍을 BoothId", nullable = false)
+    @Schema(description = "stamp를 찍을 BoothId", nullable = false)
     private Long boothId;
 
     @NotNull
-    @Schema(name = "stamp를 찍을 FestivalId", nullable = false)
+    @Schema(description = "stamp를 찍을 FestivalId", nullable = false)
     private Long festivalId;
 }
