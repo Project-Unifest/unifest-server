@@ -13,13 +13,16 @@ public class BoothScheduleCreateRequest {
 
     @NotNull
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
+    @Schema(description = "날짜", nullable = false, example = "YYYY-MM-DD")
     LocalDate date;
+
     @NotNull
-    @Schema(example = "HH:mm:ss")
+    @Schema(description = "개점 시간",example = "HH:mm:ss")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss", timezone = "Asia/Seoul")
     LocalTime openTime;
+
     @NotNull
-    @Schema(example = "HH:mm:ss")
+    @Schema(description = "폐점 시간",example = "HH:mm:ss")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss", timezone = "Asia/Seoul")
     LocalTime closeTime;
 }
