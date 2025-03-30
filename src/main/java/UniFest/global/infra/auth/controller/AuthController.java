@@ -40,7 +40,11 @@ public class AuthController {
     }
 
     @Operation(summary = "액세스토큰 재발급")
-    @GetMapping("/reissue")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = TokenResponse.class))),
+            @ApiResponse(responseCode = "401", description = "만료된 리프레시 토큰입니다. (RefreshTokenExpiredException) [에러 코드: 2003]")
+    })
+    @PostMapping("/reissue")
     public ResponseEntity<Void> reissue(@RequestHeader(value = "RefreshToken") String refreshToken) {
         return ResponseEntity.ok()
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + authService.reissue(refreshToken))
