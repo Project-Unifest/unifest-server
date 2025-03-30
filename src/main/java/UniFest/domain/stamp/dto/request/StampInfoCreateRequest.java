@@ -10,14 +10,14 @@ import lombok.Getter;
 public class StampInfoCreateRequest {
 
     @NotNull
-    @Schema(name = "페스티벌 ID", nullable = false)
+    @Schema(description = "페스티벌 ID", nullable = false)
     private Long festivalId;
 
     @NotNull
-    @Schema(name = "stamp를 찍기 전 이미지", nullable = false)
+    @Schema(description = "stamp를 찍기 전 이미지", nullable = false)
     private String defaultImgUrl;
 
     @NotNull
-    @Schema(name = "stamp를 찍은 후 이미지", nullable = false)
+    @Schema(description = "stamp를 찍은 후 이미지", nullable = false)
     private String usedImgUrl;
 }

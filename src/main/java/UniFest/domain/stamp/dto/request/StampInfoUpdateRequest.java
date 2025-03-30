@@ -8,12 +8,12 @@ import lombok.Data;
 public class StampInfoUpdateRequest {
 
     @NotNull
-    @Schema(name = "수정할 stmampInfo Id", nullable = false)
+    @Schema(description = "수정할 stmampInfo Id", nullable = false)
     private Long stampInfoId;
 
-    @Schema(name = "수정할 stamp를 찍기 전 이미지", nullable = true)
+    @Schema(description = "수정할 stamp를 찍기 전 이미지", nullable = true)
     private String defaultImgUrl;
 
-    @Schema(name = "수정할 stamp를 찍은 후 이미지", nullable = true)
+    @Schema(description = "수정할 stamp를 찍은 후 이미지", nullable = true)
     private String usedImgUrl;
 }

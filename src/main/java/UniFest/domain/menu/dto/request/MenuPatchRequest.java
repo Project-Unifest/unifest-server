@@ -13,14 +13,14 @@ public class MenuPatchRequest {
 
     @NotBlank(message = "메뉴 이름을 입력해주세요.")
     @Length(max=20)
-    @Schema(name = "메뉴 이름", nullable = false)
+    @Schema(description = "메뉴 이름", nullable = false, maximum = "20")
     private String name;
 
     @NotNull(message = "메뉴 가격을 입력해주세요.")
-    @Schema(name = "메뉴 가격", nullable = false)
+    @Schema(description = "메뉴 가격", nullable = false)
     private int price;
 
-    @Schema(name = "메뉴 사진", nullable = true)
+    @Schema(description = "메뉴 사진", nullable = true)
     private String imgUrl;
 
     @Schema(description = "메뉴 재고 상태", example = "충분함 : ENOUGH(기본값), 50개 이하 : UNDER_50, 10개 이하 : UNDER_10, 품절 : SOLD_OUT", nullable = true)

@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @Getter
 public class StampEnabledRequest{
     @NotNull
-    @Schema(name = "허용 여부", nullable = false)
+    @Schema(description = "허용 여부", nullable = false)
     private Boolean stampEnabled;
 }
