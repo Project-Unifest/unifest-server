@@ -6,6 +6,6 @@ import org.springframework.http.HttpStatus;
 public class RefreshTokenExpiredException extends UnifestCustomException {
     public RefreshTokenExpiredException()
     {
-        super(HttpStatus.FORBIDDEN, "만료된 리프레시 토큰입니다", 2003);
+        super(HttpStatus.UNAUTHORIZED, "만료된 리프레시 토큰입니다", 2003);
     }
 }
