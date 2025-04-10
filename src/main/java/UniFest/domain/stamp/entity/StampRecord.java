@@ -29,8 +29,9 @@ public class StampRecord extends BaseEntity {
 
     private String deviceId;
 
-    public StampRecord(Booth booth, String deviceId) {
+    public StampRecord(Booth booth, String deviceId, Festival festival) {
         this.booth = booth;
         this.deviceId = deviceId;
+        this.festival = festival;
     }
 }
