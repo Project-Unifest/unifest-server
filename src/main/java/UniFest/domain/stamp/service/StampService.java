@@ -57,7 +57,7 @@ public class StampService {
         if (isMaxStamp(deviceId, findFestival)){
             throw new StampLimitException();
         }
-        stampRecord = new StampRecord(booth, deviceId);
+        stampRecord = new StampRecord(booth, deviceId, findFestival);
         stampRecordRepository.save(stampRecord);
 
         return stampRecord.getId();
