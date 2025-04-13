@@ -5,7 +5,6 @@ import UniFest.domain.festival.dto.request.InterestRequest;
 import UniFest.global.common.response.ErrorResponse;
 import UniFest.global.common.response.Response;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.media.Content;

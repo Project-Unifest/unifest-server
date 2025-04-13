@@ -1,6 +1,7 @@
 package UniFest.global.infra.fcm.service;
 
 import UniFest.domain.Device;
+import UniFest.global.infra.fcm.exception.FcmTokenNotFoundException;
 import UniFest.global.infra.fcm.repository.FcmRepository;
 import UniFest.global.infra.fcm.dto.request.PostFcmRequest;
 import UniFest.global.infra.fcm.exception.FcmFailException;
@@ -29,7 +30,11 @@ public class FcmService {
 
     public String getFcmToken(String deviceId) {
         Device device = Device.of(deviceId);
-        return fcmRepository.getFcmToken(device.getDeviceId());
+        String token = fcmRepository.getFcmToken(device.getDeviceId());
+        if (token == null) {
+            throw new FcmTokenNotFoundException();
+        }
+        return token;
     }
 
     public void send(Message message) throws FirebaseMessagingException {
