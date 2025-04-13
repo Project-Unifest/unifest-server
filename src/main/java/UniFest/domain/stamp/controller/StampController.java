@@ -53,7 +53,7 @@ public class StampController {
 
     @Operation(summary = "Stamp 기능이 있는 festival 조회 (드롭다운용)")
     @GetMapping("/festivals")
-    public Response<List<StampEnabledFestivalResponse>> getStampFestivals(){
+    public Response<List<StampEnabledFestivalResponse>> getStampFestivals(){    //나중에 Response로 교체하기 TODO
 //        List<BoothResponse> boothList = boothService.getStampEnabledBooths(festivalId);
         List<StampEnabledFestivalResponse> stampEnabledFestivalResponse = stampService.getStampEnabledFestival();
         return Response.ofSuccess("OK", stampEnabledFestivalResponse);
