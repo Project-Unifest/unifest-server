@@ -69,10 +69,12 @@ public class BoothService {
                 .build();
         booth.setMember(member);
         //영업 시간
-        for(BoothScheduleCreateRequest time : boothCreateRequest.getBoothSchedules()){
-            BoothSchedule newSchedule = new BoothSchedule(time.getDate(), time.getOpenTime(), time.getCloseTime());
-            newSchedule.setBooth(booth);
-            booth.addSchedule(newSchedule);
+        if(boothCreateRequest.getScheduleList() != null) {
+            for (BoothScheduleCreateRequest time : boothCreateRequest.getScheduleList()) {
+                BoothSchedule newSchedule = new BoothSchedule(time.getDate(), time.getOpenTime(), time.getCloseTime());
+                newSchedule.setBooth(booth);
+                booth.addSchedule(newSchedule);
+            }
         }
 
 //        LocalTime openTime = boothCreateRequest.getOpenTime();
@@ -95,15 +97,17 @@ public class BoothService {
         //핀 생성
         booth.createPin();
         //부스 메뉴
-        for(MenuCreateRequest menuCreateRequest : boothCreateRequest.getMenus()){
-            Menu menu = Menu.builder()
-                    .name(menuCreateRequest.getName())
-                    .price(menuCreateRequest.getPrice())
-                    .imgUrl(menuCreateRequest.getImgUrl())
-                    .menuStatus(menuCreateRequest.getMenuStatus())
-                    .build();
-            menu.setBooth(booth);
-            menuRepository.save(menu).getId();
+        if(boothCreateRequest.getMenus() != null) {
+            for (MenuCreateRequest menuCreateRequest : boothCreateRequest.getMenus()) {
+                Menu menu = Menu.builder()
+                        .name(menuCreateRequest.getName())
+                        .price(menuCreateRequest.getPrice())
+                        .imgUrl(menuCreateRequest.getImgUrl())
+                        .menuStatus(menuCreateRequest.getMenuStatus())
+                        .build();
+                menu.setBooth(booth);
+                menuRepository.save(menu).getId();
+            }
         }
 
         return boothRepository.save(booth).getId();

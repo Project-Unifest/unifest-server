@@ -12,11 +12,14 @@ public class StampRecordResponse {
 
     private Long boothId;
 
+    private Long festivalId;
+
     private String deviceId;
 
     public StampRecordResponse(StampRecord stampRecord) {
         this.stampRecordId = stampRecord.getId();
         this.boothId = stampRecord.getBooth().getId();
         this.deviceId = stampRecord.getDeviceId();
+        this.festivalId = stampRecord.getFestival().getId();
     }
 }

@@ -2,7 +2,7 @@ package UniFest.global.infra.auth.service;
 
 import UniFest.domain.member.entity.Member;
 import UniFest.domain.member.repository.MemberRepository;
-import UniFest.global.infra.security.jwt.exceptoin.RefreshTokenExpiredException;
+import UniFest.global.infra.security.jwt.exception.RefreshTokenExpiredException;
 import UniFest.domain.member.exception.MemberNotFoundException;
 import UniFest.global.infra.security.jwt.JwtTokenizer;
 import UniFest.global.infra.redis.RedisRepository;

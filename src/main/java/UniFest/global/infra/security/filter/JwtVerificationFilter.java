@@ -1,8 +1,8 @@
 package UniFest.global.infra.security.filter;
 
-import UniFest.global.infra.security.jwt.exceptoin.AccessTokenExpiredException;
-import UniFest.global.infra.security.jwt.exceptoin.TokenNotValidateException;
-import UniFest.global.infra.security.jwt.exceptoin.TokenSignatureException;
+import UniFest.global.infra.security.jwt.exception.AccessTokenExpiredException;
+import UniFest.global.infra.security.jwt.exception.TokenNotValidateException;
+import UniFest.global.infra.security.jwt.exception.TokenSignatureException;
 import UniFest.global.infra.security.jwt.JwtTokenizer;
 import UniFest.global.infra.security.userdetails.MemberDetails;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -26,7 +26,6 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
     private final JwtTokenizer jwtTokenizer;
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-
         try {
             //Bearer부분 제거 후 순수토큰 값
             String accessToken = request.getHeader(HttpHeaders.AUTHORIZATION).replace("Bearer ", "");

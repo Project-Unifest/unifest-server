@@ -5,6 +5,7 @@ import UniFest.domain.booth.entity.Booth;
 import UniFest.domain.booth.repository.BoothRepository;
 import UniFest.domain.festival.entity.Festival;
 import UniFest.domain.festival.repository.FestivalRepository;
+import UniFest.domain.stamp.dto.request.StampRequest;
 import UniFest.domain.stamp.dto.response.StampEnabledFestivalResponse;
 import UniFest.domain.stamp.entity.StampInfo;
 import UniFest.domain.stamp.entity.StampRecord;
@@ -14,13 +15,13 @@ import UniFest.domain.stamp.repository.StampInfoRepository;
 import UniFest.domain.stamp.dto.request.StampInfoCreateRequest;
 import UniFest.domain.stamp.dto.response.StampInfoResponse;
 import UniFest.domain.stamp.dto.response.StampRecordResponse;
-import UniFest.domain.booth.exception.BoothNotFoundException;
 import UniFest.domain.festival.exception.FestivalNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -36,8 +37,13 @@ public class StampService {
     private int stampLimit = 100;
 
     @Transactional
-    public Long addStamp(Long boothId, String deviceId){
+    public Long addStamp(StampRequest stampRequest){
+        Long boothId = stampRequest.getBoothId();
+        Long festivalId = stampRequest.getFestivalId();
+        String deviceId = stampRequest.getDeviceId();
+
         Booth booth = boothRepository.findByBoothId(boothId).orElseThrow(BoothNotFoundForStampException::new);
+        Festival findFestival = festivalRepository.findById(festivalId).orElseThrow(FestivalNotFoundForStampException::new);
 
         if(!booth.isStampEnabled()){ //스탬프 못찍는 부스일 시
             throw new StampNotEnabledException();
@@ -48,18 +54,18 @@ public class StampService {
         if (stampRecord != null) {
             throw new StampAlreadyAddedException();
         }
-        if (isMaxStamp(deviceId)){
+        if (isMaxStamp(deviceId, findFestival)){
             throw new StampLimitException();
         }
-        stampRecord = new StampRecord(booth, deviceId);
+        stampRecord = new StampRecord(booth, deviceId, findFestival);
         stampRecordRepository.save(stampRecord);
 
-        List<StampRecord> tokenStampListInfo = stampRecordRepository.findByDeviceId(deviceId);
         return stampRecord.getId();
     }
 
-    public List<StampRecordResponse> getStamp(String deviceId){
-        List<StampRecordResponse> stampRecords = stampRecordRepository.findByDeviceId(deviceId)
+    public List<StampRecordResponse> getStamp(String deviceId, Long festivalId){
+        Festival findFestival = festivalRepository.findById(festivalId).orElseThrow(FestivalNotFoundForStampException::new);
+        List<StampRecordResponse> stampRecords = stampRecordRepository.findByDeviceIdAndFestival(deviceId, findFestival)
                 .stream()
                 .map(StampRecordResponse::new)
                 .collect(Collectors.toList());
@@ -92,9 +98,12 @@ public class StampService {
 
     public List<StampEnabledFestivalResponse> getStampEnabledFestival() {
         List<Festival> festivalList = festivalRepository.findAll();
-        List<Festival> filteredFestival = festivalList.stream().filter(f -> f.getStampInfo() != null)
+        List<Festival> filteredFestival = festivalList.stream()
+                .filter(f -> f.getStampInfo() != null)
                 .toList();
+
         List<StampEnabledFestivalResponse> dtoFestivalList = filteredFestival.stream()
+                .map(Festival::getStampInfo)
                 .map(StampEnabledFestivalResponse::new)
                 .toList();
 
@@ -135,8 +144,8 @@ public class StampService {
         return festival.getId();
     }
 
-    private boolean isMaxStamp(String deviceId){
-        List<StampRecord> stampRecords = stampRecordRepository.findByDeviceId(deviceId);
+    private boolean isMaxStamp(String deviceId, Festival festival){
+        List<StampRecord> stampRecords = stampRecordRepository.findByDeviceIdAndFestival(deviceId, festival);
 
         if(stampRecords.size() >= stampLimit){
             return true;

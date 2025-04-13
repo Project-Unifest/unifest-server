@@ -1,4 +1,4 @@
-package UniFest.global.infra.security.jwt.exceptoin;
+package UniFest.global.infra.security.jwt.exception;
 
 import UniFest.global.common.exception.UnifestCustomException;
 import org.springframework.http.HttpStatus;
@@ -6,6 +6,6 @@ import org.springframework.http.HttpStatus;
 public class RefreshTokenExpiredException extends UnifestCustomException {
     public RefreshTokenExpiredException()
     {
-        super(HttpStatus.FORBIDDEN, "만료된 리프레시 토큰입니다", 2003);
+        super(HttpStatus.UNAUTHORIZED, "만료된 리프레시 토큰입니다", 2003);
     }
 }

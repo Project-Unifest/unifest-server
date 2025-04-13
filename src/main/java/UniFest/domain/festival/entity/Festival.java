@@ -1,5 +1,6 @@
 package UniFest.domain.festival.entity;
 
+import UniFest.domain.stamp.entity.StampRecord;
 import UniFest.global.common.BaseEntity;
 import UniFest.domain.school.entity.School;
 import UniFest.domain.stamp.entity.StampInfo;
@@ -12,6 +13,7 @@ import lombok.Getter;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
 @Entity
@@ -23,11 +25,14 @@ public class Festival extends BaseEntity {
     @Column(name="festival_id")
     private Long id;
 
+    @Setter
     private String name;
 
+    @Setter
     @Column(name = "description", length = 500)
     private String description;
 
+    @Setter
     @Column(name = "thumbnail", length = 2500)
     private String thumbnail;
 
@@ -38,23 +43,22 @@ public class Festival extends BaseEntity {
     @OneToMany(mappedBy = "festival")
     private List<Enroll> enrollList = new ArrayList<>();
 
+    @Setter
     private LocalDate beginDate;
 
+    @Setter
     private LocalDate endDate;
 
-//    @OneToMany(mappedBy = "festival")
-//    private List<StampInfo> stampInfoList = new ArrayList<>();
+    @OneToMany(mappedBy = "festival")
+    private List<StampRecord> stampRecordList = new ArrayList<>();
 
+    @Setter
     @OneToOne(mappedBy = "festival", fetch = FetchType.LAZY)
     private StampInfo stampInfo;
 
     public void setSchool(School school){
         this.school = school;
         school.getFestivalList().add(this);
-    }
-
-    public void setStampInfo(StampInfo stampInfo){
-        this.stampInfo = stampInfo;
     }
 
     public Festival(String name, String description, String thumbnail, School school,

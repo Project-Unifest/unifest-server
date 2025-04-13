@@ -1,14 +1,12 @@
 package UniFest.global.infra.security.filter;
 
-import UniFest.global.common.exception.UnifestCustomException;
-import UniFest.global.infra.security.jwt.exceptoin.AccessTokenExpiredException;
+import UniFest.global.infra.security.jwt.exception.FilterException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -23,12 +21,12 @@ public class JwtExceptionFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
             filterChain.doFilter(request, response);
-        } catch (AccessTokenExpiredException exception) {
+        } catch (FilterException exception) {
             sendErrorResponse(response, exception);
         }
     }
 
-    public void sendErrorResponse(HttpServletResponse response, UnifestCustomException exception) throws IOException {
+    public void sendErrorResponse(HttpServletResponse response, FilterException exception) throws IOException {
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setStatus(exception.getHttpStatus().value());
 

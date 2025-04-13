@@ -6,6 +6,6 @@ import org.springframework.http.HttpStatus;
 public class OpeningTimeNotCorrectException extends UnifestCustomException {
 
     public OpeningTimeNotCorrectException() {
-        super(HttpStatus.BAD_REQUEST, "폐점시간이 개점시간보다 빠릅니다.", 4001);
+        super(HttpStatus.BAD_REQUEST, "폐점시간이 개점시간보다 빠릅니다.", 3002);
     }
 }
