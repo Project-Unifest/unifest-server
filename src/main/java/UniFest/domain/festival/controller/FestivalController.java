@@ -1,5 +1,6 @@
 package UniFest.domain.festival.controller;
 
+import UniFest.domain.festival.dto.request.FestivalModifyRequest;
 import UniFest.domain.festival.service.FestivalService;
 import UniFest.global.common.response.Response;
 import UniFest.domain.festival.dto.response.FestivalSearchResponse;
@@ -64,7 +65,7 @@ public class FestivalController {
         log.debug("[FestivalController.getFestivalByDate]");
 
 
-        return Response.ofSuccess("OK", festivalService.getFesitvalByDateRevision(date));
+        return Response.ofSuccess("OK", festivalService.getFestivalByDateRevision(date));
     }
 
     @Operation(summary = "축제 등록")
@@ -73,6 +74,15 @@ public class FestivalController {
         log.debug("[FestivalController.postFestival]");
 
         return Response.ofCreated("Created", festivalService.createFestival(request));
+    }
+
+    @Operation(summary = "축제 수정")
+    @PatchMapping("/{festival-id}")
+    public Response<Long> modifyFestival(@PathVariable("festival-id")Long festivalId, @RequestBody FestivalModifyRequest request) {
+        log.debug("[FestivalController.postFestival]");
+        Long modifiedFestival = festivalService.modifyFestival(festivalId, request);
+
+        return Response.ofCreated("Created", modifiedFestival);
     }
 
     @SecurityRequirement(name = "JWT")
