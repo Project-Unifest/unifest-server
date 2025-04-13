@@ -81,6 +81,8 @@ public class SecurityConfig{
         //경로별 인가작업
         http
                 .authorizeHttpRequests((auth) -> auth
+                        .requestMatchers(HttpMethod.POST, "/festival/*/interest").permitAll() // 관심 축제 등록 허용
+                        .requestMatchers(HttpMethod.DELETE, "/festival/*/interest").permitAll() // 관심 축제 해제 허용
                         .requestMatchers("/admin/").hasRole("ADMIN")
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/festival/**").hasRole("ADMIN")
