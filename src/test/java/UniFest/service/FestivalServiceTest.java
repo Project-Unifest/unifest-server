@@ -61,7 +61,7 @@ class FestivalServiceTest {
         when(enrollRepository.findByDate(testDate)).thenReturn(mockStarList);
 
         // when
-        List<TodayFestivalInfo> result = festivalService.getFesitvalByDateRevision(testDate);
+        List<TodayFestivalInfo> result = festivalService.getFestivalByDateRevision(testDate);
 
 
         // then - 검증
