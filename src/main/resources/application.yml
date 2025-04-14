@@ -5,7 +5,7 @@ spring:
   application:
     name: UniFest
   profiles:
-    default: prod
+    default:
 
   firebase:
     project-id: unifest-konkuk
