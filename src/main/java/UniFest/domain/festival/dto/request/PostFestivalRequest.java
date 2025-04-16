@@ -11,6 +11,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Data
+@AllArgsConstructor
 public class PostFestivalRequest {
 
     @NotNull(message = "schoolId는 Null 일 수 없습니다.")
