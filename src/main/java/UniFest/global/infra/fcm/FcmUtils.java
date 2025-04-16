@@ -44,9 +44,7 @@ public final class FcmUtils {
 
     //TODO token 객체로 감싸기
     public static void sendWithToken(UserNoti userNoti, String token) throws FcmFailException {
-        send(Message.builder().setTopic(token), userNoti);
-    }
-
+        send(Message.builder().setToken(token), userNoti);
 
     public static void sendWithTopic(UserNoti userNoti, String topic) throws FcmFailException {
         send(Message.builder().setTopic(topic), userNoti);
