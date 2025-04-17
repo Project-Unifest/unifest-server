@@ -90,13 +90,13 @@ public class WaitingService {
     public WaitingInfo addWaiting(Waiting waiting) {
         Waiting savedWaiting = waitingRepository.save(waiting);
         WaitingInfo waitingInfo = createWaitingInfo(savedWaiting, 0);
-        try {
-            String json = objectMapper.writeValueAsString(savedWaiting);
+        //try {
+            //String json = objectMapper.writeValueAsString(savedWaiting);
             waitingRedisService.addWaitingToBooth(savedWaiting.getBooth().getId(), savedWaiting.getDeviceId());
             waitingRedisService.addWaitingToDevice(savedWaiting.getDeviceId(), savedWaiting.getId(), waitingInfo);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException("Failed to cache waiting info", e);
-        }
+        //} catch (JsonProcessingException e) {
+        //    throw new RuntimeException("Failed to cache waiting info", e);
+        //}
         Long waitingOrder = waitingRedisService.getBoothWaitingCount(savedWaiting.getBooth().getId());
         waitingInfo.setWaitingOrder(waitingOrder.intValue());
         return waitingInfo;
