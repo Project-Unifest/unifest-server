@@ -1,5 +1,6 @@
 package UniFest.domain.megaphone.service;
 
+import UniFest.global.infra.fcm.UserNoti;
 import UniFest.global.infra.fcm.service.FcmService;
 import UniFest.domain.megaphone.entity.Megaphone;
 import UniFest.domain.megaphone.repository.MegaphoneRepository;
@@ -8,9 +9,9 @@ import UniFest.domain.booth.repository.BoothRepository;
 import UniFest.domain.megaphone.dto.request.AddMegaphoneRequest;
 import UniFest.global.infra.fcm.exception.FcmFailException;
 import UniFest.domain.booth.exception.BoothNotFoundException;
-import com.google.firebase.messaging.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -22,19 +23,8 @@ public class MegaphoneService {
     public Long addMegaphone(AddMegaphoneRequest addMegaphoneRequest) {
         Long boothId = addMegaphoneRequest.getBoothId();
         Booth booth = boothRepository.findByBoothId(boothId)
-                .orElseThrow(() -> new BoothNotFoundException());
+                .orElseThrow(BoothNotFoundException::new);
         String topic = String.valueOf(booth.getFestival().getId());
-
-        Notification notification = Notification.builder()
-                .setTitle(booth.getName())
-                .setBody(addMegaphoneRequest.getMsgBody())
-                .build();
-
-        Message message = Message.builder()
-                .setTopic(topic)
-                .setNotification(notification)
-                .putData("boothId", String.valueOf(boothId))
-                .build();
 
         Megaphone megaphone = Megaphone.builder()
                 .msgBody(addMegaphoneRequest.getMsgBody())
@@ -42,9 +32,15 @@ public class MegaphoneService {
                 .build();
 
         try {
-            fcmService.send(message);
+            UserNoti userNoti = UserNoti.builder()
+                    .title(booth.getName())
+                    .body(addMegaphoneRequest.getMsgBody())
+                    .meta(Map.of("boothId", String.valueOf(boothId)))
+                    .build();
+
+            fcmService.broadcast(userNoti, topic);
             megaphone.setIsSent(true);
-        } catch (FirebaseMessagingException e) {
+        } catch (FcmFailException e) {
             megaphone.setIsSent(false);
             megaphone.setErrorMessage(e.getMessage());
             throw new FcmFailException(e.getMessage());
