@@ -180,42 +180,4 @@ public class WaitingController {
 
         return Response.ofSuccess("OK", updatedVal);
     }
-
-
-    @PostMapping("/tokenTest")
-    @Operation(summary = "토큰 테스트")
-    public Response<String> tokenTest(@RequestBody PostTokenTestRequest postTokenTestRequest) {
-        String fcmToken = postTokenTestRequest.getFcmToken();
-        List<String> registrationTokens = Arrays.asList(fcmToken);
-        try{
-            TopicManagementResponse response = FirebaseMessaging.getInstance().subscribeToTopic(registrationTokens, "test");
-            if(response.getSuccessCount() != 1) {
-                return Response.ofFail("Fail", fcmToken);
-            }
-        } catch (Exception e) {
-            return Response.ofFail("Fail", fcmToken);
-        }
-        return Response.ofSuccess("OK", fcmToken);
-    }
-
-    @GetMapping("/tokenTest")
-    @Operation(summary = "토큰 테스트")
-    public Response<String> tokenTest2() {
-        Notification notification = Notification.builder()
-                .setTitle("test")
-                .setBody("test")
-                .build();
-
-        Message message = Message.builder()
-                .setTopic("test")
-                .setNotification(notification)
-                .putData("boothId", "196")
-                .build();
-        try{
-            FirebaseMessaging.getInstance().send(message);
-        } catch (Exception e) {
-            return Response.ofFail("Fail", "test");
-        }
-        return Response.ofSuccess("OK", "test");
-    }
 }

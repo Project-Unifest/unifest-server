@@ -10,6 +10,7 @@ import UniFest.global.infra.fcm.UserNoti;
 import UniFest.global.infra.fcm.service.FcmService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.firebase.messaging.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,7 +26,6 @@ public class WaitingService {
     private final BoothRepository boothRepository;
     private final FcmService fcmService;
     private final WaitingRedisService waitingRedisService;
-    private final ObjectMapper objectMapper;
 
     private WaitingInfo createWaitingInfo(Waiting waiting, Integer waitingOrder) {
         return new WaitingInfo(
@@ -71,15 +71,12 @@ public class WaitingService {
         for (Map.Entry<Long, WaitingInfo> entry : waitingMap.entrySet()) {
             Long waitingId = entry.getKey();
             WaitingInfo waitingInfo = entry.getValue();
-            try {
-                Long boothId = waitingInfo.getBoothId();
-                Long rank = waitingRedisService.getWaitingOrderInBooth(boothId, deviceId);
-                Integer waitingOrder = (rank != null) ? rank.intValue() + 1 : null;
-                waitingInfo.setWaitingOrder(waitingOrder);
-                result.add(waitingInfo);
-            } catch (Exception e) {
-                throw new RuntimeException("JSON parse error for waitingId: " + waitingId);
-            }
+
+            Long boothId = waitingInfo.getBoothId();
+            Long rank = waitingRedisService.getWaitingOrderInBooth(boothId, deviceId);
+            Integer waitingOrder = (rank != null) ? rank.intValue() + 1 : null;
+            waitingInfo.setWaitingOrder(waitingOrder);
+            result.add(waitingInfo);
         }
 
         return result;
@@ -89,13 +86,8 @@ public class WaitingService {
     public WaitingInfo addWaiting(Waiting waiting) {
         Waiting savedWaiting = waitingRepository.save(waiting);
         WaitingInfo waitingInfo = createWaitingInfo(savedWaiting, 0);
-        try {
-            String json = objectMapper.writeValueAsString(savedWaiting);
-            waitingRedisService.addWaitingToBooth(savedWaiting.getBooth().getId(), savedWaiting.getDeviceId());
-            waitingRedisService.addWaitingToDevice(savedWaiting.getDeviceId(), savedWaiting.getId(), waitingInfo);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException("Failed to cache waiting info", e);
-        }
+        waitingRedisService.addWaitingToBooth(savedWaiting.getBooth().getId(), savedWaiting.getDeviceId());
+        waitingRedisService.addWaitingToDevice(savedWaiting.getDeviceId(), savedWaiting.getId(), waitingInfo);
         Long waitingOrder = waitingRedisService.getBoothWaitingCount(savedWaiting.getBooth().getId());
         waitingInfo.setWaitingOrder(waitingOrder.intValue());
         return waitingInfo;
@@ -119,17 +111,11 @@ public class WaitingService {
     public WaitingInfo setNoShow(Long waitingId) {
         Waiting waiting = waitingRepository.findById(waitingId).orElse(null);
         if (waiting == null) return null;
-
-        waiting.setWaitingStatus("NOSHOW");
+        String noShowStatus = "NOSHOW";
+        waiting.setWaitingStatus(noShowStatus);
         waitingRepository.save(waiting);
-
         waitingRedisService.removeWaitingFromBooth(waiting.getBooth().getId(), waiting.getDeviceId());
-        try {
-            String json = objectMapper.writeValueAsString(waiting);
-            waitingRedisService.updateWaitingStatus(waiting.getDeviceId(), waitingId, json);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException("Failed to update Redis", e);
-        }
+        waitingRedisService.updateWaitingStatus(waiting.getDeviceId(), waitingId, noShowStatus);
 
         return createWaitingInfo(waiting, null);
     }
@@ -180,14 +166,9 @@ public class WaitingService {
         waiting.setWaitingStatus(status);
         waitingRepository.save(waiting);
 
-        try {
-            String json = objectMapper.writeValueAsString(waiting);
-            waitingRedisService.updateWaitingStatus(waiting.getDeviceId(), waiting.getId(), json);
-            if (!"RESERVED".equals(status)) {
-                waitingRedisService.removeWaitingFromBooth(waiting.getBooth().getId(), waiting.getDeviceId());
-            }
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException("Redis update error", e);
+        waitingRedisService.updateWaitingStatus(waiting.getDeviceId(), waiting.getId(), status);
+        if (!"RESERVED".equals(status)) {
+            waitingRedisService.removeWaitingFromBooth(waiting.getBooth().getId(), waiting.getDeviceId());
         }
 
         return createWaitingInfo(waiting, null);
