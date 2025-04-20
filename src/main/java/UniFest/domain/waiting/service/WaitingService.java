@@ -8,7 +8,6 @@ import UniFest.domain.waiting.entity.Waiting;
 import UniFest.domain.waiting.repository.WaitingRepository;
 import UniFest.global.infra.fcm.exception.FcmFailException;
 import UniFest.global.infra.fcm.service.FcmService;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.firebase.messaging.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -170,7 +169,7 @@ public class WaitingService {
         waiting.setWaitingStatus(status);
         waitingRepository.save(waiting);
 
-        waitingRedisService.updateWaitingStatus(waiting.getDeviceId(), waiting.getId(), "CANCELED");
+        waitingRedisService.updateWaitingStatus(waiting.getDeviceId(), waiting.getId(), status);
         if (!"RESERVED".equals(status)) {
             waitingRedisService.removeWaitingFromBooth(waiting.getBooth().getId(), waiting.getDeviceId());
         }
