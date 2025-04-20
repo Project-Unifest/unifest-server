@@ -6,8 +6,10 @@ import UniFest.domain.waiting.dto.request.PostWaitingRequest;
 import UniFest.domain.waiting.dto.response.WaitingInfo;
 import UniFest.domain.waiting.entity.Waiting;
 import UniFest.domain.waiting.repository.WaitingRepository;
-import UniFest.global.infra.fcm.exception.FcmFailException;
+import UniFest.global.infra.fcm.UserNoti;
 import UniFest.global.infra.fcm.service.FcmService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.firebase.messaging.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -67,6 +69,7 @@ public class WaitingService {
         Map<Long, WaitingInfo> waitingMap = waitingRedisService.getDeviceWaitingList(deviceId);
         List<WaitingInfo> result = new ArrayList<>();
         for (Map.Entry<Long, WaitingInfo> entry : waitingMap.entrySet()) {
+            Long waitingId = entry.getKey();
             WaitingInfo waitingInfo = entry.getValue();
 
             Long boothId = waitingInfo.getBoothId();
@@ -138,22 +141,16 @@ public class WaitingService {
     @Transactional
     public WaitingInfo callWaiting(Long id) {
         WaitingInfo info = setWaitingById(id, "CALLED");
-        String token = fcmService.getFcmToken(info.getDeviceId());
-        if (token != null) {
-            Notification noti = Notification.builder().setTitle(info.getBoothName()).setBody("부스에 입장하실 차례에요!").build();
-            Message msg = Message.builder()
-                    .setToken(token)
-                    .setNotification(noti)
-                    .putData("waiting_id", String.valueOf(info.getWaitingId()))
-                    .putData("booth_id", String.valueOf(info.getBoothId()))
-                    .putData("booth_name", info.getBoothName())
-                    .build();
-            try {
-                fcmService.send(msg);
-            } catch (FirebaseMessagingException e) {
-                throw new FcmFailException(e.getMessage());
-            }
-        }
+
+        UserNoti userNoti = UserNoti.builder()
+                .title(info.getBoothName())
+                .body("부스에 입장하실 차례에요!")
+                .meta(Map.of("waiting_id", String.valueOf(info.getWaitingId()),
+                        "booth_id", String.valueOf(info.getBoothId()),
+                        "booth_name", info.getBoothName()))
+                .build();
+        fcmService.send(userNoti, info.getDeviceId());
+
         return info;
     }
 

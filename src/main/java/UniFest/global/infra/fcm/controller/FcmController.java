@@ -12,11 +12,11 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 @RequestMapping("/fcm-token")
 public class FcmController {
-    private final FcmService syncService;
+    private final FcmService fcmService;
 
     @PutMapping
     public Response<String> saveOrUpdateFcmToken(@RequestBody PostFcmRequest request) {
-        syncService.saveOrUpdateFcmToken(request);
+        fcmService.saveOrUpdateFcmToken(request);
         // TODO: Exception handling
         return Response.ofSuccess("Created/Updated for device", request.getDeviceId());
     }
