@@ -103,8 +103,7 @@ public class StampService {
                 .toList();
 
         List<StampEnabledFestivalResponse> dtoFestivalList = filteredFestival.stream()
-                .map(Festival::getStampInfo)
-                .map(StampEnabledFestivalResponse::new)
+                .map(f -> new StampEnabledFestivalResponse(f.getStampInfo(), f.getSchool().getName()))
                 .toList();
 
         return dtoFestivalList;
@@ -119,9 +118,18 @@ public class StampService {
         if(festival.getStampInfo() != null){
             throw new StampInfoAlreadyAdded();
         }
+
+        //기본 unifest 이미지입니다
         StampInfo stampInfo = new StampInfo(festival
-                , stampInfoCreateRequest.getDefaultImgUrl()
-                , stampInfoCreateRequest.getUsedImgUrl());
+                , Optional.ofNullable(stampInfoCreateRequest.getDefaultImgUrl())
+                .orElseGet(() -> {
+                    return "https://unifest-prod-bucket.s3.ap-northeast-2.amazonaws.com/31a66ead-3e8c-482d-aa66-74a8289fc5c6.png";
+                })
+                , Optional.ofNullable(stampInfoCreateRequest.getUsedImgUrl())
+                .orElseGet(() -> {
+                    return "https://unifest-prod-bucket.s3.ap-northeast-2.amazonaws.com/ac843c7a-f5d7-41d4-99ec-b810fe94b15f.png";
+                })
+        );
         stampInfoRepository.save(stampInfo);
         festival.setStampInfo(stampInfo);
 

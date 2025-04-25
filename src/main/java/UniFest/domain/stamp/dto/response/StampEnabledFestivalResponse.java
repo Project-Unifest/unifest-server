@@ -1,6 +1,5 @@
 package UniFest.domain.stamp.dto.response;
 
-import UniFest.domain.festival.entity.Festival;
 import UniFest.domain.stamp.entity.StampInfo;
 import lombok.Builder;
 import lombok.Data;
@@ -9,16 +8,16 @@ import lombok.Data;
 public class StampEnabledFestivalResponse {
     private Long festivalId;
 
-    private String name;
+    private String schoolName;
 
     private String defaultImgUrl;
 
     private String usedImgUrl;
 
     @Builder
-    public StampEnabledFestivalResponse(StampInfo stampInfo) {
+    public StampEnabledFestivalResponse(StampInfo stampInfo, String schoolName) {
         this.festivalId = stampInfo.getFestival().getId();
-        this.name = stampInfo.getFestival().getName();
+        this.schoolName = schoolName;
         this.defaultImgUrl = stampInfo.getDefaultImgUrl();
         this.usedImgUrl = stampInfo.getUsedImgUrl();
     }
