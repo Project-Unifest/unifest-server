@@ -36,7 +36,7 @@ public class SecurityConfig{
     private static final String ADMIN_WEB = "https://project-unifest.github.io";
     private static final String LOCALHOST = "http://localhost:3000";
     private static final String USER_WEB = "https://unifest-web-245.pages.dev/";
-    private static final String WEB_PREVIEW = "https://%2A.unifest-web-245.pages.dev/";
+    private static final String WEB_PREVIEW = "*.unifest-web-245.pages.dev";
 
     private final AuthenticationConfiguration authenticationConfiguration;
 
