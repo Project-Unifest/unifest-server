@@ -71,6 +71,7 @@ public class WaitingRedisService {
             info.setStatus(newStatus);
             updateWaitingInfo(deviceId, waitingId, info);
         } catch (Exception e) {
+            //TODO 예외처리
             throw new RuntimeException("Failed to update status in WaitingInfo", e);
         }
     }
