@@ -168,8 +168,12 @@ public class WaitingService {
 
         waitingRedisService.updateWaitingStatus(waiting.getDeviceId(), waiting.getId(), status);
         if (!"RESERVED".equals(status)) {
+            // RESERVED 아닌 것들은 더 이상 부스 상에서 의미가 없다. 하지만 device 별 대기열에선 필요할 수도
             waitingRedisService.removeWaitingFromBooth(waiting.getBooth().getId(), waiting.getDeviceId());
-            waitingRedisService.removeWaitingFromDevice(waiting.getDeviceId(), waiting.getId());
+            if("COMPLETED".equals(status) || "CANCELED".equals(status)) {
+                // 취소/완료된 것들은 device 대기열에서 조회될 필요도 없다.
+                waitingRedisService.removeWaitingFromDevice(waiting.getDeviceId(), waiting.getId());
+            }
         }
 
         return createWaitingInfo(waiting, null);
