@@ -169,6 +169,7 @@ public class WaitingService {
         waitingRedisService.updateWaitingStatus(waiting.getDeviceId(), waiting.getId(), status);
         if (!"RESERVED".equals(status)) {
             waitingRedisService.removeWaitingFromBooth(waiting.getBooth().getId(), waiting.getDeviceId());
+            waitingRedisService.removeWaitingFromDevice(waiting.getDeviceId(), waiting.getId());
         }
 
         return createWaitingInfo(waiting, null);
