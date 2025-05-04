@@ -1,0 +1,38 @@
+version: '3'
+services:
+  unifest:
+    image: 211125677945.dkr.ecr.ap-northeast-2.amazonaws.com/unifest:latest
+    ports:
+      - "8080:8080"
+    environment:
+      DATASOURCE_URL: ${DATASOURCE_URL}
+      DATASOURCE_USERNAME: ${DATASOURCE_USERNAME}
+      DATASOURCE_PASSWORD: ${DATASOURCE_PASSWORD}
+      REDIS_HOST: ${REDIS_HOST}
+      JWT_SECRETKEY: ${JWT_SECRETKEY}
+      S3_ACCESS: ${S3_ACCESS}
+      S3_SECRET: ${S3_SECRET}
+      UNIFEST_BUCKET: ${UNIFEST_BUCKET}
+      FIREBASE_KEY: ${FIREBASE_KEY}
+  node-exporter:
+    image: quay.io/prometheus/node-exporter:latest
+    network_mode: host
+    pid: host
+    cap_add:
+      - SYS_TIME
+    volumes:
+      - '/:/host:ro,rslave'
+    command: ["--path.rootfs=/host"]
+  mysql-exporter:
+    image: prom/mysqld-exporter:latest
+    network_mode: host
+    environment:
+      EXPORTER_USERNAME: ${EXPORTER_USERNAME}
+      EXPORTER_PASSWORD: ${EXPORTER_PASSWORD}
+      DATASOURCE_HOST: ${DATASOURCE_HOST}
+      DATASOURCE_PORT: ${DATASOURCE_PORT}
+    command:
+      - "--mysqld.username=${EXPORTER_USERNAME}:${EXPORTER_PASSWORD}"
+      - "--mysqld.address=${DATASOURCE_HOST}:${DATASOURCE_PORT}"
+    ports:
+      - "9104:9104"
