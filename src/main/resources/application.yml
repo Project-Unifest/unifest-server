@@ -46,3 +46,13 @@ cloud:
       static: ap-northeast-2
     stack:
       auto: false
+
+# Monitor
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+  endpoint:
+    prometheus:
+      enabled: true
