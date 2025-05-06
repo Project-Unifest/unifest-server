@@ -23,7 +23,7 @@ public class MemberSignUpRequest {
     private Long schoolId;
 
     @NotBlank(message = "공백일 수 없습니다.")
-    @Schema(description = "전화번호", nullable = false)
+    @Schema(description = "전화번호", nullable = false, format = "")
     private String phoneNum;
 
 }
