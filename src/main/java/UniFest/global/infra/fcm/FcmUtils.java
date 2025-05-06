@@ -51,51 +51,18 @@ public final class FcmUtils {
         send(Message.builder().setTopic(topic), userNoti);
     }
 
-//    private static void setSound(Message.Builder messageBuilder) {
-//        // for iOS
-//        Aps aps = Aps.builder()
-//                .setSound("default")
-//                .build();
-//
-//        ApnsConfig apnsConfig = ApnsConfig.builder()
-//                .setAps(aps)
-//                .build();
-//
-//        // for Android
-//        AndroidNotification androidNoti = AndroidNotification.builder()
-//                .setSound("default")
-//                .setDefaultVibrateTimings(true)
-//                .build();
-//
-//        AndroidConfig androidConfig = AndroidConfig.builder()
-//                .setNotification(androidNoti)
-//                .build();
-//
-//        messageBuilder.setApnsConfig(apnsConfig)
-//                .setAndroidConfig(androidConfig);
-//    }
-
-    private static void send(Message.Builder messageBuilder, UserNoti userNoti) throws FcmFailException {
-        // iOS 설정
-        ApsAlert apsAlert = ApsAlert.builder()
-                .setTitle(userNoti.getTitle())
-                .setBody(userNoti.getBody())
-                .build();
-
+    private static void setSound(Message.Builder messageBuilder) {
+        // for iOS
         Aps aps = Aps.builder()
-                .setAlert(apsAlert)
                 .setSound("default")
                 .build();
 
         ApnsConfig apnsConfig = ApnsConfig.builder()
                 .setAps(aps)
-                .putHeader("apns-priority", "10")  // iOS 즉시 알림 보장
                 .build();
 
-        // Android 설정
+        // for Android
         AndroidNotification androidNoti = AndroidNotification.builder()
-                .setTitle(userNoti.getTitle())
-                .setBody(userNoti.getBody())
                 .setSound("default")
                 .setDefaultVibrateTimings(true)
                 .build();
@@ -104,23 +71,29 @@ public final class FcmUtils {
                 .setNotification(androidNoti)
                 .build();
 
-        // 메시지 빌드
-        messageBuilder
-                .setApnsConfig(apnsConfig)
+        messageBuilder.setApnsConfig(apnsConfig)
                 .setAndroidConfig(androidConfig);
+    }
 
-        // 메타데이터 추가
+    private static void send(Message.Builder messageBuilder, UserNoti userNoti) throws FcmFailException {
+        Notification notification = Notification.builder()
+                .setTitle(userNoti.getTitle())
+                .setBody(userNoti.getBody())
+                .build();
+
+        messageBuilder.setNotification(notification);
+        setSound(messageBuilder);
+
         Map<String, String> meta = userNoti.getMeta();
         if (meta != null && !meta.isEmpty()) {
             messageBuilder.putAllData(meta);
         }
 
-        // 전송
+        Message message = messageBuilder.build();
         try {
             FirebaseMessaging.getInstance().send(messageBuilder.build());
         } catch (FirebaseMessagingException e) {
             throw new FcmFailException(e.getMessage());
         }
     }
-
 }
