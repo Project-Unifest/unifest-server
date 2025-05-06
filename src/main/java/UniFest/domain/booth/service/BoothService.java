@@ -132,7 +132,7 @@ public class BoothService {
 
     @Transactional
     public List<BoothResponse> getTrendingBooths(Long festivalId){
-        Festival festival = festivalRepository.findById(festivalId).orElseThrow();
+        Festival festival = festivalRepository.findById(festivalId).orElseThrow(FestivalNotFoundException::new);
         List<BoothResponse> boothResponseList = new ArrayList<>();
         List<Booth> boothList = boothRepository.findTop5ByFestivalOrderByLikesListSizeDesc(festival);
         for(Booth booth : boothList){
