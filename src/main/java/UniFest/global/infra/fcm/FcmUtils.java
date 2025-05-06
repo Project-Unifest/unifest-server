@@ -51,6 +51,30 @@ public final class FcmUtils {
         send(Message.builder().setTopic(topic), userNoti);
     }
 
+    private static void setSound(Message.Builder messageBuilder) {
+        // for iOS
+        Aps aps = Aps.builder()
+                .setSound("default")
+                .build();
+
+        ApnsConfig apnsConfig = ApnsConfig.builder()
+                .setAps(aps)
+                .build();
+
+        // for Android
+        AndroidNotification androidNoti = AndroidNotification.builder()
+                .setSound("default")
+                .setDefaultVibrateTimings(true)
+                .build();
+
+        AndroidConfig androidConfig = AndroidConfig.builder()
+                .setNotification(androidNoti)
+                .build();
+
+        messageBuilder.setApnsConfig(apnsConfig)
+                .setAndroidConfig(androidConfig);
+    }
+
     private static void send(Message.Builder messageBuilder, UserNoti userNoti) throws FcmFailException {
         Notification notification = Notification.builder()
                 .setTitle(userNoti.getTitle())
@@ -58,6 +82,7 @@ public final class FcmUtils {
                 .build();
 
         messageBuilder.setNotification(notification);
+        setSound(messageBuilder);
 
         Map<String, String> meta = userNoti.getMeta();
         if (meta != null && !meta.isEmpty()) {
