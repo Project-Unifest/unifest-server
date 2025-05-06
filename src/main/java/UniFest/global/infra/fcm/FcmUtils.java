@@ -89,7 +89,6 @@ public final class FcmUtils {
             messageBuilder.putAllData(meta);
         }
 
-        Message message = messageBuilder.build();
         try {
             FirebaseMessaging.getInstance().send(messageBuilder.build());
         } catch (FirebaseMessagingException e) {
