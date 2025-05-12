@@ -103,6 +103,9 @@ public class SecurityConfig{
                         .requestMatchers(HttpMethod.GET, "/members/**").hasRole("ADMIN") // 회원 정보 조회는 ADMIN만
                         .requestMatchers(HttpMethod.DELETE, "/members/**").hasRole("ADMIN") // 회원 정보 조회는 ADMIN만
                         .requestMatchers(HttpMethod.PATCH, "/stamps/*/stampEnabled").hasRole("ADMIN") //부스 스탬프 설정 변경은 ADMIN만
+                        .requestMatchers(HttpMethod.POST, "/waiting/pin/check").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/waiting/pin/**").hasAnyRole("ADMIN", "VERIFIED")
+                        .requestMatchers(HttpMethod.GET, "/waiting/pin/**").hasAnyRole("ADMIN", "VERIFIED")
                         //h2 접속 설정
                         .requestMatchers("/h2-console/**", "/favicon.ico").permitAll()
                         .anyRequest().permitAll());
