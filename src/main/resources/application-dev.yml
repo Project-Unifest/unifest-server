@@ -19,6 +19,8 @@ spring:
       host: unifest-redis
       port: 6379
       password: ${REDIS_PASSWORD}
+      ssl:
+        enabled: false
 
 jwt:
   secret: ${JWT_SECRETKEY}
