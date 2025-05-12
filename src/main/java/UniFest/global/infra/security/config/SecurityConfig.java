@@ -83,6 +83,7 @@ public class SecurityConfig{
         //경로별 인가작업
         http
                 .authorizeHttpRequests((auth) -> auth
+                        //TODO role 문자열 enum으로 바꿔놓기
                         .requestMatchers(HttpMethod.POST, "/festival/*/interest").permitAll() // 관심 축제 등록 허용
                         .requestMatchers(HttpMethod.DELETE, "/festival/*/interest").permitAll() // 관심 축제 해제 허용
                         .requestMatchers("/admin/").hasRole("ADMIN")
@@ -103,6 +104,14 @@ public class SecurityConfig{
                         .requestMatchers(HttpMethod.GET, "/members/**").hasRole("ADMIN") // 회원 정보 조회는 ADMIN만
                         .requestMatchers(HttpMethod.DELETE, "/members/**").hasRole("ADMIN") // 회원 정보 조회는 ADMIN만
                         .requestMatchers(HttpMethod.PATCH, "/stamps/*/stampEnabled").hasRole("ADMIN") //부스 스탬프 설정 변경은 ADMIN만
+                        .requestMatchers(HttpMethod.POST, "/waiting/pin/check").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/waiting").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/waiting").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/waiting/**").hasAnyRole("ADMIN", "VERIFIED")
+                        .requestMatchers(HttpMethod.PUT, "/waiting/**").hasAnyRole("ADMIN", "VERIFIED")
+                        .requestMatchers(HttpMethod.POST, "/waiting/**").hasAnyRole("ADMIN", "VERIFIED")
+                        .requestMatchers(HttpMethod.POST, "/waiting/pin/**").hasAnyRole("ADMIN", "VERIFIED")
+                        .requestMatchers(HttpMethod.GET, "/waiting/pin/**").hasAnyRole("ADMIN", "VERIFIED")
                         //h2 접속 설정
                         .requestMatchers("/h2-console/**", "/favicon.ico").permitAll()
                         .anyRequest().permitAll());
