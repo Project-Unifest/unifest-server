@@ -16,9 +16,10 @@ spring:
         dialect: org.hibernate.dialect.MySQLDialect
   data:
     redis:
-      host: unifest-redis
+      host: ${REDIS_HOST}
       port: 6379
-      password: ${REDIS_PASSWORD}
+      ssl:
+        enabled: true
 
 jwt:
   secret: ${JWT_SECRETKEY}
