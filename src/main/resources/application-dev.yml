@@ -18,7 +18,6 @@ spring:
     redis:
       host: unifest-redis
       port: 6379
-      password: ${REDIS_PASSWORD}
       ssl:
         enabled: false
 
