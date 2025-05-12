@@ -1,0 +1,26 @@
+spring:
+  config:
+    activate:
+      on-profile: prod
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${DATASOURCE_URL}
+    username: ${DATASOURCE_USERNAME}
+    password: ${DATASOURCE_PASSWORD}
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+  data:
+    redis:
+      host: unifest-redis
+      port: 6379
+      password: ${REDIS_PASSWORD}
+
+jwt:
+  secret: ${JWT_SECRETKEY}
+  access-token-expiration-minutes: 60
+  refresh-token-expiration-minutes: 720
