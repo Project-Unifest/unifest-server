@@ -232,7 +232,7 @@ public class BoothService {
 //        log.info("findBooth Member = " + findBooth.getMember().getId().getClass().getName() + " memberId = " + findBooth.getMember().getId());
 //        log.info("memberId Member = " + memberId.getClass().getName() + " memberId = " + memberId);
 //        log.info("findBooth.getMember().getId() != memberId = " + Boolean.valueOf(findBooth.getMember().getId() != memberId).toString());
-        if(findBooth.getMember().getId().equals(memberId)) throw new NotAuthorizedException();
+        if(!findBooth.getMember().getId().equals(memberId)) throw new NotAuthorizedException();
         return findBooth;
     }
 
