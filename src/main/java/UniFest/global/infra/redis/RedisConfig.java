@@ -18,7 +18,7 @@ public class RedisConfig {
 
     private final String host;
     private final int port;
-    @Value("${spring.redis.ssl.enabled:false}")
+    @Value("${spring.data.redis.ssl.enabled}")
     private boolean sslEnabled;
 
     public RedisConfig(@Value("${spring.data.redis.host}") String host,
