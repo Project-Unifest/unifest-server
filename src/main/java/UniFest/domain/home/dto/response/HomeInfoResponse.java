@@ -16,7 +16,6 @@ public class HomeInfoResponse {
 
     @Builder
     public HomeInfoResponse(List<HomeCard> homeCardList, List<HomeTip> homeTipList) {
-        //TODO: 대충 여기에 Repo에서 getAllHomeCardList 부르면 되겠네
         this.homeCardList = homeCardList;
         this.homeTipList = homeTipList;
     }
