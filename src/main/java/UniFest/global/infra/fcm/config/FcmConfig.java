@@ -9,9 +9,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.io.ByteArrayInputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
 
 @Slf4j
@@ -30,7 +29,7 @@ public class FcmConfig {
             throw new IllegalArgumentException("Firebase key is not set");
         }
 
-        try (InputStream refreshToken = new ByteArrayInputStream(fcmKey.getBytes())) {
+        try (FileInputStream serviceAccount = new FileInputStream(fcmKey)) {
             FirebaseApp firebaseApp = null;
             List<FirebaseApp> firebaseAppList = FirebaseApp.getApps();
             if (firebaseAppList != null && !firebaseAppList.isEmpty()) {
@@ -43,12 +42,34 @@ public class FcmConfig {
 
             if (firebaseApp == null) {
                 FirebaseOptions options = FirebaseOptions.builder()
-                        .setCredentials(GoogleCredentials.fromStream(refreshToken))
+                        .setCredentials(GoogleCredentials.fromStream(serviceAccount))
                         .build();
                 firebaseApp = FirebaseApp.initializeApp(options);
             }
 
             return FirebaseMessaging.getInstance(firebaseApp);
         }
+
+// 기존코드
+//        try (InputStream refreshToken = new ByteArrayInputStream(decodedBytes)) {
+//            FirebaseApp firebaseApp = null;
+//            List<FirebaseApp> firebaseAppList = FirebaseApp.getApps();
+//            if (firebaseAppList != null && !firebaseAppList.isEmpty()) {
+//                for (FirebaseApp app : firebaseAppList) {
+//                    if (app.getName().equals(FirebaseApp.DEFAULT_APP_NAME)) {
+//                        firebaseApp = app;
+//                    }
+//                }
+//            }
+//
+//            if (firebaseApp == null) {
+//                FirebaseOptions options = FirebaseOptions.builder()
+//                        .setCredentials(GoogleCredentials.fromStream(refreshToken))
+//                        .build();
+//                firebaseApp = FirebaseApp.initializeApp(options);
+//            }
+//
+//            return FirebaseMessaging.getInstance(firebaseApp);
+//        }
     }
 }
