@@ -29,9 +29,8 @@ public class FcmConfig {
         if (fcmKey == null || fcmKey.isEmpty()) {
             throw new IllegalArgumentException("Firebase key is not set");
         }
-        String jsonKey = fcmKey.replace("\\n", "\n");
 
-        try (InputStream refreshToken = new ByteArrayInputStream(jsonKey.getBytes())) {
+        try (InputStream refreshToken = new ByteArrayInputStream(fcmKey.getBytes())) {
             FirebaseApp firebaseApp = null;
             List<FirebaseApp> firebaseAppList = FirebaseApp.getApps();
             if (firebaseAppList != null && !firebaseAppList.isEmpty()) {
