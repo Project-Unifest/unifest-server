@@ -36,6 +36,9 @@ public class Festival extends BaseEntity {
     @Column(name = "thumbnail", length = 2500)
     private String thumbnail;
 
+    @Column(name = "boothLayoutUrl")
+    private String boothLayoutUrl;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "school_id")
     private School school;

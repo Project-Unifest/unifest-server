@@ -1,5 +1,6 @@
 package UniFest.domain.booth.controller;
 
+import UniFest.domain.booth.dto.response.GetAllBoothResponse;
 import UniFest.domain.booth.service.BoothService;
 import UniFest.domain.booth.dto.request.BoothCreateRequest;
 import UniFest.domain.booth.dto.request.BoothPatchRequest;
@@ -74,9 +75,9 @@ public class BoothController {
 
     @Operation(summary = "해당축제 영업 중인 부스 전체조회")
     @GetMapping("/{festival-id}/booths")
-    public Response<List<BoothResponse>> getBooths(@PathVariable("festival-id") Long festivalId) {
-        List<BoothResponse> booths = boothService.getBooths(festivalId);
-        return Response.ofSuccess("OK", booths);
+    public Response<GetAllBoothResponse> getBooths(@PathVariable("festival-id") Long festivalId) {
+
+        return Response.ofSuccess("OK", boothService.getBooths(festivalId));
     }
 
     @Operation(summary = "상위 5개 부스 확인")
