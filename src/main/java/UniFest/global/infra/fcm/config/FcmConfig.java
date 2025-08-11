@@ -31,7 +31,27 @@ public class FcmConfig {
             throw new IllegalArgumentException("Firebase key is not set");
         }
 
-        try (FileInputStream serviceAccount = new FileInputStream(fcmKey)) {
+//        try (FileInputStream serviceAccount = new FileInputStream(fcmKey)) {
+//            FirebaseApp firebaseApp = null;
+//            List<FirebaseApp> firebaseAppList = FirebaseApp.getApps();
+//            if (firebaseAppList != null && !firebaseAppList.isEmpty()) {
+//                for (FirebaseApp app : firebaseAppList) {
+//                    if (app.getName().equals(FirebaseApp.DEFAULT_APP_NAME)) {
+//                        firebaseApp = app;
+//                    }
+//                }
+//            }
+//
+//            if (firebaseApp == null) {
+//                FirebaseOptions options = FirebaseOptions.builder()
+//                        .setCredentials(GoogleCredentials.fromStream(serviceAccount))
+//                        .build();
+//                firebaseApp = FirebaseApp.initializeApp(options);
+//            }
+//
+//            return FirebaseMessaging.getInstance(firebaseApp);
+//        }
+        try (InputStream refreshToken = new ByteArrayInputStream(fcmKey.getBytes())) {
             FirebaseApp firebaseApp = null;
             List<FirebaseApp> firebaseAppList = FirebaseApp.getApps();
             if (firebaseAppList != null && !firebaseAppList.isEmpty()) {
@@ -44,7 +64,7 @@ public class FcmConfig {
 
             if (firebaseApp == null) {
                 FirebaseOptions options = FirebaseOptions.builder()
-                        .setCredentials(GoogleCredentials.fromStream(serviceAccount))
+                        .setCredentials(GoogleCredentials.fromStream(refreshToken))
                         .build();
                 firebaseApp = FirebaseApp.initializeApp(options);
             }
