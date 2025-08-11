@@ -3,12 +3,9 @@ package UniFest.domain.home.controller;
 import UniFest.domain.home.dto.request.HomeCardCreateRequest;
 import UniFest.domain.home.dto.response.HomeInfoResponse;
 import UniFest.domain.home.service.HomeService;
-import UniFest.domain.stamp.dto.response.StampRecordResponse;
 import UniFest.global.common.response.Response;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor

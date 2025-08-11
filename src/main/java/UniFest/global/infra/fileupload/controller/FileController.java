@@ -5,7 +5,6 @@ import UniFest.global.infra.fileupload.dto.response.FileResponse;
 import UniFest.global.infra.fileupload.service.FileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;

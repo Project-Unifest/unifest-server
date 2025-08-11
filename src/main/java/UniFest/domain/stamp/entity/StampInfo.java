@@ -1,15 +1,11 @@
 package UniFest.domain.stamp.entity;
 
 import UniFest.global.common.BaseEntity;
-import UniFest.domain.booth.entity.Booth;
 import UniFest.domain.festival.entity.Festival;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 @Entity

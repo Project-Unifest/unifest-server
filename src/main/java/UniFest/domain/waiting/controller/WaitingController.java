@@ -6,22 +6,16 @@ import UniFest.domain.booth.repository.BoothRepository;
 import UniFest.domain.waiting.service.WaitingService;
 import UniFest.domain.waiting.dto.request.CheckPinRequest;
 import UniFest.domain.waiting.dto.request.CancelWaitingRequest;
-import UniFest.domain.waiting.dto.request.PostTokenTestRequest;
 import UniFest.domain.waiting.dto.request.PostWaitingRequest;
 import UniFest.global.common.response.Response;
 import UniFest.domain.waiting.dto.response.WaitingInfo;
 import UniFest.domain.booth.exception.BoothNotFoundException;
-import com.google.firebase.messaging.FirebaseMessaging;
-import com.google.firebase.messaging.Message;
-import com.google.firebase.messaging.Notification;
-import com.google.firebase.messaging.TopicManagementResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
 import java.util.List;
 
 @RestController

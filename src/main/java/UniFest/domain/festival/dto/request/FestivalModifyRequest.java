@@ -1,9 +1,5 @@
 package UniFest.domain.festival.dto.request;
 
-import UniFest.domain.school.entity.School;
-import UniFest.domain.stamp.entity.StampInfo;
-import UniFest.domain.stamp.entity.StampRecord;
-import UniFest.domain.star.entity.Enroll;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
@@ -11,8 +7,6 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 
 @Data
 public class FestivalModifyRequest {
