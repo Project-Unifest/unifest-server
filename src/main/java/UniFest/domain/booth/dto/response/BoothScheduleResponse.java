@@ -3,7 +3,6 @@ package UniFest.domain.booth.dto.response;
 import UniFest.domain.booth.entity.BoothSchedule;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;

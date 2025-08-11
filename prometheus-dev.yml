@@ -1,0 +1,27 @@
+global:
+  scrape_interval: 5s
+
+scrape_configs:
+  - job_name: 'unifest-spring-app'
+    metrics_path: /actuator/prometheus
+    docker_sd_configs:
+      - host: unix:///var/run/docker.sock
+
+    relabel_configs:
+      # 규칙 1: "unifest.scrape=true" 레이블이 있는 컨테이너만 수집 대상으로 유지합니다. (필터링)
+      - source_labels: [__meta_docker_container_label_unifest_scrape]
+        action: keep
+        regex: true
+
+      # 규칙 2: 발견된 컨테이너의 내부 네트워크 IP와 레이블에 지정된 포트로 최종 접속 주소(__address__)를 만듭니다.
+      # 예: 172.18.0.5:8080 형태로 최종 주소를 완성
+      - source_labels: [__meta_docker_network_ip, __meta_docker_container_label_unifest_port]
+        action: replace
+        regex: (.+);(\d+)  # (IP 주소);(포트 번호) 패턴을 찾아서
+        replacement: '$1:$2' # "IP주소:포트번호" 형태로 변경
+        target_label: __address__
+
+  # Node Exporter 잡 (고정 타겟)
+  - job_name: 'node-exporter'
+    static_configs:
+      - targets: ['node-exporter:9100']

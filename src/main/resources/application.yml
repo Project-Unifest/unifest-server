@@ -5,7 +5,7 @@ spring:
   application:
     name: UniFest
   profiles:
-    default: prod
+    default: dev
 
   firebase:
     project-id: unifest-konkuk
@@ -47,12 +47,28 @@ cloud:
     stack:
       auto: false
 
-# Monitor
 management:
   endpoints:
     web:
       exposure:
-        include: health,info,prometheus
+        include: health,prometheus,metrics
   endpoint:
     prometheus:
       enabled: true
+  tracing:
+    sampling:
+      probability: ${MANAGEMENT_TRACING_SAMPLING_PROBABILITY}
+  otlp:
+    tracing:
+      endpoint: ${MANAGEMENT_OTLP_TRACING_ENDPOINT}
+    metrics:
+      export:
+        enabled: false
+  metrics:
+    distribution:
+      percentiles-histogram:
+        http.server.requests: true
+# Logging
+logging:
+  pattern:
+    console: "[%d{HH:mm:ss.SSS}] [%thread] %-5level %class{1}.%M [traceId=%X{traceId} spanId=%X{spanId}] - %msg%n"

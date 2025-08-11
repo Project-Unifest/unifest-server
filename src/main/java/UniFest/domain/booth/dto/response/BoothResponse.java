@@ -3,9 +3,7 @@ package UniFest.domain.booth.dto.response;
 import UniFest.domain.booth.entity.Booth;
 import UniFest.domain.booth.entity.BoothCategory;
 import lombok.Data;
-import org.springframework.format.annotation.DateTimeFormat;
 
-import java.time.LocalTime;
 import java.util.List;
 
 

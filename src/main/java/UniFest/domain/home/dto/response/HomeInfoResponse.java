@@ -2,8 +2,6 @@ package UniFest.domain.home.dto.response;
 
 import UniFest.domain.home.entity.HomeCard;
 import UniFest.domain.home.entity.HomeTip;
-import UniFest.domain.stamp.dto.response.StampRecordResponse;
-import UniFest.domain.stamp.entity.StampInfo;
 import lombok.Builder;
 import lombok.Data;
 

@@ -1,8 +1,5 @@
 package UniFest.domain.home.service;
 
-import UniFest.domain.booth.dto.response.BoothResponse;
-import UniFest.domain.festival.entity.Festival;
-import UniFest.domain.festival.exception.FestivalNotFoundException;
 import UniFest.domain.home.dto.request.HomeCardCreateRequest;
 import UniFest.domain.home.dto.response.HomeInfoResponse;
 import UniFest.domain.home.entity.HomeCard;
@@ -14,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
