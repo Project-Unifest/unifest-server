@@ -12,6 +12,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 @EnableAspectJAutoProxy
 public class UniFestApplication {
 
+
 	public static void main(String[] args) {
 		SpringApplication.run(UniFestApplication.class, args);
 	}
