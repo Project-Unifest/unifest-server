@@ -4,6 +4,7 @@ import UniFest.domain.booth.dto.request.BoothCreateRequest;
 import UniFest.domain.booth.dto.request.BoothPatchRequest;
 import UniFest.domain.booth.dto.request.BoothScheduleCreateRequest;
 import UniFest.domain.booth.dto.request.BoothSchedulePatchRequest;
+import UniFest.domain.booth.dto.response.GetAllBoothResponse;
 import UniFest.domain.booth.entity.Booth;
 import UniFest.domain.booth.entity.BoothSchedule;
 import UniFest.domain.booth.repository.BoothRepository;
@@ -123,11 +124,13 @@ public class BoothService {
         return response;
     }
 
-    public List<BoothResponse> getBooths(Long festivalId) {
+    public GetAllBoothResponse getBooths(Long festivalId) {
         Festival festival = festivalRepository.findById(festivalId).orElseThrow(FestivalNotFoundException::new);
         List<BoothResponse> responses = boothRepository.findAllByFestivalAndEnabled(festival,true)
                 .stream().map(BoothResponse::new).toList();
-        return responses;
+        String boothLayoutUrl = Optional.ofNullable(festival.getBoothLayoutUrl()).orElse("");
+
+        return new GetAllBoothResponse(responses, boothLayoutUrl);
     }
 
     @Transactional

@@ -17,7 +17,7 @@ spring:
         dialect: org.hibernate.dialect.MySQLDialect
   data:
     redis:
-      host: unifest-redis
+      host: ${REDIS_HOST}
       port: 6379
       ssl:
         enabled: false
@@ -26,3 +26,7 @@ jwt:
   secret: ${JWT_SECRETKEY}
   access-token-expiration-minutes: 60
   refresh-token-expiration-minutes: 720
+
+logging:
+  level:
+    UniFest.global.common.config.aop.tracing: debug

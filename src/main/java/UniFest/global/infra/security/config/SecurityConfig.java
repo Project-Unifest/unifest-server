@@ -84,6 +84,7 @@ public class SecurityConfig{
         http
                 .authorizeHttpRequests((auth) -> auth
                         //TODO role 문자열 enum으로 바꿔놓기
+                        .requestMatchers("/actuator/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/festival/*/interest").permitAll() // 관심 축제 등록 허용
                         .requestMatchers(HttpMethod.DELETE, "/festival/*/interest").permitAll() // 관심 축제 해제 허용
                         .requestMatchers("/admin/").hasRole("ADMIN")
