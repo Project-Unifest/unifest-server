@@ -25,3 +25,7 @@ jwt:
   secret: ${JWT_SECRETKEY}
   access-token-expiration-minutes: 60
   refresh-token-expiration-minutes: 720
+
+logging:
+  level:
+    root: info

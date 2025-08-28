@@ -4,7 +4,6 @@ import UniFest.domain.festival.entity.Festival;
 import UniFest.domain.megaphone.entity.Megaphone;
 import UniFest.domain.member.entity.Member;
 import UniFest.domain.menu.entity.Menu;
-import UniFest.domain.stamp.entity.StampInfo;
 import UniFest.domain.stamp.entity.StampRecord;
 import UniFest.domain.waiting.entity.Waiting;
 import UniFest.global.common.BaseEntity;
@@ -17,7 +16,6 @@ import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
