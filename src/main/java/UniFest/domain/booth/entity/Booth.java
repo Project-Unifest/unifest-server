@@ -53,10 +53,10 @@ public class Booth extends BaseEntity {
     @Column(name = "booth_category", length = 50, nullable = false)
     private BoothCategory category;
 
-    @Column(name = "description", length = 500)
+    @Column(name = "description", length = 1000)    //기존 500자, 500자 늘림
     private String description;
 
-    @Column(name = "detail", length = 100)
+    @Column(name = "detail", length = 1000) //기존 100자
     private String detail;
 
     @Column(name = "thumbnail", length = 2500)

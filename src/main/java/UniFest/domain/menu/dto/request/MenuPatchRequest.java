@@ -12,8 +12,8 @@ import org.hibernate.validator.constraints.Length;
 public class MenuPatchRequest {
 
     @NotBlank(message = "메뉴 이름을 입력해주세요.")
-    @Length(max=20)
-    @Schema(description = "메뉴 이름", nullable = false, maximum = "20")
+    @Length(max=70) //기존 20자, 50자 늘림
+    @Schema(description = "메뉴 이름", nullable = false, maximum = "70")
     private String name;
 
     @NotNull(message = "메뉴 가격을 입력해주세요.")
