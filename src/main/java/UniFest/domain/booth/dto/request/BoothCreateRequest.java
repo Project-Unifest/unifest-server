@@ -23,8 +23,8 @@ public class BoothCreateRequest {
     @Schema(description = "부스의 분류", nullable = false, example = "BAR / FOOD / EVENT / NORMAL / MEDICAL / TOILET")
     private BoothCategory category;
 
-    @Length(max=200)
-    @Schema(description = "부스의 간단한 설명", nullable = true, maximum = "200")
+    @Length(max=1000)
+    @Schema(description = "부스의 간단한 설명", nullable = true, maximum = "1000")
     private String description;
 
     @Schema(description = "부스의 설명", nullable = true)
