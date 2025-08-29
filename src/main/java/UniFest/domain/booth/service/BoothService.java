@@ -149,7 +149,13 @@ public class BoothService {
     @Transactional
     @CacheEvict(value = "BoothInfo", key = "#boothId")
     public Long updateBooth(BoothPatchRequest boothPatchRequest, MemberDetails memberDetails, Long boothId) {
-        Booth findBooth = verifyAuth(memberDetails.getMemberId(), boothId);
+        Booth findBooth;
+        if("ADMIN".equals(memberDetails.getRole())) {
+            //ADMIN이면 검증절차 넘어감
+            findBooth = boothRepository.findByBoothId(boothId).orElseThrow(BoothNotFoundException::new);
+        }else{
+            findBooth = verifyAuth(memberDetails.getMemberId(), boothId);
+        }
         Optional.ofNullable(boothPatchRequest.getEnabled())
                 .ifPresent(enabled -> findBooth.updateEnabled(enabled));
         Optional.ofNullable(boothPatchRequest.getName())
