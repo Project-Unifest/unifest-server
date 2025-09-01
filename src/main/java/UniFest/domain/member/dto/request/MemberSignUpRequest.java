@@ -9,9 +9,10 @@ import lombok.*;
 @Data
 public class MemberSignUpRequest {
 
-    @Email(message = "이메일 형식이 올바르지 않습니다.")
+//    @Email(message = "이메일 형식이 올바르지 않습니다.")    잠시 비활성화
     @NotBlank(message = "공백일 수 없습니다.")
-    @Schema(format = "email", nullable = false)
+//    @Schema(format = "email", nullable = false)
+    @Schema(nullable = false)
     private String email;
 
     @NotBlank(message = "공백일 수 없습니다.")
