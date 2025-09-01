@@ -10,9 +10,10 @@ import lombok.Getter;
 @Getter
 public class LoginRequest {
 
-    @Email(message = "이메일 형식이 올바르지 않습니다.")
+//    @Email(message = "이메일 형식이 올바르지 않습니다.")
     @NotNull(message = "이메일은 필수 값 입니다.")
-    @Schema(format = "email", nullable = false)
+//    @Schema(format = "email", nullable = false)   //자유형식으로 수정
+    @Schema(nullable = false)
     private String email;
 
     @NotNull(message = "비밀번호는 필수 값 입니다.")
