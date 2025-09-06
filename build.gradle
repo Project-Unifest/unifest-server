@@ -63,6 +63,9 @@ dependencies {
 	implementation 'io.opentelemetry:opentelemetry-exporter-otlp'
 	// Prometheus
 	implementation 'io.micrometer:micrometer-registry-prometheus'
+
+	// sentry
+	implementation 'io.sentry:sentry-spring-boot-starter:7.10.0'
 }
 
 tasks.named('test') {
