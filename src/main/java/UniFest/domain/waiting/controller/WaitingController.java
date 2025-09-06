@@ -174,4 +174,9 @@ public class WaitingController {
 
         return Response.ofSuccess("OK", updatedVal);
     }
+    
+    @PatchMapping("/sentry-test")
+    public void sentryTest() {
+        throw new RuntimeException("Sentry uncaught exception test");
+    }
 }
