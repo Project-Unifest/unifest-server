@@ -13,6 +13,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import io.sentry.Sentry;
 
 import java.util.Objects;
 
@@ -23,6 +24,7 @@ public class ExceptionController {
 
     @ExceptionHandler(UnifestCustomException.class)
     public ResponseEntity<ErrorResponse> handleUnifestException(UnifestCustomException e) {
+        Sentry.captureException(e);
         log.warn("Unifest Exception {} {} {}\n", e.getHttpStatus(), e.getMessage(), e.getClass().getSimpleName());
         return ResponseEntity.status(e.getHttpStatus()).body(new ErrorResponse(e.getCode(),e.getMessage()));
     }
@@ -34,14 +36,14 @@ public class ExceptionController {
 
         int code = Integer.parseInt(errorInfo[0]);
         String message = errorInfo[1];
-
+        Sentry.captureException(e);
         return ResponseEntity.badRequest().body(new ErrorResponse(code, message));
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<ErrorResponse> handleJsonException(HttpMessageNotReadableException e) {
         log.warn("Json Exception ErrMessage={}\n", e.getMessage());
-
+        Sentry.captureException(e);
         return ResponseEntity.badRequest()
                 .body(new ErrorResponse(9000, "Json 형식이 올바르지 않습니다."));
     }
@@ -49,7 +51,7 @@ public class ExceptionController {
     @ExceptionHandler(HttpMediaTypeException.class)
     public ResponseEntity<ErrorResponse> handleContentTypeException(HttpMediaTypeException e) {
         log.warn("ContentType Exception ErrMessage={}\n", e.getMessage());
-
+        Sentry.captureException(e);
         return ResponseEntity.badRequest()
                 .body(new ErrorResponse(9001, "ContentType 값이 올바르지 않습니다."));
     }
@@ -57,7 +59,7 @@ public class ExceptionController {
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public ResponseEntity<ErrorResponse> handleRequestMethodException(HttpRequestMethodNotSupportedException e) {
         log.warn("Http Method not supported Exception ErrMessage={}\n", e.getMessage());
-
+        Sentry.captureException(e);
         return ResponseEntity.badRequest()
                 .body(new ErrorResponse(9002, "해당 Http Method에 맞는 API가 존재하지 않습니다."));
     }
@@ -65,7 +67,7 @@ public class ExceptionController {
     @ExceptionHandler(MissingServletRequestParameterException.class)
     public ResponseEntity<ErrorResponse> handleMissingRequestParamException(MissingServletRequestParameterException e) {
         log.warn("Request Param is Missing! ErrMessage={}\n", e.getMessage());
-
+        Sentry.captureException(e);
         return ResponseEntity.badRequest()
                 .body(new ErrorResponse(9003, "요청 param 이름이 올바르지 않습니다."));
     }
@@ -77,6 +79,7 @@ public class ExceptionController {
                 request.getRequestURI(),
                 e.getMessage()
         );
+        Sentry.captureException(e);
         return ResponseEntity.internalServerError()
                 .body(new ErrorResponse(9999,
                         "일시적으로 접속이 원활하지 않습니다. 서비스 팀에 문의 부탁드립니다."));
