@@ -76,6 +76,7 @@ public class BoothController {
     @Operation(summary = "해당축제 영업 중인 부스 전체조회")
     @GetMapping("/{festival-id}/booths")
     public Response<GetAllBoothResponse> getBooths(@PathVariable("festival-id") Long festivalId) {
+
         return Response.ofSuccess("OK", boothService.getBooths(festivalId));
     }
 
