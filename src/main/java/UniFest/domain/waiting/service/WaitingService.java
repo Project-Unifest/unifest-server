@@ -138,6 +138,7 @@ public class WaitingService {
     @Transactional
     public WaitingInfo callWaiting(Long id) {
         WaitingInfo info = setWaitingById(id, "CALLED");
+        Waiting w = waitingRepository.findWaitingByDeviceIdAndId(info.getDeviceId(), info.getWaitingId());
 
         UserNoti userNoti = UserNoti.builder()
                 .title(info.getBoothName())
@@ -146,8 +147,7 @@ public class WaitingService {
                         "booth_id", String.valueOf(info.getBoothId()),
                         "booth_name", info.getBoothName()))
                 .build();
-        fcmService.send(userNoti, info.getDeviceId());
-
+        fcmService.send_sj(userNoti, info.getDeviceId(), w.getFcmToken());
         return info;
     }
 
