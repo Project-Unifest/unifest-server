@@ -34,6 +34,17 @@ public class FcmService {
         return token;
     }
 
+    public String getFcmToken_SJ(String deviceId, String fcmToken) {
+        Device device = Device.of(deviceId);
+        String token = fcmRepository.getFcmToken(device.getDeviceId());
+        if (token == null) {
+            if(fcmToken != null){
+                return fcmToken;
+            }
+            else throw new FcmTokenNotFoundException();
+        }
+        return token;
+    }
     public void subscribe(String deviceId, String topic) {
         FcmUtils.subscribe(getFcmToken(deviceId), topic);
     }
@@ -48,5 +59,8 @@ public class FcmService {
 
     public void send(UserNoti userNoti, String deviceId) {
         FcmUtils.sendWithToken(userNoti, getFcmToken(deviceId));
+    }
+    public void send_sj(UserNoti userNoti, String deviceId, String fcmToken) {
+        FcmUtils.sendWithToken(userNoti, getFcmToken_SJ(deviceId, fcmToken));
     }
 }
