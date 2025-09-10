@@ -24,9 +24,11 @@ public class AuthService {
 
     // AccessToken 재발급
     public String reissue(String refreshToken) {
+        //TODO : 임시조치
         // 1차 - 리프레시 토큰 유효기한 검사
-        Boolean isValidDate = jwtTokenizer.isValidDateToken(refreshToken);
-        if (!isValidDate) throw new RefreshTokenExpiredException();
+        //        Boolean isValidDate = jwtTokenizer.isValidDateToken(refreshToken);
+
+    //        if (!isValidDate) throw new RefreshTokenExpiredException();
 
         // 2차 - 레디스 리프레시 토큰 존재여부 검사
         // 레디스 토큰 유효성 검사 통과 시 엑세스 토큰 재 발급
