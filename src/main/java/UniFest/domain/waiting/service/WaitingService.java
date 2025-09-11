@@ -1,14 +1,17 @@
 package UniFest.domain.waiting.service;
 
 import UniFest.domain.booth.entity.Booth;
+import UniFest.domain.booth.exception.BoothNotFoundException;
 import UniFest.domain.booth.repository.BoothRepository;
 import UniFest.domain.waiting.dto.request.PostWaitingRequest;
 import UniFest.domain.waiting.dto.response.WaitingInfo;
 import UniFest.domain.waiting.entity.Waiting;
 import UniFest.domain.waiting.repository.WaitingRepository;
+import UniFest.global.common.exception.UnifestCustomException;
 import UniFest.global.infra.fcm.UserNoti;
 import UniFest.global.infra.fcm.service.FcmService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -138,6 +141,9 @@ public class WaitingService {
     @Transactional
     public WaitingInfo callWaiting(Long id) {
         WaitingInfo info = setWaitingById(id, "CALLED");
+        if(info == null){
+            throw new UnifestCustomException(HttpStatus.NOT_FOUND, "웨이팅을 찾을 수 없습니다. 유저가 취소한 웨이팅일 수 있습니다.", 8000);
+        }
         Waiting w = waitingRepository.findWaitingByDeviceIdAndId(info.getDeviceId(), info.getWaitingId());
 
         UserNoti userNoti = UserNoti.builder()
