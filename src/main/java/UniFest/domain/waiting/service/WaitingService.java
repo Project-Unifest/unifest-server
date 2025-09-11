@@ -1,7 +1,6 @@
 package UniFest.domain.waiting.service;
 
 import UniFest.domain.booth.entity.Booth;
-import UniFest.domain.booth.exception.BoothNotFoundException;
 import UniFest.domain.booth.repository.BoothRepository;
 import UniFest.domain.waiting.dto.request.PostWaitingRequest;
 import UniFest.domain.waiting.dto.response.WaitingInfo;
