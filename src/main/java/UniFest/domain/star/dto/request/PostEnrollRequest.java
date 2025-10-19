@@ -13,7 +13,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PostEnrollRequest {
-
     @NotNull(message = "festivalId는 null이면 안됩니다.")
     @Schema(description = "페스티벌 Id", nullable = false)
     private Long festivalId;
