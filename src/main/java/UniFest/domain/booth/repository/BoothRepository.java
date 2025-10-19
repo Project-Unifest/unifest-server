@@ -34,4 +34,10 @@ public interface BoothRepository extends JpaRepository<Booth,Long> {
     @Modifying(clearAutomatically = true)
     @Query("UPDATE Booth b SET b.enabled = :isEnabled WHERE NOT EXISTS (SELECT s FROM b.scheduleList s WHERE FUNCTION('date', s.openDate) = :today)")
     void updateBoothDisabled(LocalDate today, boolean isEnabled);
+
+    List<Booth> findByThumbnail(String thumbnail);
+
+    @Modifying(clearAutomatically = true)
+    @Query("UPDATE Booth b SET b.thumbnail = :newThumbnail WHERE b.thumbnail = :oldThumbnail")
+    void updateThumbnail(@Param("oldThumbnail") String oldThumbnail, @Param("newThumbnail") String newThumbnail);
 }

@@ -16,6 +16,7 @@ import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -65,6 +66,13 @@ public class Booth extends BaseEntity {
 
     @Column(name = "enabled")
     private boolean enabled = true;
+
+    @Column(name = "deleted", nullable = false)
+    @ColumnDefault("false")
+    private boolean deleted = false;
+
+    @Column(name = "deleted_at")
+    private LocalDateTime deletedAt;
 
     @OneToMany(mappedBy = "booth", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Image> lmgList = new ArrayList<>();

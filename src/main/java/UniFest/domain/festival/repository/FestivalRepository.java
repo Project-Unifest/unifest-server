@@ -7,6 +7,7 @@ import java.time.LocalDate;
 import java.util.List;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -46,4 +47,11 @@ public interface FestivalRepository extends JpaRepository<Festival, Long> {
             + " where :date between f.beginDate and f.endDate "
             + " order by s.name")
     List<TodayFestivalInfo> findFestivalByDate(@Param("date") LocalDate date);
+
+    List<Festival> findByThumbnail(String thumbnail);
+    
+    @Modifying
+    @Query("UPDATE Festival f SET f.thumbnail = :newThumbnail WHERE f.thumbnail = :oldThumbnail")
+    void updateThumbnail(@Param("oldThumbnail") String oldThumbnail, @Param("newThumbnail") String newThumbnail);
+
 }

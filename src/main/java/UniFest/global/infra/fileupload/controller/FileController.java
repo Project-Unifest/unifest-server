@@ -1,14 +1,17 @@
 package UniFest.global.infra.fileupload.controller;
 
+import UniFest.domain.menu.dto.request.MenuCreateRequest;
 import UniFest.global.common.response.Response;
 import UniFest.global.infra.fileupload.dto.response.FileResponse;
 import UniFest.global.infra.fileupload.service.FileService;
+import UniFest.global.infra.security.userdetails.MemberDetails;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -25,3 +28,4 @@ public class FileController {
         return Response.ofSuccess("OK", fileResponse);
     }
 }
+
